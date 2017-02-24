@@ -1,0 +1,5 @@
+#!/bin/bash
+docker run -ti \
+  -v`pwd`:/var/www/rails \
+  -v`pwd`/.bundle/usr_local_bundle:/usr/local/bundle \
+  pacscl bash -lc "cd /var/www/rails && bin/rails $@"

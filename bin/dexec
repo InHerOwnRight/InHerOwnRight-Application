@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Use this to execute binaries within the docker container
+# e.g. bin/dexec bin/bundle
+docker run -ti \
+  -v`pwd`:/var/www/rails \
+  -v`pwd`/.bundle/usr_local_bundle:/usr/local/bundle \
+  pacscl bash -lc "cd /var/www/rails && $@"
