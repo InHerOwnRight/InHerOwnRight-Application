@@ -1,24 +1,21 @@
-# README
+#PACSCL: In Her Own Right
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## About this Application
 
-Things you may want to cover:
+## Development Environment Setup
 
-* Ruby version
+#### Prerequisites
 
-* System dependencies
+- git
+- docker
+- docker-compose (if you install docker without docker-compose)
 
-* Configuration
+After installing prerequisites and cloning the repository, you should be able to
+run the application using docker-compose:
 
-* Database creation
+    docker-compose build
+    docker-compose up
 
-* Database initialization
+### Additional Commands
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+    docker exec -it pacscl_app bash        # Open terminal to Rails container

@@ -1,0 +1,32 @@
+version: '2'
+services:
+  solr:
+    container_name: pacscl_solr
+    build:
+      context: .
+      dockerfile: docker/solr/Dockerfile
+    ports:
+      - 8983:8983
+  db:
+    container_name: pacscl_pg
+    image: postgres
+  app:
+    container_name: pacscl_app
+    build:
+      context: .
+      dockerfile: docker/rails_app/Dockerfile
+    depends_on:
+      - solr
+      - db
+    environment:
+      SOLR_URL: "http://solr:8983/solr/blacklight"
+    command: bash -c "bundle exec rails db:migrate &&
+                      rm -f tmp/pids/server.pid &&
+                      bundle exec rails s -p 3000 -b '0.0.0.0'"
+    expose:
+      - "3000"
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/var/www/rails
+      - .bundle/usr_local_bundle:/usr/local/bundle
