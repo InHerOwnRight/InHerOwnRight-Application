@@ -79,6 +79,8 @@ GEM
     execjs (2.7.0)
     faraday (0.11.0)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.11.0.1)
+      faraday (>= 0.7.4, < 1.0)
     ffi (1.9.17)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -123,6 +125,10 @@ GEM
     nio4r (1.2.1)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
+    oai (0.4.0)
+      builder (>= 3.1.0)
+      faraday
+      faraday_middleware
     orm_adapter (0.5.0)
     pg (0.19.0)
     puma (3.7.1)
@@ -223,6 +229,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
+  oai
   pg
   puma (~> 3.0)
   rails (~> 5.0.1)
