@@ -3,10 +3,16 @@ FROM ruby:2.3.3
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y vim nodejs-dev
 
-RUN mkdir /var/www && chown -R www-data:www-data /var/www
+RUN mkdir /var/www
+# These directories will be overwritten by mounted volumes when developing locally
+COPY . /var/www/rails/
+# TODO remove the .env file and require the production docker-compose.yml to -v mount the real .env file
+# TODO what else should be removed?
+RUN chown -R www-data:www-data /var/www
 USER www-data
 
 WORKDIR /var/www/rails
+RUN cd /var/www/rails && bundle
 
 EXPOSE 3000
 
