@@ -2,6 +2,7 @@
 /.bundle
 
 /config/database.yml
+.env
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
