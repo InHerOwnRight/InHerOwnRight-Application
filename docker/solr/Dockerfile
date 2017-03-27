@@ -13,9 +13,7 @@ RUN mkdir -p ${BLACKLIGHT_CORE}
 ADD docker/solr/solr.xml ${SOLR_HOME}
 ADD docker/solr/core.properties ${BLACKLIGHT_CORE}
 
-ADD docker/solr/gitdownloader-1.0.jar /opt/solr/gitdownloader-1.0.jar
-
-RUN java -jar /opt/solr/gitdownloader-1.0.jar https://api.github.com/repos/projectblacklight/blacklight/contents/solr/conf ${BLACKLIGHT_CORE}conf
+COPY solr/conf ${BLACKLIGHT_CORE}conf
 
 VOLUME ["/var/solr"]
 
