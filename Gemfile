@@ -27,6 +27,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'blacklight', '~> 6.7', '>= 6.7.3'
 gem 'rsolr', '~> 1.0'
+gem 'sunspot_rails'
 gem 'devise'
 gem 'devise-guests', '~> 0.5'
 gem 'httparty'
