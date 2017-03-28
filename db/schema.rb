@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170327193242) do
+ActiveRecord::Schema.define(version: 20170328182410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 20170327193242) do
     t.index ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
   end
 
+  create_table "dc_titles", force: :cascade do |t|
+    t.integer  "record_id"
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "raw_records", force: :cascade do |t|
     t.integer  "repository_id"
     t.string   "original_record_url"
@@ -36,6 +43,13 @@ ActiveRecord::Schema.define(version: 20170327193242) do
     t.text     "xml_metadata"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+  end
+
+  create_table "records", force: :cascade do |t|
+    t.integer  "raw_record_id"
+    t.string   "oai_identifier"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "searches", force: :cascade do |t|
