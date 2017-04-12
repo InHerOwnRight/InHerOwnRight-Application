@@ -3,7 +3,6 @@ class DcTitle < ActiveRecord::Base
 
   searchable do
     text :title
-    integer :record_id
   end
 
 end
