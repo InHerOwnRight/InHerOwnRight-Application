@@ -18,8 +18,8 @@
     <% classname, id = document.id.split(' ') %>
     <% klass = classname.constantize %>
     <% instance = klass.find(id.to_i) %>
-    <% @instance = instance.record if instance.respond_to?(:record) %>
-    <%= link_to instance.dc_titles.first.title, '#' %>
+    <% instance = instance.record if instance.respond_to?(:record) %>
+      <%= link_to instance.dc_titles.first.title, record_path(instance) %>
   </h3>
 
   <%= document_actions %>
