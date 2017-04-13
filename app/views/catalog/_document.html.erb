@@ -9,14 +9,11 @@
 
   <% instance.dc_subjects.each do | subject | %>
     <table class="table">
-      <row>
-        <td>
-          Subject:
-        </td>
-        <td>
-          <%= subject.subject %>
-        </td>
-      </row>
+      <tr>
+        <strong>Subject:</strong>
+        <br />
+        <%= subject.subject %>
+      </tr>
     </table>
   <% end %>
 </div>
