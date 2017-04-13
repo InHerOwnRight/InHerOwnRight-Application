@@ -1,12 +1,22 @@
 <% # container for a single doc -%>
-<div class="document <%= render_document_class document %> document-position-<%= document_counter%> " data-document-counter="<%= document_counter %>" itemscope itemtype="<%= document.itemtype %>">
+<div class="document <%= render_document_class document %> document-position-<%= document_counter%> " data-document-counter="<%= document_counter %>" itemscope itemtype="<%= document.itemtype %> container">
   <%= render_document_partials document, blacklight_config.view_config(document_index_view_type).partials, :document_counter => document_counter %>
 
   <% classname, id = document.id.split(' ') %>
   <% klass = classname.constantize %>
   <% instance = klass.find(id.to_i) %>
   <% instance = instance.record if instance.respond_to?(:record) %>
-  <%= instance.inspect %>
-  <%= link_to instance.dc_titles.first.title, '#' %>
-  <%# use url_for(instance to get a link to it %>
+
+  <% instance.dc_subjects.each do | subject | %>
+    <table class="table">
+      <row>
+        <td>
+          Subject:
+        </td>
+        <td>
+          <%= subject.subject %>
+        </td>
+      </row>
+    </table>
+  <% end %>
 </div>
