@@ -14,7 +14,7 @@ As of spring 2017, Docker on OSX runs a Linux VM to host containers. This extra 
 causes the Rails app run very slowly. For a quicker development environment on Mac, run:
 
     docker-compose build
-    docker-compose -f docker-dev.yml up
+    docker-compose -f docker-compose-dev.yml up
 
 It should then be possible to setup and run the Rails app in a separate terminal:
 
