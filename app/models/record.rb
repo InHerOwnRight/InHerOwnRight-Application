@@ -3,7 +3,8 @@ class Record < ActiveRecord::Base
   belongs_to :raw_record
   has_many :dc_contributors, dependent: :destroy
   has_many :dc_coverages, dependent: :destroy
-  has_many :dc_creators, dependent: :destroy
+  has_many :record_dc_creator_tables, dependent: :destroy
+  has_many :dc_creators, through: :record_dc_creator_tables
   has_many :dc_dates, dependent: :destroy
   has_many :dc_descriptions, dependent: :destroy
   has_many :dc_formats, dependent: :destroy
@@ -85,6 +86,23 @@ class Record < ActiveRecord::Base
           model_name = "dc_right"
         else
           model_name = "dc_#{node_name}"
+        end
+
+        if node_name == "creator"
+          if DcCreator.find_by_creator(node.text).blank?
+            dc_creator = DcCreator.new(creator: node.text)
+            dc_creator.save
+            record = self
+            record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
+            record_dc_creator.save
+            return
+          else
+            dc_creator = DcCreator.find_by_creator(node.text)
+            record = self
+            record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
+            record_dc_creator.save
+            return
+          end
         end
 
         plural_model_name = model_name.pluralize
