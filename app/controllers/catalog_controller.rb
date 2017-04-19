@@ -3,6 +3,12 @@ class CatalogController < ApplicationController
 
   include Blacklight::Catalog
 
+  def render_contributor_name value
+    value = DcCreator.find(value).creator
+  end
+
+  helper_method :render_contributor_name
+
   configure_blacklight do |config|
     ## Class for sending and receiving requests from a search index
     # config.repository_class = Blacklight::Solr::Repository
