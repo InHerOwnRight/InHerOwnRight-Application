@@ -41,6 +41,13 @@ class CatalogController < ApplicationController
     #  # q: '{!term f=id v=$id}'
     #}
 
+    config.default_solr_params = {
+      :'q.alt' => "*:*",
+      :defType => 'edismax',
+      :facet   => true,
+      fq: ["type:Record"]
+    }
+
     # solr field configuration for search results/index views
     config.index.title_field = 'title_display'
     config.index.display_type_field = 'format'
@@ -188,23 +195,21 @@ class CatalogController < ApplicationController
     config.add_search_field('all_fields', {label: "All Fields"}) do |field|
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text',
-        fq: ["type:Record"],
-        defType: "edismax"
+        qf: 'creator_text title_text description_text subject_text'
         }
     end
 
 
     config.add_search_field('title') do |field|
-      field.solr_parameters = { qf: 'title_text', fq: ["type:Record"], defType: "edismax"}
+      field.solr_parameters = { qf: 'title_text'}
     end
 
     config.add_search_field('creator') do |field|
-      field.solr_parameters = { qf: 'creator_text', fq: ["type:Record"], defType: "edismax"}
+      field.solr_parameters = { qf: 'creator_text'}
     end
 
     config.add_search_field('subject') do |field|
-      field.solr_parameters = { qf: 'subject_text', fq: ["type:Record"], defType: "edismax"}
+      field.solr_parameters = { qf: 'subject_text'}
     end
 
     # "sort results by" select (pulldown)
