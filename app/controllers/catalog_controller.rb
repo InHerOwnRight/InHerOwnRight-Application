@@ -83,7 +83,20 @@ class CatalogController < ApplicationController
     # config.add_facet_field 'format', label: 'Format'
     # config.add_facet_field 'pub_date', label: 'Publication Year', single: true
     # config.add_facet_field 'rights_text', label: 'Rights', limit: 12
-    config.add_facet_field 'creator_s', label: 'Creator'
+    # config.add_facet_field 'creator_s', {label: 'Creator'} do |field|
+    #   raise field.solr_params
+    # end
+    # config.add_facet_field 'creator_s', label: 'Creator' do |field|
+    #   field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
+    #   field.solr_parameters = {
+    #     qf: 'creator_text title_text description_text subject_text',
+    #     fq: ["type:Record"],
+    #     defType: "edismax"
+    #     }
+    #   end
+    # config.add_facet_field 'creator_s', label: 'Creator'
+    config.add_facet_field 'dc_creator_ids_im', label: "Creator", helper_method: :render_contributor_name
+
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
     # config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
@@ -97,7 +110,6 @@ class CatalogController < ApplicationController
     #    :years_10 => { label: 'within 10 Years', fq: "pub_date:[#{Time.zone.now.year - 10 } TO *]" },
     #    :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
     # }
-
 
     # # Have BL send all facet field names to Solr, which has been the default
     # # previously. Simply remove these lines if you'd rather use Solr request

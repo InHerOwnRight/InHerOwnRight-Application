@@ -33,6 +33,7 @@ class Record < ActiveRecord::Base
       dc_creators.map(&:creator)
     end
 
+    integer :dc_creator_ids, references: DcCreator, multiple: true
     # something :date do
     #   dc_date.scope_for_original_composition.map(&:date)
     # end
