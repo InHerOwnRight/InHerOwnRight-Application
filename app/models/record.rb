@@ -79,6 +79,32 @@ class Record < ActiveRecord::Base
     end
   end #searchable
 
+  def create_dc_creator(node, record)
+    if DcCreator.find_by_creator(node.text).blank?
+      dc_creator = DcCreator.new(creator: node.text)
+      dc_creator.save
+      record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
+      record_dc_creator.save
+    else
+      dc_creator = DcCreator.find_by_creator(node.text)
+      record = self
+      record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
+      record_dc_creator.save
+    end
+  end
+
+  def create_dc_date(node, record)
+    begin
+      Date.parse(node.text)
+      dc_date = DcDate.new(record_id: record.id, date: node.text)
+      dc_date.save
+    rescue
+      date = Date.new(node.text.to_i)
+      dc_date = DcDate.new(record_id: record.id, date: date)
+      dc_date.save
+    end
+  end
+
   def create_dc_part(node_name, xml_doc, dc_namespace, record)
     if xml_doc.xpath("//dc:#{node_name}", dc_namespace).any?
       xml_doc.xpath("//dc:#{node_name}", dc_namespace).map do |node|
@@ -90,28 +116,21 @@ class Record < ActiveRecord::Base
         end
 
         if node_name == "creator"
-          if DcCreator.find_by_creator(node.text).blank?
-            dc_creator = DcCreator.new(creator: node.text)
-            dc_creator.save
-            record = self
-            record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-            record_dc_creator.save
-            return
-          else
-            dc_creator = DcCreator.find_by_creator(node.text)
-            record = self
-            record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-            record_dc_creator.save
-            return
-          end
+          create_dc_creator(node, record)
         end
 
-        plural_model_name = model_name.pluralize
+        if node_name == "date"
+          create_dc_date(node, record)
+        end
 
-        dc_model = "#{model_name.camelize}".constantize.new
-        dc_model.record_id = record.id
-        dc_model[node_name] = node.text
-        dc_model.save
+        modular_creators = ['dc_creator', 'dc_date']
+        if !modular_creators.include?(model_name)
+          plural_model_name = model_name.pluralize
+          dc_model = "#{model_name.camelize}".constantize.new
+          dc_model.record_id = record.id
+          dc_model[node_name] = node.text
+          dc_model.save
+        end
       end
     end
   end
