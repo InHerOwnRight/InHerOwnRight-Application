@@ -3,6 +3,7 @@ namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
   task from_temple: :environment do
+    repository = Repository.find_by_name("Temple University Libraries")
     temple_path = 'http://digital.library.temple.edu/oai/oai.php'
     base_raw_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
     client = OAI::Client.new temple_path, :headers => { "From" => "oai@example.com" }
@@ -29,6 +30,8 @@ namespace :import_metadata do
         if !raw_record.metadata.blank?
           new_raw_record.xml_metadata = raw_record.metadata
         end
+
+        new_raw_record.repository_id = repository.id
 
         if new_raw_record.save
           puts "Successfully saved #{new_raw_record.oai_identifier}"
