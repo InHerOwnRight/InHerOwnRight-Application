@@ -34,9 +34,10 @@ class Record < ActiveRecord::Base
     end
 
     integer :dc_creator_ids, references: DcCreator, multiple: true
-    # something :date do
-    #   dc_date.scope_for_original_composition.map(&:date)
-    # end
+
+    date :pub_date, references: DcDate, multiple: true do
+      dc_dates.original_creation_date.map(&:date)
+    end
 
     text :description do
       dc_descriptions.map(&:description)

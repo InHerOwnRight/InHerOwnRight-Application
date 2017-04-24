@@ -95,7 +95,20 @@ class CatalogController < ApplicationController
     #     }
     #   end
     # config.add_facet_field 'creator_s', label: 'Creator'
-    config.add_facet_field 'dc_creator_ids_im', label: "Creator", helper_method: :render_contributor_name
+    config.add_facet_field 'dc_creator_ids_im', label: "Creator / Author", helper_method: :render_contributor_name
+
+    config.add_facet_field 'date_', label: "Date Range", query: {
+      years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
+      years_1830_to_1840: { label: '1830 to 1840', fq: "pub_date_dm:[1830-01-01T00:00:00Z TO 1840-12-31T00:00:00Z]" },
+      years_1840_to_1850: { label: '1830 to 1850', fq: "pub_date_dm:[1840-01-01T00:00:00Z TO 1850-12-31T00:00:00Z]" },
+      years_1850_to_1860: { label: '1850 to 1860', fq: "pub_date_dm:[1850-01-01T00:00:00Z TO 1860-12-31T00:00:00Z]" },
+      years_1860_to_1870: { label: '1860 to 1870', fq: "pub_date_dm:[1860-01-01T00:00:00Z TO 1870-12-31T00:00:00Z]" },
+      years_1870_to_1880: { label: '1870 to 1880', fq: "pub_date_dm:[1870-01-01T00:00:00Z TO 1880-12-31T00:00:00Z]" },
+      years_1880_to_1890: { label: '1880 to 1890', fq: "pub_date_dm:[1880-01-01T00:00:00Z TO 1890-12-31T00:00:00Z]" },
+      years_1890_to_1900: { label: '1890 to 1900', fq: "pub_date_dm:[1890-01-01T00:00:00Z TO 1900-12-31T00:00:00Z]" },
+      years_1900_to_1910: { label: '1900 to 1910', fq: "pub_date_dm:[1900-01-01T00:00:00Z TO 1910-12-31T00:00:00Z]" },
+      years_1910_to_1920: { label: '1910 to 1920', fq: "pub_date_dm:[1910-01-01T00:00:00Z TO 1920-12-31T00:00:00Z]" }
+    }
 
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
