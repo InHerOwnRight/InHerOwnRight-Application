@@ -1,6 +1,7 @@
 
 class Record < ActiveRecord::Base
   belongs_to :raw_record
+  delegate :repository, to: :raw_record, allow_nil: true
   has_many :dc_contributors, dependent: :destroy
   has_many :dc_coverages, dependent: :destroy
   has_many :record_dc_creator_tables, dependent: :destroy
@@ -18,6 +19,10 @@ class Record < ActiveRecord::Base
   has_many :dc_titles, dependent: :destroy
   has_many :dc_types, dependent: :destroy
 
+  def repository_id
+    repository.id
+  end
+
   searchable do
     text :oai_identifier
 
@@ -34,6 +39,8 @@ class Record < ActiveRecord::Base
     end
 
     integer :dc_creator_ids, references: DcCreator, multiple: true
+
+    integer :repository_id, references: Repository
 
     date :pub_date, references: DcDate, multiple: true do
       dc_dates.original_creation_date.map(&:date)
