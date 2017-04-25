@@ -1,8 +1,8 @@
 namespace :create_repositories do
   desc "Create records and Dublin Core parts from raw records"
 
-  task all: :environment do
-    repo_list = [
+  def repo_list
+    [
     ["Temple University Libraries", "1210 Polett Walk, Philadelphia, PA 19122", "diglib@temple.edu", "http://digital.library.temple.edu/"],
     ["Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing", "Suite 2U, Claire M. Fagin Hall, 418 Curie Boulevard, Philadelphia, PA  19104-4217", "nhistory@nursing.upenn.edu", "https://www.nursing.upenn.edu/history/archives-collections/"],
     ["Friends Historical Library: Swarthmore College", "McCabe Library, 500 College Avenue, Swarthmore, PA 19081", "http://www.swarthmore.edu/friends-historical-library", "friends@swarthmore.edu"],
@@ -11,7 +11,9 @@ namespace :create_repositories do
     ["Historical Society of Pennsylvania", "1300 Locust Street, Philadelphia, PA 19107", "aparks@hsp.org", "http://hsp.org/"],
     ["Archives and Special Collections Drexel University College of Medicine", "2900 West Queen Lane, Philadelphia, PA 19129", "archives@drexelmed.edu", "http://archives.drexelmed.edu/index.php"]
     ]
+  end
 
+  task all: :environment do
     repo_list.each do |repo|
       repository = Repository.new
       repository.name = repo[0]
@@ -21,4 +23,16 @@ namespace :create_repositories do
       repository.save
     end
   end
+
+  require 'csv'
+  task csv: :environment do
+    headers = ["Name", "Address", "Email", "URL"]
+    CSV.open("tmp/repository_list.csv", "wb") do |csv|
+      csv << headers
+      repo_list.each do |repo_array|
+        csv << repo_array
+      end
+    end
+  end
+
 end
