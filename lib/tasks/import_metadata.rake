@@ -2,14 +2,8 @@ require 'oai'
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
-  task from_temple: :environment do
-    repository = Repository.find_by_name("Temple University Libraries")
-    temple_path = 'http://digital.library.temple.edu/oai/oai.php'
-    base_raw_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
-    client = OAI::Client.new temple_path, :headers => { "From" => "oai@example.com" }
-
-    identifiers = ['oai:digital.library.temple.edu:p15037coll19/1208', 'oai:digital.library.temple.edu:p15037coll19/1258', 'oai:digital.library.temple.edu:p15037coll19/1299']
-
+  def import_from_oai_client(repository, repo_path, base_raw_record_path, identifiers)
+    client = OAI::Client.new repo_path, :headers => { "From" => "oai@example.com" }
     identifiers.map do |identifier|
 
       if RawRecord.find_by_oai_identifier(identifier).blank?
@@ -43,6 +37,15 @@ namespace :import_metadata do
         puts "#{identifier} has already been imported"
       end
     end
-
   end
+
+  task from_temple: :environment do
+    repository = Repository.find_by_name("Temple University Libraries")
+    repo_path = 'http://digital.library.temple.edu/oai/oai.php'
+    base_raw_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
+
+    identifiers = ['oai:digital.library.temple.edu:p15037coll19/1208', 'oai:digital.library.temple.edu:p15037coll19/1258', 'oai:digital.library.temple.edu:p15037coll19/1299']
+    import_from_oai_client(repository, repo_path, base_raw_record_path, identifiers)
+  end
+
 end
