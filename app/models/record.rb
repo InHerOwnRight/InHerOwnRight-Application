@@ -102,43 +102,61 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_date(node, record)
-    begin
-      Date.parse(node.text)
-      dc_date = DcDate.new(record_id: record.id, date: node.text)
+    if node.text =~ /^\d{4}\-\d{4}$/
+      date = date = Date.new(node.text.split("-").first.to_i)
+      dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: node.text)
       dc_date.save
-    rescue
+    elsif node.text =~ /^\d{4}$/
       date = Date.new(node.text.to_i)
-      dc_date = DcDate.new(record_id: record.id, date: date)
+      dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: node.text)
       dc_date.save
+    else
+      begin
+        Date.parse(node.text)
+        dc_date = DcDate.new(record_id: record.id, date: node.text, unprocessed_date: node.text)
+        dc_date.save
+      rescue
+        dc_date = DcDate.new(record_id: record.id, unprocessed_date: node.text)
+        dc_date.save
+      end
     end
   end
 
-  def create_dc_part(node_name, xml_doc, dc_namespace, record)
-    if xml_doc.xpath("//dc:#{node_name}", dc_namespace).any?
-      xml_doc.xpath("//dc:#{node_name}", dc_namespace).map do |node|
+  def actual_model_name(node_name)
+    if node_name == "rights"
+      @part_model_name = "dc_right"
+    elsif node_name == "created"
+      @part_model_name = "dc_date"
+    elsif node_name == "license"
+      @part_model_name = "dc_right"
+    else
+      @part_model_name = "dc_#{node_name}"
+    end
+  end
 
-        if node_name == "rights"
-          model_name = "dc_right"
-        else
-          model_name = "dc_#{node_name}"
-        end
+  def create_dc_part(node_name, xml_doc, record)
+    xml_doc.xpath("//#{node_name}").map do |node|
 
-        if node_name == "creator"
-          create_dc_creator(node, record)
-        end
+      if node_name == "creator"
+        create_dc_creator(node, record)
+      end
 
-        if node_name == "date"
-          create_dc_date(node, record)
-        end
+      if node_name == "date" || node_name == "created"
+        create_dc_date(node, record)
+      end
 
-        modular_creators = ['dc_creator', 'dc_date']
-        if !modular_creators.include?(model_name)
-          plural_model_name = model_name.pluralize
-          dc_model = "#{model_name.camelize}".constantize.new
-          dc_model.record_id = record.id
-          dc_model[node_name] = node.text
-          dc_model.save
-        end
+      if node_name == "license"
+        node_name = "rights"
+      end
+
+      actual_model_name(node_name)
+
+      modular_creators = ['dc_creator', 'dc_date']
+      if !modular_creators.include?(@part_model_name)
+        dc_model = "#{@part_model_name.camelize}".constantize.new
+        dc_model.record_id = record.id
+        dc_model[node_name] = node.text
+        dc_model.save
       end
     end
   end
