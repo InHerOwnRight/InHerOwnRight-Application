@@ -1,4 +1,6 @@
 require 'oai'
+require "csv"
+
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
@@ -48,29 +50,24 @@ namespace :import_metadata do
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
   end
 
-  require "csv"
-  task from_bates: :environment do
-    repository = Repository.find_by_name("Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing")
-    NS = {
+  def import_from_csv(filepath, repository, original_entry_date)
+    ns = {
         "xmlns:oai_qdc" => "http://worldcat.org/xmlschemas/qdc-1.0/",
-        "xmlns:oai_dc"  => "http://www.openarchives.org/OAI/2.0/oai_dc/",
         "xmlns:dcterms" => "http://purl.org/dc/terms/",
-        "xmlns:dc"      => "http://purl.org/dc/elements/1.1/",
-        "xmlns:xsi"     => "http://www.w3.org/2001/XMLSchema-instance",
-        "xsi:schemaLocation" => "http://worldcat.org/xmlschemas/qdc-1.0/ http://worldcat.org/xmlschemas/qdc/1.0/qdc-1.0.xsd http://purl.org/net/oclcterms http://worldcat.org/xmlschemas/oclcterms/1.4/oclcterms-1.4.xsd http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
+        "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
     }
-    CSV.foreach("lib/documents/csv/bates_center/BatesCenter.csv", headers: true) do |row|
+    CSV.foreach(filepath, headers: true) do |row|
       if RawRecord.find_by_oai_identifier(row[1]).blank?
         raw_record = RawRecord.new
         raw_record.repository_id = repository.id
-        raw_record.original_record_url = "Local file: BatesCenter.csv"
+        raw_record.original_record_url = row[6]
         raw_record.oai_identifier = row[1]
-        raw_record.original_entry_date = "2017-3-13" # hardcoded until we get a filenaming scheme
+        raw_record.original_entry_date = original_entry_date # hardcoded until we get a filenaming scheme
 
         builder = Nokogiri::XML::Builder.new { |xml|
           xml.metadata {
             xml.contributing_repository row[0]
-            xml['oai_qdc'].qualifieddc(NS) do
+            xml['oai_qdc'].qualifieddc(ns) do
               xml['dc'].identifier row[1]
               xml['dc'].title row[2]
               xml['dcterms'].created row[3]
@@ -94,6 +91,20 @@ namespace :import_metadata do
         puts "Raw record for OAI ID #{row[1]} already exists."
       end
     end
+  end
+
+  task from_bates: :environment do
+    repository = Repository.find_by_name("Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing")
+    filepath = "lib/documents/csv/bates_center/BatesCenter.csv"
+    original_entry_date = "2017-3-13" # hardcoded until we get a filenaming scheme
+    import_from_csv(filepath, repository, original_entry_date)
+  end
+
+  task from_library_co: :environment do
+    repository = Repository.find_by_name("The Library Company of Philadelphia")
+    filepath = "lib/documents/csv/library_company/LibraryCompany.csv"
+    original_entry_date = "2017-4-26" # hardcoded until we get a filenaming scheme
+    import_from_csv(filepath, repository, original_entry_date)
   end
 
 end
