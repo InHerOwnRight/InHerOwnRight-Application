@@ -105,7 +105,7 @@ class CatalogController < ApplicationController
     config.add_facet_field 'date_', label: "Date Range", query: {
       years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
       years_1830_to_1840: { label: '1830 to 1840', fq: "pub_date_dm:[1830-01-01T00:00:00Z TO 1840-12-31T00:00:00Z]" },
-      years_1840_to_1850: { label: '1830 to 1850', fq: "pub_date_dm:[1840-01-01T00:00:00Z TO 1850-12-31T00:00:00Z]" },
+      years_1840_to_1850: { label: '1840 to 1850', fq: "pub_date_dm:[1840-01-01T00:00:00Z TO 1850-12-31T00:00:00Z]" },
       years_1850_to_1860: { label: '1850 to 1860', fq: "pub_date_dm:[1850-01-01T00:00:00Z TO 1860-12-31T00:00:00Z]" },
       years_1860_to_1870: { label: '1860 to 1870', fq: "pub_date_dm:[1860-01-01T00:00:00Z TO 1870-12-31T00:00:00Z]" },
       years_1870_to_1880: { label: '1870 to 1880', fq: "pub_date_dm:[1870-01-01T00:00:00Z TO 1880-12-31T00:00:00Z]" },
