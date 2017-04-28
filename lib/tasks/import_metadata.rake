@@ -49,6 +49,14 @@ namespace :import_metadata do
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
   end
 
+  task from_swarthmore: :environment do
+    repository = Repository.find_by_name("Friends Historical Library: Swarthmore College")
+    repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
+    base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
+    identifiers = ['oai:tricontentdm.brynmawr.edu:HC_QuakSlav/12403']
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
+  end
+
   def import_from_csv(filepath, repository, original_entry_date)
     ns = {
         "xmlns:oai_qdc" => "http://worldcat.org/xmlschemas/qdc-1.0/",
