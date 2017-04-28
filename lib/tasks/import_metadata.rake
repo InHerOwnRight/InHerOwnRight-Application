@@ -5,17 +5,16 @@ namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
-    client = OAI::Client.new repo_path, :headers => { "From" => "oai@example.com" }
+    client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
     identifiers.map do |identifier|
 
       if RawRecord.find_by_oai_identifier(identifier).blank?
-        response = client.get_record identifier: identifier
+        response = client.get_record({identifier: identifier, metadata_prefix: "oai_qdc"})
         response_record = response.record
-
         raw_record = RawRecord.new
         if !response_record.header.set_spec.first.text.blank?
           raw_record.set_spec = response_record.header.set_spec.first.text
-          raw_record.original_record_url = "#{base_response_record_path}/#{raw_record.set_spec}/#{identifier.split('/').last}"
+          raw_record.original_record_url = "#{base_response_record_path}/#{raw_record.set_spec}/id/#{identifier.split('/').last}"
         end
         if !response_record.header.identifier.blank?
           raw_record.oai_identifier = response_record.header.identifier
