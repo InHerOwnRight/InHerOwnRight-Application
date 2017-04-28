@@ -11,6 +11,9 @@ namespace :create_records do
         record.oai_identifier = raw_record.oai_identifier
         xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
         xml_doc.remove_namespaces!
+        if  !xml_doc.xpath("//isPartOf").text.blank?
+          record.is_part_of = xml_doc.xpath("//isPartOf").text
+        end
         if record.save
           node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license"]
           node_names.each do | node_name |
