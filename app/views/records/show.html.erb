@@ -20,6 +20,14 @@
         </td>
       </tr>
     <% end %>
+    <% @record.dc_creators.each do |dc_creator| %>
+      <tr>
+        <th scope="row">Creator</th>
+        <td>
+          <%= dc_creator.creator %>
+        </td>
+      </tr>
+    <% end %>
     <% @record.dc_dates.each do |dc_date| %>
       <tr>
         <th scope="row">Date</th>

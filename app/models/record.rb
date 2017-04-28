@@ -6,6 +6,8 @@ class Record < ActiveRecord::Base
   has_many :dc_coverages, dependent: :destroy
   has_many :record_dc_creator_tables, dependent: :destroy
   has_many :dc_creators, through: :record_dc_creator_tables
+  has_many :record_dc_type_tables, dependent: :destroy
+  has_many :dc_types, through: :record_dc_type_tables
   has_many :dc_dates, dependent: :destroy
   has_many :dc_descriptions, dependent: :destroy
   has_many :dc_formats, dependent: :destroy
@@ -17,7 +19,6 @@ class Record < ActiveRecord::Base
   has_many :dc_sources, dependent: :destroy
   has_many :dc_subjects, dependent: :destroy
   has_many :dc_titles, dependent: :destroy
-  has_many :dc_types, dependent: :destroy
 
   def repository_id
     repository.id
@@ -41,6 +42,8 @@ class Record < ActiveRecord::Base
     integer :dc_creator_ids, references: DcCreator, multiple: true
 
     integer :repository_id, references: Repository
+
+    integer :dc_type_ids, references: DcType, multiple: true
 
     date :pub_date, references: DcDate, multiple: true do
       dc_dates.original_creation_date.map(&:date)
@@ -101,6 +104,20 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def create_dc_type(node, record)
+    if DcType.find_by_type(node.text).blank?
+      dc_type = DcType.new(type: node.text)
+      dc_type.save
+      record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
+      record_dc_type.save
+    else
+      dc_type = DcType.find_by_type(node.text)
+      record = self
+      record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
+      record_dc_type.save
+    end
+  end
+
   def create_dc_date(node, record)
     if node.text =~ /^\d{4}\-\d{4}$/
       date = date = Date.new(node.text.split("-").first.to_i)
@@ -141,6 +158,10 @@ class Record < ActiveRecord::Base
         create_dc_creator(node, record)
       end
 
+      if node_name == "type"
+        create_dc_type(node, record)
+      end
+
       if node_name == "date" || node_name == "created"
         create_dc_date(node, record)
       end
@@ -151,7 +172,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id

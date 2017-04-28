@@ -8,6 +8,11 @@ class CatalogController < ApplicationController
   end
   helper_method :render_contributor_name
 
+  def render_type_name value
+    value = DcType.find(value).type
+  end
+  helper_method :render_type_name
+
   def render_repository_name value
     value = Repository.find(value).name
   end
@@ -115,6 +120,8 @@ class CatalogController < ApplicationController
       years_1910_to_1920: { label: '1910 to 1920', fq: "pub_date_dm:[1910-01-01T00:00:00Z TO 1920-12-31T00:00:00Z]" },
       years_1920_to_1930: { label: '1920 to 1930', fq: "pub_date_dm:[1920-01-01T00:00:00Z TO 1930-12-31T00:00:00Z]" }
     }
+
+    config.add_facet_field 'dc_type_ids_im', label: "Type", helper_method: :render_type_name
 
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
