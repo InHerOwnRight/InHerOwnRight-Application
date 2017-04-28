@@ -4,6 +4,9 @@ require "csv"
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
+  task all: [:from_temple, :from_swarthmore, :from_bates, :from_library_co, :from_haverford] do
+  end
+
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
     identifiers.map do |identifier|
@@ -22,6 +25,7 @@ namespace :import_metadata do
         if !response_record.header.datestamp.blank?
           raw_record.original_entry_date = response_record.header.datestamp
         end
+
         if !response_record.metadata.blank?
           raw_record.xml_metadata = response_record.metadata
         end
@@ -54,6 +58,14 @@ namespace :import_metadata do
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     identifiers = ['oai:tricontentdm.brynmawr.edu:HC_QuakSlav/12403']
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
+  end
+
+  task from_haverford: :environment do
+    repository = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
+    repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
+    base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
+    identifiers = ['oai:tricontentdm.brynmawr.edu:HC_DigReq/19215', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19217', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19224', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19231', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19237', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19249', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19246', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19241', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19252', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19259', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19262', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19265', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19270', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19272', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19276']
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
   end
 
