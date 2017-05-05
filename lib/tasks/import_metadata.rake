@@ -45,11 +45,23 @@ namespace :import_metadata do
   end
 
   task from_temple: :environment do
+    identifiers = []
+    set_specs = ['p15037coll19', 'p15037coll14']
+
+    set_specs.map do |set|
+      client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
+      response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+        xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
+        xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
+          if relation_node.text.include?("In Her Own Right")
+            identifiers.push(record.header.identifier)
+          end
+        end
+      end
+    end
     repository = Repository.find_by_name("Temple University Libraries")
     repo_path = 'http://digital.library.temple.edu/oai/oai.php'
     base_response_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
-
-    identifiers = ['oai:digital.library.temple.edu:p15037coll19/1208', 'oai:digital.library.temple.edu:p15037coll19/1258', 'oai:digital.library.temple.edu:p15037coll19/1299']
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
   end
 
