@@ -1,0 +1,94 @@
+%h3
+  = @record.dc_titles.first.title
+%table.table
+  %thead
+    %tr
+  %thead
+  %tbody
+
+    %tr
+      %th{ scope: "row" }
+        Repository
+      %td
+        = @record.repository.name
+
+    %tr
+      %th{ scope: "row" }
+        OAI Identifier
+      %td
+        = @record.oai_identifier
+    - @record.dc_titles.each do |dc_title|
+      %tr
+        %th{ scope:"row" }
+          Title
+        %td
+          = dc_title.title
+
+    - @record.dc_creators.each do |dc_creator|
+      %tr
+        %th{ scope: "row" }
+          Creator
+        %td
+          = dc_creator.creator
+
+    - @record.dc_dates.each do |dc_date|
+      %tr
+        %th{ scope: "row" }
+          Date
+        %td
+          = dc_date.date
+
+    - @record.dc_subjects.each do |dc_subject|
+      %tr
+        %th{ scope: "row" }
+          Subject
+        %td
+          = dc_subject.subject
+
+    - @record.dc_formats.each do |dc_format|
+      %tr
+        %th{ scope: "row" }
+          Format
+        %td
+          = dc_format.format
+
+    - @record.dc_types.each do |dc_type|
+      %tr
+        %th{ scope: "row" }
+          Type
+        %td
+          = dc_type.type
+
+    - @record.dc_languages.each do |dc_language|
+      %tr
+        %th{ scope: "row" }
+          Language
+        %td
+          = dc_language.language
+
+    - @record.dc_rights.each do |dc_right|
+      %tr
+        %th{ scope: "row" }
+          Rights
+        %td
+          = dc_right.rights
+
+    - @record.dc_relations.each do |dc_relation|
+      %tr
+        %th{ scope: "row" }
+          Relation
+        %td
+          = dc_relation.relation
+
+    - @record.dc_identifiers.each do |dc_identifier|
+      %tr
+        - if dc_identifier.identifier.split(":").first == "http" || dc_identifier.identifier.split(":").first == "https"
+          %th{ scope: "row" }
+            Identifier / URL
+          %td
+            = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
+        - else
+          %th{ scope: "row" }
+            Identifier
+          %td
+            = dc_identifier.identifier
