@@ -4,15 +4,15 @@ require "csv"
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
-  task all: [:from_temple, :from_swarthmore, :from_bates, :from_library_co, :from_haverford] do
+  task all: [:from_temple, :from_swarthmore, :from_drexel, :from_bates, :from_library_co, :from_haverford] do
   end
 
-  def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
+  def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers, metadata_prefix)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
     identifiers.map do |identifier|
 
       if RawRecord.find_by_oai_identifier(identifier).blank?
-        response = client.get_record({identifier: identifier, metadata_prefix: "oai_qdc"})
+        response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
         response_record = response.record
         raw_record = RawRecord.new
         if !response_record.header.set_spec.first.text.blank?
@@ -50,7 +50,7 @@ namespace :import_metadata do
 
     set_specs.map do |set|
       client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
-      response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+      client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
         xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
         xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
           if relation_node.text.include?("In Her Own Right")
@@ -62,7 +62,26 @@ namespace :import_metadata do
     repository = Repository.find_by_name("Temple University Libraries")
     repo_path = 'http://digital.library.temple.edu/oai/oai.php'
     base_response_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
+    metadata_prefix = "oai_qdc"
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers, metadata_prefix)
+  end
+
+  task from_drexel: :environment do
+    identifiers = []
+    set_specs = ['lca_3']
+
+    set_specs.map do |set|
+      client = OAI::Client.new "https://idea.library.drexel.edu/oai/request", :headers => { "From" => "oai@example.com" }
+      client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+        identifiers.push(record.header.identifier)
+      end
+    end
+
+    repository = Repository.find_by_name("Archives and Special Collections Drexel University College of Medicine")
+    repo_path = "https://idea.library.drexel.edu/oai/request"
+    base_response_record_path = "http://hdl.handle.net/1860/"
+    metadata_prefix = "oai_dc"
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers, metadata_prefix)
   end
 
   task from_swarthmore: :environment do
@@ -70,7 +89,8 @@ namespace :import_metadata do
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     identifiers = ['oai:tricontentdm.brynmawr.edu:HC_QuakSlav/12403']
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
+    metadata_prefix = "oai_qdc"
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers, metadata_prefix)
   end
 
   task from_haverford: :environment do
@@ -78,8 +98,11 @@ namespace :import_metadata do
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     identifiers = ['oai:tricontentdm.brynmawr.edu:HC_DigReq/19215', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19217', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19224', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19231', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19237', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19249', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19246', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19241', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19252', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19259', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19262', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19265', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19270', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19272', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19276']
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers)
+    metadata_prefix = "oai_qdc"
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers, metadata_prefix)
   end
+
+### CSV IMPORTS ########################################################################################
 
   def import_from_csv(filepath, repository, original_entry_date)
     ns = {
