@@ -120,9 +120,13 @@ class Record < ActiveRecord::Base
 
   def create_dc_date(node, record)
     if node.text =~ /^\d{4}\-\d{4}$/
-      date = date = Date.new(node.text.split("-").first.to_i)
-      dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: node.text)
-      dc_date.save
+      date_range_points = node.text.split("-")
+      year_range = date_range_points[0].to_i..date_range_points[1].to_i
+      year_range.each do |year|
+        date = date = Date.new(year)
+        dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: node.text)
+        dc_date.save
+      end
     elsif node.text =~ /^\d{4}$/
       date = Date.new(node.text.to_i)
       dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: node.text)
