@@ -5,6 +5,19 @@
     %tr
   %thead
   %tbody
+    - if @record.dc_dates.count > 1
+      %tr
+        %th{ scope: "row" }
+          Date Range
+        %td
+          = display_date_range(@record)
+    - else
+      - @record.dc_dates.each do |dc_date|
+        %tr
+          %th{ scope: "row" }
+            Date
+          %td
+            = dc_date.date.strftime("%m-%d-%Y")
 
     %tr
       %th{ scope: "row" }
@@ -30,13 +43,6 @@
           Creator
         %td
           = dc_creator.creator
-
-    - @record.dc_dates.each do |dc_date|
-      %tr
-        %th{ scope: "row" }
-          Date
-        %td
-          = dc_date.date
 
     - @record.dc_subjects.each do |dc_subject|
       %tr
