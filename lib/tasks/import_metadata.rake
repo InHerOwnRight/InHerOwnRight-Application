@@ -77,7 +77,7 @@ namespace :import_metadata do
       end
     end
 
-    repository = Repository.find_by_name("Archives and Special Collections Drexel University College of Medicine")
+    repository = Repository.find_by_name("Drexel University College of Medicine Legacy Center")
     repo_path = "https://idea.library.drexel.edu/oai/request"
     base_response_record_path = "http://hdl.handle.net/1860/"
     metadata_prefix = "oai_dc"
