@@ -1,31 +1,39 @@
 development:
   encoding: unicode
   adapter: postgresql
-  database: pacscl_development
+  host: <%= PACSCL_DB_HOST %>
+  database: <%= PACSCL_DB_NAME %>
+  username: <%= PACSCL_DB_USERNAME %>
+  password: <%= PACSCL_DB_PASSWORD %>
   pool: 5
   min_messages: WARNING
 
 test:
   encoding: unicode
   adapter: postgresql
-  database: pacscl_test
+  host: <%= PACSCL_DB_HOST %>
+  database: <%= PACSCL_DB_NAME %>
+  username: <%= PACSCL_DB_USERNAME %>
+  password: <%= PACSCL_DB_PASSWORD %>
   pool: 5
   min_messages: WARNING
 
 staging:
   encoding: unicode
   adapter: postgresql
-  database: pacscl_staging
-  username: postgres
-  host: db
+  host: <%= PACSCL_DB_HOST %>
+  database: <%= PACSCL_DB_NAME %>
+  username: <%= PACSCL_DB_USERNAME %>
+  password: <%= PACSCL_DB_PASSWORD %>
   pool: 5
   min_messages: WARNING
 
 production:
   encoding: unicode
   adapter: postgresql
-  database: pacscl_production
-  username: postgres
+  host: <%= PACSCL_DB_HOST %>
+  database: <%= PACSCL_DB_NAME %>
+  username: <%= PACSCL_DB_USERNAME %>
+  password: <%= PACSCL_DB_PASSWORD %>
   pool: 5
-  host: db
   min_messages: WARNING

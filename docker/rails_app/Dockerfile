@@ -6,6 +6,10 @@ RUN apt-get install -y vim nodejs-dev
 RUN mkdir /var/www
 # These directories will be overwritten by mounted volumes when developing locally
 COPY . /var/www/rails/
+# If we do this, we have to add config data, e.g. database.yml, secrets, etc. Do it with environment vars?
+# RUN cd /var/www/rails && git reset --hard origin/master
+# RUN cp config/database.yml.example config/database.yml
+
 # TODO remove the .env file and require the production docker-compose.yml to -v mount the real .env file
 # TODO what else should be removed?
 RUN chown -R www-data:www-data /var/www
