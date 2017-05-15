@@ -47,3 +47,8 @@ In a different terminal window run:
 
     docker exec -it pacscl_app bash          # Open terminal to Rails container
     docker-compose run app [RAILS_COMMAND]   # Run typical Rails commands
+
+### TODO how to push to DockerHub ###
+
+    docker build -f docker/rails_app/Dockerfile -t neomindlabs/pacscl_app .
+    TODO: This might get pushed automatically by docker-compose build now that we have the image name in docker-compose.yml
