@@ -8,55 +8,51 @@
     - if @record.dc_dates.count > 1
       %tr
         %th{ scope: "row" }
-          Date Range
+          Date range
         %td
           = display_date_range(@record)
     - else
       - @record.dc_dates.each do |dc_date|
         %tr
           %th{ scope: "row" }
-            Date
+            Date created
           %td
             = dc_date.date.strftime("%m-%d-%Y")
-
-    %tr
-      %th{ scope: "row" }
-        Repository
-      %td
-        = @record.repository.name
-
-    %tr
-      %th{ scope: "row" }
-        OAI Identifier
-      %td
-        = @record.oai_identifier
-    - @record.dc_titles.each do |dc_title|
-      %tr
-        %th{ scope:"row" }
-          Title
-        %td
-          = dc_title.title
 
     - @record.dc_creators.each do |dc_creator|
       %tr
         %th{ scope: "row" }
           Creator
         %td
-          = dc_creator.creator
+          = link_to dc_creator.creator, search_catalog_path( search_field: "creator", q: @record.dc_creators.first.creator )
 
-    - @record.dc_subjects.each do |dc_subject|
+    - @record.dc_contributors.each do |dc_contributor|
       %tr
         %th{ scope: "row" }
-          Subject
+          Creator
         %td
-          = dc_subject.subject
+          = dc_contributor.contributor
 
-    - @record.dc_formats.each do |dc_format|
+    - @record.dc_publishers.each do |dc_publisher|
       %tr
         %th{ scope: "row" }
-          Format
+          Publisher
         %td
-          = dc_format.format
+          = dc_publisher.publisher
+
+    - @record.dc_descriptions.each do |dc_description|
+      %tr
+        %th{ scope: "row" }
+          Description
+        %td
+          = dc_description.description
+
+    - @record.dc_terms_extents.each do |dc_term_extent|
+      %tr
+        %th{ scope: "row" }
+          Extent / Size of item
+        %td
+          = dc_term_extent.extent
 
     - @record.dc_types.each do |dc_type|
       %tr
@@ -65,6 +61,25 @@
         %td
           = dc_type.type
 
+    - @record.dc_subjects.each do |dc_subject|
+      %tr
+        %th{ scope: "row" }
+          Subject
+        %td
+          = dc_subject.subject
+
+    %tr
+      %th{ scope: "row" }
+        Archival collection
+      %td
+
+    - @record.dc_terms_spacials.each do |dc_terms_spacial|
+      %tr
+        %th{ scope: "row" }
+          Location
+        %td
+          = dc_terms_spacial.spacial
+
     - @record.dc_languages.each do |dc_language|
       %tr
         %th{ scope: "row" }
@@ -72,25 +87,11 @@
         %td
           = dc_language.language
 
-    - @record.dc_rights.each do |dc_right|
-      %tr
-        %th{ scope: "row" }
-          Rights
-        %td
-          = dc_right.rights
-
-    - @record.dc_relations.each do |dc_relation|
-      %tr
-        %th{ scope: "row" }
-          Relation
-        %td
-          = dc_relation.relation
-
     - @record.dc_identifiers.each do |dc_identifier|
       %tr
         - if dc_identifier.identifier.split(":").first == "http" || dc_identifier.identifier.split(":").first == "https"
           %th{ scope: "row" }
-            Identifier / URL
+            View full item
           %td
             = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
         - else
@@ -98,3 +99,16 @@
             Identifier
           %td
             = dc_identifier.identifier
+
+    %tr
+      %th{ scope: "row" }
+        Contributing institution
+      %td
+        = @record.repository.name
+
+    - @record.dc_rights.each do |dc_right|
+      %tr
+        %th{ scope: "row" }
+          Rights
+        %td
+          = dc_right.rights
