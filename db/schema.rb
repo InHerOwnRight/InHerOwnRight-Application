@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516195403) do
+ActiveRecord::Schema.define(version: 20170517202016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,6 +122,13 @@ ActiveRecord::Schema.define(version: 20170516195403) do
   create_table "dc_terms_extents", force: :cascade do |t|
     t.integer  "record_id"
     t.string   "extent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "dc_terms_spacials", force: :cascade do |t|
+    t.integer  "record_id"
+    t.string   "spacial"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
