@@ -15,7 +15,7 @@ namespace :create_records do
           record.is_part_of = xml_doc.xpath("//isPartOf").text
         end
         if record.save
-          node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", ]
+          node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spacial"]
           node_names.each do | node_name |
             record.create_dc_part(node_name, xml_doc, record)
           end

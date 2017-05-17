@@ -20,6 +20,7 @@ class Record < ActiveRecord::Base
   has_many :dc_subjects, dependent: :destroy
   has_many :dc_titles, dependent: :destroy
   has_many :dc_terms_extents, dependent: :destroy
+  has_many :dc_terms_spacials, dependent: :destroy
 
   def repository_id
     repository.id
@@ -150,6 +151,13 @@ class Record < ActiveRecord::Base
     dc_terms_extent.save
   end
 
+  def create_dc_terms_spacial(node, record)
+    dc_terms_spacial = DcTermsSpacial.new(spacial: node.text)
+    dc_terms_spacial.record_id = record.id
+    dc_terms_spacial.save
+  end
+
+
   def actual_model_name(node_name)
     if node_name == "rights"
       @part_model_name = "dc_right"
@@ -181,13 +189,17 @@ class Record < ActiveRecord::Base
         create_dc_terms_extent(node, record)
       end
 
+      if node_name == "spacial "
+        create_dc_terms_spacial(node, record)
+      end
+
       if node_name == "license"
         node_name = "rights"
       end
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id
