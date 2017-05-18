@@ -88,8 +88,7 @@ GEM
     haml (5.0.1)
       temple (>= 0.8.0)
       tilt
-    httparty (0.14.0)
-      multi_xml (>= 0.5.2)
+    high_voltage (3.0.0)
     i18n (0.8.1)
     jbuilder (2.6.3)
       activesupport (>= 3.0.0, < 5.2)
@@ -124,7 +123,6 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     multi_json (1.12.1)
-    multi_xml (0.6.0)
     multipart-post (2.0.0)
     nio4r (1.2.1)
     nokogiri (1.7.0.1)
@@ -244,7 +242,7 @@ DEPENDENCIES
   devise
   devise-guests (~> 0.5)
   haml (~> 5.0, >= 5.0.1)
-  httparty
+  high_voltage (~> 3.0)
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
