@@ -1,38 +1,4 @@
-.page-header.row
-  %h2.col-md-8.page-heading In Her Own Right
-
-  %ul.nav.nav-pills.col-md-6
-    %li
-      = link_to "About", page_path("about/about")
-    %li
-      .dropdown
-        %button.btn.btn-default.dropdown-toggle{type: "button", "data-toggle" => "dropdown"}
-          Collection Guides
-          %span.caret
-        %ul.dropdown-menu{role: "menu", "aria-labelledby" => "menu1"}
-          - Dir["app/views/pages/collection_guides/*"].each do |file|
-            %li{role: "presentation"}
-              - page_id = file.split("/").last.split('.').first
-              = link_to "#{page_id}", page_path("collection_guides/#{page_id}"), {role: "menuitem", tabindex: "-1"}
-    %li
-      .dropdown
-        %button.btn.btn-default.dropdown-toggle{type: "button", "data-toggle" => "dropdown"}
-          Collection Guides
-          %span.caret
-        %ul.dropdown-menu{role: "menu", "aria-labelledby" => "menu1"}
-          - Dir["app/views/pages/collection_guides/*"].each do |file|
-            %li{role: "presentation"}
-              - page_id = file.split("/").last.split('.').first
-              = link_to "#{page_id}", page_path("collection_guides/#{page_id}"), {role: "menuitem", tabindex: "-1"}
-
-
-
-- Rails.application.routes.routes
-
-- Dir["app/views/pages/about/*"].each do |file|
-  = page_id = file.split("/").last.split('.').first
-  = link_to "About", page_path("about/#{page_id}")
-
+= render 'catalog_navbar'
 
 #getting-started
   %h3.section-heading
