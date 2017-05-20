@@ -3,7 +3,7 @@ FROM ruby:2.3.3
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y vim nodejs-dev
 
-RUN mkdir /var/www && chown www-data:www-data /var/www
+RUN mkdir /var/www && chown -R www-data:www-data /var/www
 USER www-data
 
 WORKDIR /var/www/rails
