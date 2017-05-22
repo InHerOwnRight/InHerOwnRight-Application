@@ -16,8 +16,12 @@
         %tr
           %th{ scope: "row" }
             Date created
-          %td
-            = dc_date.date.strftime("%m-%d-%Y")
+          - if dc_date.date.nil?
+            %td
+              = dc_date.unprocessed_date
+          - else
+            %td
+              = dc_date.date.strftime("%m-%d-%Y")
 
     - @record.dc_creators.each do |dc_creator|
       %tr
