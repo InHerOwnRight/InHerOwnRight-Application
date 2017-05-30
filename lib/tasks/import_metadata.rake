@@ -4,7 +4,7 @@ require "csv"
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
-  task all: [:from_temple, :from_swarthmore, :from_drexel, :from_bates, :from_library_co, :from_haverford] do
+  task all: [:from_temple, :from_swarthmore, :from_drexel, :from_bates, :from_library_co, :from_haverford, :from_hsp] do
   end
 
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers, metadata_prefix)
@@ -127,6 +127,7 @@ namespace :import_metadata do
               xml['dcterms'].created row[3]
               xml['dc'].creator row[4]
               xml['dcterms'].licence row[5]
+              xml['dc'].identifier row[6]
               xml['dc'].type row[7]
               xml['dc'].language row[8]
               xml['dcterms'].extent row[11]
@@ -136,6 +137,7 @@ namespace :import_metadata do
               xml['dc'].publisher row[15]
               xml['dcterms'].isPartOf row[16]
               xml['dc'].format row[19]
+              xml['dcterms'].parent_collection row[24]
             end
           }
         }
@@ -157,6 +159,13 @@ namespace :import_metadata do
   task from_library_co: :environment do
     repository = Repository.find_by_name("The Library Company of Philadelphia")
     filepath = "lib/documents/csv/library_company/LibraryCompany.csv"
+    original_entry_date = "2017-4-26" # hardcoded until we get a filenaming scheme
+    import_from_csv(filepath, repository, original_entry_date)
+  end
+
+  task from_hsp: :environment do
+    repository = Repository.find_by_name("Historical Society of Pennsylvania")
+    filepath = "lib/documents/csv/hsp/HSP.csv"
     original_entry_date = "2017-4-26" # hardcoded until we get a filenaming scheme
     import_from_csv(filepath, repository, original_entry_date)
   end
