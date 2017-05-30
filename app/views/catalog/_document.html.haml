@@ -1,0 +1,20 @@
+= # container for a single doc
+
+.document{ class: "#{render_document_class(document)} document-position-#{document_counter}", "data-document-counter" => "#{document_counter}", "itemscope" => "", "item-type" => "#{document.itemtype} container"}
+
+  = render_document_partials document, blacklight_config.view_config(document_index_view_type).partials, :document_counter => document_counter
+
+  - classname, id = document.id.split(' ')
+  - klass = classname.constantize
+  - instance = klass.find(id.to_i)
+  - instance = instance.record if instance.respond_to?(:record)
+
+  - instance.dc_subjects.each do | subject |
+    %table.table
+      %tr
+        %strong Subject:
+        %br
+        = subject.subject
+
+  - if instance.thumbnail
+    = image_tag(instance.thumbnail)
