@@ -116,3 +116,11 @@
           Rights
         %td
           = dc_right.rights
+    - if @record.file_name
+      %tr
+        %th{ scope: "row" }
+          Sample image
+        %td
+          = image_tag(@record.file_name)
+
+
