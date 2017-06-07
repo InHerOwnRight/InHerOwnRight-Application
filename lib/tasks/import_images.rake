@@ -53,8 +53,8 @@ namespace :import_images do
   end
 
   task haverford: :environment do
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/Haverford/*.png") do |file_path|
-      missing_records = []
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
       relative_path = "/images/Haverford/#{current_identifier}_#{file_size}.png"
@@ -72,6 +72,7 @@ namespace :import_images do
         missing_records.push(file_path)
       end
     end
+    puts missing_records
   end
 
   task hsp: :environment do
@@ -122,7 +123,7 @@ namespace :import_images do
   end
 
   task swarthmore: :environment do
-    missing_records =
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/Swarthmore/*.png") do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
