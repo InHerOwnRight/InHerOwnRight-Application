@@ -5,12 +5,13 @@ namespace :import_images do
   end
 
   task bates: :environment do
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/Bates/*.png") do |file_path|
       current_identifier = file_path.split("/").last.match(/.+?(?=_lg.png|_thumb.png)/).to_s
       file_size = file_path.split("_").last.split(".").first
       relative_path = "/images/Bates/#{current_identifier}_#{file_size}.png"
       if DcIdentifier.find_by_identifier(current_identifier).nil?
-        puts "Something went wrong with #{current_identifier}"
+        missing_records.push(file_path)
       else
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
@@ -23,9 +24,11 @@ namespace :import_images do
         end
       end
     end
+    puts missing_records
   end
 
   task drexel: :environment do
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/Drexel/*.png") do |file_path|
       actual_file_name = file_path.split("/").last
       current_identifier = file_path.split("/").last.match(/.+?(?=_\d\d\d_lg.png|_\d\d\d_thumb.png)/).to_s
@@ -43,12 +46,15 @@ namespace :import_images do
         end
       else
         puts "#{file_path} failed to save."
+        missing_records.push(file_path)
       end
     end
+    puts missing_records
   end
 
   task haverford: :environment do
     Dir.glob("#{Rails.root}/public/images/Haverford/*.png") do |file_path|
+      missing_records = []
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
       relative_path = "/images/Haverford/#{current_identifier}_#{file_size}.png"
@@ -63,12 +69,13 @@ namespace :import_images do
           puts "Saving #{record.oai_identifier}"
         end
       else
-        puts "#{file_path} failed to save."
+        missing_records.push(file_path)
       end
     end
   end
 
   task hsp: :environment do
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/HSP/*.png") do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
@@ -84,16 +91,19 @@ namespace :import_images do
           puts "Saving #{record.oai_identifier}"
         end
       else
-        puts "#{file_path} failed to save."
+        missing_records.push(file_path)
       end
     end
+    puts missing_records
   end
 
   task library_company: :environment do
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/LibraryCompany/*.png") do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
+      current_identifier = file_path.split("/").last.split("_").first.match(/.*(?=\-)/).to_s
       file_size = file_path.split("_").last.split(".").first
       relative_path = "/images/LibraryCompany/#{current_identifier}_#{file_size}.png"
+
       if !Record.find_by_oai_identifier(current_identifier).nil?
         record = Record.find_by_oai_identifier(current_identifier)
         if file_size == "lg"
@@ -105,12 +115,14 @@ namespace :import_images do
           puts "Saving #{record.oai_identifier}"
         end
       else
-        puts "#{file_path} failed to save."
+        missing_records.push(file_path)
       end
     end
+    puts missing_records
   end
 
-    task swarthmore: :environment do
+  task swarthmore: :environment do
+    missing_records =
     Dir.glob("#{Rails.root}/public/images/Swarthmore/*.png") do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
@@ -126,9 +138,10 @@ namespace :import_images do
           puts "Saving #{record.oai_identifier}"
         end
       else
-        puts "#{file_path} failed to save."
+        missing_records.push(file_path)
       end
     end
+    puts missing_records
   end
 
   task temple: :environment do
@@ -146,6 +159,23 @@ namespace :import_images do
       if record.save
         puts "Saving #{record.oai_identifier}"
       end
+    end
+  end
+
+  require 'fileutils'
+
+  task move_bad_files: :environment do
+    arr = ["#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_001_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_001_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_002_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_002_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_004_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_004_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_005_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_005_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_006_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_006_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_007_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_007_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_008_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_008_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_020(1)_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_020(1)_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_020_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_020_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_021_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_021_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_023_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F116_023_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F16_001_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F16_001_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F32_001_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F32_001_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F32_002_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F32_002_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F32_003_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F32_003_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_001_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_001_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_002_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_002_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_003_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_003_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_004_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_004_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_005_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_005_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_006_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_006_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_008_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_008_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_009_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_009_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_010_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_010_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_015_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_015_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_029_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_029_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_031_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F45_031_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F4_009_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F4_009_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F4_010_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F4_010_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F56_002_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F56_002_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_001_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_001_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_002_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_002_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_004_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_004_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_005_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_005_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_006_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_006_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_007_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_007_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_008_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_008_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_022_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_022_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_024_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F57_024_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F63_004_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F63_004_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F63_015_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F63_015_thumb.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F9_002_lg.png", "#{Rails.root}/public/images/Bates/MDHR_MC78_BX04_S6_F9_002_thumb.png"]
+
+    arr.each do |file|
+      FileUtils.mv(file, "/Users/WilliamBolton/Desktop/File_names_with_issues/Bates/")
+    end
+  end
+
+  task move_files_drexel: :environment do
+    arr = ["/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1875_002_lg.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1875_002_thumb.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1876_001_lg.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1876_001_thumb.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1886_012_lg.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1886_012_thumb.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1896_001_lg.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1896_001_thumb.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1897_001_lg.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1897_001_thumb.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1902_001_lg.png", "/Users/WilliamBolton/Documents/neomind/pacscl/public/images/Drexel/r747_w82_1902_001_thumb.png"]
+    arr.each do |file|
+      FileUtils.mv(file, "/Users/WilliamBolton/Desktop/File_names_with_issues/Temple/")
     end
   end
 
