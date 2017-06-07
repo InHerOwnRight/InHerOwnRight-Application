@@ -93,7 +93,7 @@
 
     - @record.dc_identifiers.each do |dc_identifier|
       %tr
-        - if dc_identifier.identifier.split(":").first == "http" || dc_identifier.identifier.split(":").first == "https"
+        - if dc_identifier.identifier_is_url?
           %th{ scope: "row" }
             View full item
           %td
@@ -121,6 +121,10 @@
         %th{ scope: "row" }
           Sample image
         %td
-          = image_tag(@record.file_name)
+          - if @record.dc_identifiers.map{|id| id.identifier_is_url? }.any?
+            %a{ href: "#{@record.dc_identifiers.find{|id| id.identifier_is_url? }.identifier}", target: "_blank"}
+              = image_tag(@record.file_name)
+          - else
+            = image_tag(@record.file_name)
 
 
