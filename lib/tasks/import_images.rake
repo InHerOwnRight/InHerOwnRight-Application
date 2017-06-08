@@ -19,9 +19,7 @@ namespace :import_images do
         else
           record.thumbnail = relative_path
         end
-        if record.save
-          puts "Saving #{record.oai_identifier}"
-        end
+        record.save
       end
     end
     puts missing_records
@@ -41,11 +39,8 @@ namespace :import_images do
         else
           record.thumbnail = relative_path
         end
-        if record.save
-          puts "Saving #{record.oai_identifier}"
-        end
+        record.save
       else
-        puts "#{file_path} failed to save."
         missing_records.push(file_path)
       end
     end
@@ -65,9 +60,7 @@ namespace :import_images do
         else
           record.thumbnail = relative_path
         end
-        if record.save
-          puts "Saving #{record.oai_identifier}"
-        end
+        record.save
       else
         missing_records.push(file_path)
       end
@@ -88,9 +81,7 @@ namespace :import_images do
         else
           record.thumbnail = relative_path
         end
-        if record.save
-          puts "Saving #{record.oai_identifier}"
-        end
+        record.save
       else
         missing_records.push(file_path)
       end
@@ -112,9 +103,7 @@ namespace :import_images do
         else
           record.thumbnail = relative_path
         end
-        if record.save
-          puts "Saving #{record.oai_identifier}"
-        end
+        record.save
       else
         missing_records.push(file_path)
       end
@@ -135,9 +124,7 @@ namespace :import_images do
         else
           record.thumbnail = relative_path
         end
-        if record.save
-          puts "Saving #{record.oai_identifier}"
-        end
+        record.save
       else
         missing_records.push(file_path)
       end
