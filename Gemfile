@@ -33,6 +33,8 @@ gem 'devise-guests', '~> 0.5'
 gem 'oai'
 gem 'haml', '~> 5.0', '>= 5.0.1'
 gem 'high_voltage', '~> 3.0'
+gem 'redcarpet', '~> 3.4'
+# gem 'carpetbomb'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
