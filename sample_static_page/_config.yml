@@ -1,0 +1,7 @@
+title: In Her Own Right Sample Page
+email: your-email@domain.com
+
+markdown: kramdown
+exclude:
+  - Gemfile
+  - Gemfile.lock
