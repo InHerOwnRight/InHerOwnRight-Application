@@ -57,13 +57,17 @@ namespace :import_metadata do
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14']
 
+    relation_text = ["Octavia Hill Association (Philadelphia, Pa.) Records", "Young Women's Christian Association - Metropolitan Branch, Acc. URB 23", "YWCA of Philadelphia - Kensington Branch, Acc. 520, 531, 552", "YWCA of Germantown, Acc. 280", "In Her Own Right"]
+
     set_specs.map do |set|
       client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
       client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
         xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
         xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
-          if relation_node.text.include?("In Her Own Right")
-            identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+          relation_text.each do |text|
+            if relation_node.text.include?(text)
+              identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+            end
           end
         end
       end
