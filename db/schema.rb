@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170524184235) do
+ActiveRecord::Schema.define(version: 20170616182213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,13 @@ ActiveRecord::Schema.define(version: 20170524184235) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "dc_terms_is_part_ofs", force: :cascade do |t|
+    t.integer  "record_id"
+    t.string   "is_part_of"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "dc_terms_spacials", force: :cascade do |t|
     t.integer  "record_id"
     t.string   "spacial"
@@ -147,6 +154,13 @@ ActiveRecord::Schema.define(version: 20170524184235) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "full_texts", force: :cascade do |t|
+    t.integer  "record_id"
+    t.text     "transcription"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
   create_table "raw_records", force: :cascade do |t|
     t.integer  "repository_id"
     t.string   "original_record_url"
@@ -156,6 +170,7 @@ ActiveRecord::Schema.define(version: 20170524184235) do
     t.text     "xml_metadata"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+    t.string   "record_type"
   end
 
   create_table "record_dc_creator_tables", force: :cascade do |t|
@@ -176,6 +191,7 @@ ActiveRecord::Schema.define(version: 20170524184235) do
     t.string   "is_part_of"
     t.string   "file_name"
     t.string   "thumbnail"
+    t.integer  "collection_id"
   end
 
   create_table "repositories", force: :cascade do |t|
