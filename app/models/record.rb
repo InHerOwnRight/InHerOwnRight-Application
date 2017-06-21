@@ -21,6 +21,17 @@ class Record < ActiveRecord::Base
   has_many :dc_titles, dependent: :destroy
   has_many :dc_terms_extents, dependent: :destroy
   has_many :dc_terms_spacials, dependent: :destroy
+  has_many :full_texts, dependent: :destroy
+  has_many :dc_terms_is_part_ofs, dependent: :destroy
+
+  # scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name).first }
+  scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
+  scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
+  scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
+
+  def is_collection?
+    raw_record.record_type == "collection"
+  end
 
   def repository_id
     repository.id
@@ -157,6 +168,17 @@ class Record < ActiveRecord::Base
     dc_terms_spacial.save
   end
 
+  def create_dc_terms_is_part_of(node, record)
+    dc_terms_ipo = DcTermsIsPartOf.new(is_part_of: node.text)
+    dc_terms_ipo.record_id = record.id
+    dc_terms_ipo.save
+  end
+
+  def create_full_text(node, record)
+    full_text = FullText.new(transcription: node.text)
+    full_text.record_id = record.id
+    full_text.save
+  end
 
   def actual_model_name(node_name)
     if node_name == "rights"
@@ -189,8 +211,16 @@ class Record < ActiveRecord::Base
         create_dc_terms_extent(node, record)
       end
 
-      if node_name == "spacial "
+      if node_name == "spacial"
         create_dc_terms_spacial(node, record)
+      end
+
+      if node_name == "isPartOf"
+        create_dc_terms_is_part_of(node, record)
+      end
+
+      if node_name == "text"
+        create_full_text(node, record)
       end
 
       if node_name == "license"
@@ -199,7 +229,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial', 'dc_text', 'dc_isPartOf']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id
