@@ -4,6 +4,8 @@ namespace :setup do
     Rake::Task['db:migrate'].invoke
     Rake::Task['create_repositories:all'].invoke
     Rake::Task['import_metadata:all'].invoke
-    Rake::Task['create_records:from_raw_records'].invoke
+    Rake::Task['create_records:all'].invoke
+    Rake::Task['import_images:all'].invoke
+    Rake::Task['sunspot:reindex'].invoke
   end
 end
