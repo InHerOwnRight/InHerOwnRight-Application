@@ -127,39 +127,38 @@ namespace :import_metadata do
         "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
     }
     CSV.foreach('lib/documents/csv/collections.csv', headers: true) do |row|
-      if RawRecord.find_by_oai_identifier(row[4]).nil?
-        repository = Repository.find_by_name(row[0])
-        raw_record = RawRecord.new
-        raw_record.record_type = "collection"
-        raw_record.repository_id = repository.id
-        raw_record.original_record_url = row[7]
-        raw_record.oai_identifier = row[7]
-        builder = Nokogiri::XML::Builder.new { |xml|
-          xml.metadata {
-            xml.contributing_repository row[0]
-            xml['oai_qdc'].qualifieddc(name_spaces) do
-              xml['dc'].title row[1]
-              xml['dc'].creator row[2]
-              xml['dc'].date row[3]
-              xml['dc'].identifier row[4]
-              xml['dc'].coverage row[5]
-              xml['dc'].extent row[6]
-              if !row[7].blank?
-                xml['dc'].identifier row[7]
-              end
-              if row[8].split(":").first == "http" || row[8].split(":").first == "https"
-                xml['dc'].identifier row[8]
-              else
-                xml['dc'].hasFormat row[8]
-              end
-              xml['dc'].description row[9]
-              xml['dc'].description row[10]
+      repository = Repository.find_by_name(row[0])
+      raw_record = RawRecord.new
+      raw_record.record_type = "collection"
+      raw_record.repository_id = repository.id
+      raw_record.original_record_url = row[7]
+      raw_record.oai_identifier = row[7]
+      builder = Nokogiri::XML::Builder.new { |xml|
+        xml.metadata {
+          xml.contributing_repository row[0]
+          xml['oai_qdc'].qualifieddc(name_spaces) do
+            xml['dc'].title row[1]
+            xml['dc'].creator row[2]
+            xml['dc'].date row[3]
+            xml['dc'].identifier row[4]
+            xml['dc'].coverage row[5]
+            xml['dc'].extent row[6]
+            if !row[7].blank?
+              xml['dc'].identifier row[7]
             end
-          }
+            if row[8].split(":").first == "http" || row[8].split(":").first == "https"
+              xml['dc'].identifier row[8]
+            else
+              xml['dc'].hasFormat row[8]
+            end
+            xml['dc'].description row[9]
+            xml['dc'].description row[10]
+            xml['dc'].description row[11]
+          end
         }
-        raw_record.xml_metadata = builder.to_xml
-        raw_record.save
-      end
+      }
+      raw_record.xml_metadata = builder.to_xml
+      raw_record.save
     end
   end
 
