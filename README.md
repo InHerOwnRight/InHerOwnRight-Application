@@ -30,6 +30,11 @@ It should then be possible to setup and run the Rails app in a separate terminal
 
     bundle install
     rails db:setup
+    rails db:migrate
+
+Then import the data / set up the project:
+
+    rails setup:project
 
 ## Other Environments Setup
 
