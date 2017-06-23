@@ -18,35 +18,10 @@
 
 NOTE about database.yml: You'll need to copy the database and username parameters from production to the development and test environments to develop using the full docker stack
 
-## Development Environment Setup
+## Set up the project
 
-As of spring 2017, Docker on OSX runs a Linux VM to host containers. This extra layer
-causes the Rails app run very slowly. For a quicker development environment on Mac, run:
-
-    docker-compose build
-    docker-compose -f docker-compose-dev.yml up
-
-It should then be possible to setup and run the Rails app in a separate terminal:
-
-    bundle install
-    rails db:setup
-    rails db:migrate
-
-Then import the data / set up the project:
-
-    rails setup:project
-
-## Other Environments Setup
-
-After installing prerequisites and cloning the repository, you should be able to
-run the application using docker-compose:
-
-    docker-compose build
-    docker-compose up
-
-In a different terminal window run:
-
-    docker-compose run app rails db:setup
+    rake db:migrate
+    rake setup:project
 
 ### Additional Useful Commands
 
