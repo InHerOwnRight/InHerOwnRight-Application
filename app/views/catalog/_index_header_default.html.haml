@@ -1,0 +1,30 @@
+- classname, id = document.id.split(' ')
+- klass = classname.constantize
+- instance = klass.find(id.to_i)
+- instance = instance.record if instance.respond_to?(:record)
+
+= # header bar for doc items in index view
+.documentHeader.row
+  = # main title container for doc partial view
+  = # How many bootstrap columns need to be reserved
+  = # for bookmarks control depends on size.
+
+  - document_actions = capture do
+    = # bookmark functions for items/docs
+    = render_index_doc_actions document, wrapping_class: "index-document-functions col-sm-3 col-lg-2"
+
+  - if instance.thumbnail
+    %a{ href: "#{record_path(instance.id)}", style: 'float:left;'}
+      = image_tag(instance.thumbnail)
+
+  %h3.index_title.document-title-heading.col-sm-9.col-lg-10
+    - if counter = document_counter_with_offset(document_counter)
+      %span.document-counter
+        = t('blacklight.search.documents.counter', counter: counter)
+
+    = link_to instance.dc_titles.first.title, record_path(instance)
+    - if instance.is_collection?
+      %h5.col-sm-4
+        Collection of In Her Own Right Records
+
+  = document_actions
