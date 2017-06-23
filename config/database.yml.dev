@@ -1,0 +1,13 @@
+development:
+  encoding: unicode
+  adapter: postgresql
+  database: pacscl_development
+  pool: 5
+  min_messages: WARNING
+
+test:
+  encoding: unicode
+  adapter: postgresql
+  database: pacscl_test
+  pool: 5
+  min_messages: WARNING
