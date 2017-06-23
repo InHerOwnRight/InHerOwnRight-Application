@@ -27,6 +27,7 @@ class Record < ActiveRecord::Base
   # scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name).first }
   scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
   scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
+  scope :not_collections, -> { joins(:raw_record).where(raw_records: {record_type: nil}) }
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
 
   def is_collection?
@@ -180,6 +181,18 @@ class Record < ActiveRecord::Base
     full_text.save
   end
 
+  def create_dc_identifier(node, record)
+    if node.text =~ /;$/
+      dc_identifier = DcIdentifier.new(identifier: node.text.split(";").first)
+    elsif node.text =~ /^\s/
+      dc_identifier = DcIdentifier.new(identifier: node.text.split(" ").last)
+    else
+      dc_identifier = DcIdentifier.new(identifier: node.text)
+    end
+    dc_identifier.record_id = record.id
+    dc_identifier.save
+  end
+
   def actual_model_name(node_name)
     if node_name == "rights"
       @part_model_name = "dc_right"
@@ -197,6 +210,10 @@ class Record < ActiveRecord::Base
 
       if node_name == "creator"
         create_dc_creator(node, record)
+      end
+
+      if node_name == "identifier"
+        create_dc_identifier(node, record)
       end
 
       if node_name == "type"
@@ -229,7 +246,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial', 'dc_text', 'dc_isPartOf']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial', 'dc_text', 'dc_isPartOf', 'dc_identifier']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id
