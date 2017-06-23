@@ -133,21 +133,25 @@ namespace :import_images do
   end
 
   task temple: :environment do
+    missing_records = []
     Dir.glob("#{Rails.root}/public/images/Temple/*.png") do |file_path|
       actual_file_name = file_path.split("/").last.split("_").first
       current_identifier = file_path.split("/").last.split("_").first.split("Y").first
       file_size = file_path.split("_").last.split(".").first
       relative_path = "/images/Temple/#{actual_file_name}_#{file_size}.png"
-      record = DcIdentifier.find_by_identifier(current_identifier).record
-      if file_size == "lg"
-        record.file_name = relative_path
+      if !DcIdentifier.find_by_identifier(current_identifier).nil?
+        record = DcIdentifier.find_by_identifier(current_identifier).record
+        if file_size == "lg"
+          record.file_name = relative_path
+        else
+          record.thumbnail = relative_path
+        end
+        record.save
       else
-        record.thumbnail = relative_path
-      end
-      if record.save
-        puts "Saving #{record.oai_identifier}"
+        missing_records.push(file_path)
       end
     end
+    puts missing_records
   end
 
   require 'fileutils'
