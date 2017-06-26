@@ -45,4 +45,12 @@
         = render 'dc_rights'
 
       - if @record.file_name
-        = render 'image_sample'
+        %tr
+          %th{ scope: "row" }
+            Sample image
+          %td
+            - if @record.dc_identifiers.map{|id| id.identifier_is_url? }.any?
+              %a{ href: "#{@record.dc_identifiers.find{|id| id.identifier_is_url? }.identifier}", target: "_blank"}
+                = image_tag(@record.file_name)
+            - else
+              = image_tag(@record.file_name)
