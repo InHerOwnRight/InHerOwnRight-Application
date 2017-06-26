@@ -189,13 +189,13 @@ namespace :import_metadata do
               xml['dc'].type row[7]
               xml['dc'].language row[8]
               xml['dcterms'].extent row[9]
-              if row[10] =~ /\\|/
-                subjects = row[10].split("|")
+              if row[10] =~ /\;/
+                subjects = row[10].split("; ")
                 subjects.each do |subj|
                   xml['dc'].subject subj
                 end
-              elsif row[10] =~ /;/
-                subjects = row[10].split(";")
+              elsif row[10] =~ /\\|/
+                subjects = row[10].split("|")
                 subjects.each do |subj|
                   xml['dc'].subject subj
                 end

@@ -26,7 +26,7 @@ class Record < ActiveRecord::Base
 
   # scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name).first }
   scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
-  scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
+  # scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
   scope :not_collections, -> { joins(:raw_record).where(raw_records: {record_type: nil}) }
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
 
@@ -36,6 +36,14 @@ class Record < ActiveRecord::Base
 
   def repository_id
     repository.id
+  end
+
+  def is_collection_id
+    if is_collection?
+      id
+    else
+      nil
+    end
   end
 
   searchable do
@@ -103,6 +111,14 @@ class Record < ActiveRecord::Base
       dc_types.map(&:type)
     end
   end #searchable
+
+  searchable :if => proc { |record| !record.collection_id.nil? } do
+    integer :collection_id, references: Record, multiple: true
+  end
+
+  searchable :if => proc { |record| record.is_collection? } do
+    integer :is_collection_id, references: Record
+  end
 
   def create_dc_creator(node, record)
     if DcCreator.find_by_creator(node.text).blank?
