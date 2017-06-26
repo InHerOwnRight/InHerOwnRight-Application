@@ -26,7 +26,7 @@
               - Dir["app/views/pages/essays/*"].each do |file|
                 %li
                   - page_id = file.split("/").last.split('.').first
-                  = link_to "#{page_id}", page_path("essays/#{page_id}")
+                  = link_to titleize_dashes("#{page_id}"), page_path("essays/#{page_id}")
 
           %li.dropdown
             %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
