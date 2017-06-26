@@ -1,41 +1,47 @@
-### Breaking new ground on race and class
-
+<p class="lead">Nineteenth-century activism: Breaking new ground on race and class</p>
+<p style="text-align:right; color:#696969">- essay by Christina Larocco, PhD.</p>
+<br/>
 In the years between 1820 and 1920, women were as divided as they were united in their pursuit of expanded roles for themselves, with elite white women often pursuing their own rights at the expense of other groups. Many studies of women’s activism focus on nineteenth-century Quaker activists, particularly their participation in benevolent reform and abolitionism, and, to a lesser extent, women whose activist careers came to fruition in the years just before World War I, including those active in the final years of the suffrage movement, peace activism, public health, and professionalization.
 
 The materials here reframe the history of the women’s rights movement as a series of dialogues between and among different groups of women. They help to identify those moments in which different groups of women talked to each other, capturing both the conflicts and the genuine moments of cultural exchange that resulted.
 
-Forced to confront their ideas about race, class, and womanhood, women activists were able to sharpen their agenda and move it forward. Explore documents in the exhibits or in the full essay, below.
+Forced to confront their ideas about race, class, and womanhood, women activists were able to sharpen their agenda and move it forward.
 
-<div align="center"><h3>Exhibits</h3></div>
+<i>Explore documents linked in the exhibits or read the full essay, below.</i>
+
+<div style="text-align:center; color:#696969"><h4>Exhibits</h4></div>
 <hr style="border-top: 1px solid #CCCCCC; width: 6.0"><hr />
 <div class="row">
   <div class="col-md-4">
-      <h4 style="text-align:center">Work &amp; Friendship Across Racial Lines</h4>
+      <h4 style="text-align:center; color:#696969">Work &amp; Friendship Across Racial Lines</h4>
    <br/><br/>
     <figure class="figure" style="text-align:center">
     <a href="/exhibit01.md"><img src="/static_images/mott_swarthmore_crop.jpg"></a>
+    <br/><br/>
     <figcaption class="figure-caption text-left">
       Examine nineteenth-century black and white women’s attempts to form organizations and friendships across racial lines, especially in the abolitionist movement, including documents produced by the Philadelphia Female Anti-Slavery Society, white Quaker abolitionist Lucretia Mott, African American abolitionist and educator Sarah Mapps Douglass, and various members of Philadelphia’s free black elite.</figcaption>
       </figure>
       <br/>
   </div>
   <div class="col-md-4">
-    <h4 style="text-align:center">Philanthropy or self-determination?</h4>
+    <h4 style="text-align:center; color:#696969">Philanthropy or self-determination?</h4>
     <br/><br/>
     <figure class="figure" style="text-align:center">
     <a href="/exhibit02.md"><img src="/static_images/AMANUZ201504000145Y1017_17_crop.jpg"></a>
+    <br/><br/>
     <figcaption class="figure-caption text-left">
       Explore various ways women activists came to terms with the growth of cities, an influx of immigrants, and the expansion of wage work in the late 1800s and early 1900s. </figcaption>
       </figure>
       <br/>
   </div>
   <div class="col-md-4">
-    <h4 style="text-align:center">
+    <h4 style="text-align:center; color:#696969">
      Medical Women Confront Race, Professionalism, and Respectability
     </h4>
     <br/>
     <figure class="figure" style="text-align:center">
     <a href="/exhibit03.md"><img src="/static_images/drexel_longshore_crop.jpg"></a>
+    <br/><br/>
     <figcaption class="figure-caption text-left">
       Medical women who constructed identities for themselves as knowledgeable professionals were often elite white women. Consider how different groups of women used ideas such as efficiency and respectability to advance their careers and, in the case of African American women, their race. </figcaption>
       </figure>
@@ -43,6 +49,7 @@ Forced to confront their ideas about race, class, and womanhood, women activists
   </div>
 </div>
 <hr style="border-top: 1px solid #CCCCCC; width: 6.0"><hr />
+<h4 style="color:#696969">Essay continued: Breaking new ground on race and class</h4><br/>
 **Women’s nineteenth-century activism was born in many ways from the recognition of difference and a desire to work across such differences.** Crusades against poverty, drink, the poor treatment of prison inmates, and prostitution emerged from a genuine reforming spirit, and there is some evidence that women were able to work together across certain differences. Rebecca Gratz, a philanthropist and reformer from a prominent Jewish family, was involved in the predominantly Quaker Female Association for the Relief of Women and Children in Reduced Circumstances. Yet, these efforts were also highly coercive. Relief efforts distinguished the “worthy” from the “unworthy” poor, establishing a pattern that lasted well into the twentieth century. Often this meant widows—not single or divorced women—but only “real” widows, in the words of one group. Many groups either would not help African American women or relied on a more stringent rubric for determining their “worthiness.” Poverty and other circumstances, including imprisonment, were usually attributed to individual rather than structural causes. Addressing a group of inmates, Quaker Rebecca Singer Collins insisted to her audience that they were in prison because they were sinners. The experiences of the women to whom these reformers ministered are more difficult to capture; they appear largely as shadows in the extant sources. Women described as uncooperative, stubborn, resistant, or difficult were exercising their agency in one of the few ways they could.
 
 

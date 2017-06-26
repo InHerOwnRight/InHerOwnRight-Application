@@ -24,7 +24,7 @@ class CatalogController < ApplicationController
   helper_method :render_collection_name
 
   def titleize_dashes(title)
-    title.gsub('-', ' ').titleize
+    title.gsub('_', ' ').titleize
   end
   helper_method :titleize_dashes
 
