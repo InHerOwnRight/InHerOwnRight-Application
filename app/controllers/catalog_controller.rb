@@ -23,11 +23,6 @@ class CatalogController < ApplicationController
   end
   helper_method :render_collection_name
 
-  def titleize_dashes(title)
-    title.gsub('_', ' ').titleize
-  end
-  helper_method :titleize_dashes
-
   configure_blacklight do |config|
     ## Class for sending and receiving requests from a search index
     # config.repository_class = Blacklight::Solr::Repository
