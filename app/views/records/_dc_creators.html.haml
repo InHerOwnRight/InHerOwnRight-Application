@@ -1,0 +1,7 @@
+- @record.dc_creators.each do |dc_creator|
+  - if !dc_creator.creator.blank?
+    %tr
+      %th{ scope: "row" }
+        Creator
+      %td
+        = link_to dc_creator.creator, search_catalog_path( search_field: "creator", q: @record.dc_creators.first.creator )

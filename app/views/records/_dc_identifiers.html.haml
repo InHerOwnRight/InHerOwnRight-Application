@@ -1,0 +1,7 @@
+- @record.dc_identifiers.each do |dc_identifier|
+  - if dc_identifier.identifier_is_url?
+    %tr
+      %th{ scope: "row" }
+        View full item
+      %td
+        = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"

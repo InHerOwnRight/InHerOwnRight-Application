@@ -1,0 +1,17 @@
+- if @record.dc_dates.count > 1
+  %tr
+    %th{ scope: "row" }
+      Date range
+    %td
+      = display_date_range(@record)
+- else
+  - @record.dc_dates.each do |dc_date|
+    %tr
+      %th{ scope: "row" }
+        Date created
+        - if !dc_date.unprocessed_date.nil?
+          %td
+            = dc_date.unprocessed_date
+        - else
+          %td
+            = dc_date.date.strftime("%m-%d-%Y")

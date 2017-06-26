@@ -4,127 +4,45 @@
   %thead
     %tr
   %thead
-  %tbody
-    - if @record.dc_dates.count > 1
-      %tr
-        %th{ scope: "row" }
-          Date range
-        %td
-          = display_date_range(@record)
-    - else
-      - @record.dc_dates.each do |dc_date|
-        %tr
-          %th{ scope: "row" }
-            Date created
-          - if dc_date.date.nil?
-            %td
-              = dc_date.unprocessed_date
-          - else
-            %td
-              = dc_date.date.strftime("%m-%d-%Y")
+    %tbody
+      - if @record.dc_dates.any?
+        = render 'dc_dates'
 
-    - @record.dc_creators.each do |dc_creator|
-      %tr
-        %th{ scope: "row" }
-          Creator
-        %td
-          = link_to dc_creator.creator, search_catalog_path( search_field: "creator", q: @record.dc_creators.first.creator )
+      - if @record.dc_creators.any?
+        = render 'dc_creators'
 
-    - @record.dc_contributors.each do |dc_contributor|
-      %tr
-        %th{ scope: "row" }
-          Creator
-        %td
-          = dc_contributor.contributor
+      - if @record.dc_contributors.any?
+        = render 'dc_contributor'
 
-    - @record.dc_publishers.each do |dc_publisher|
-      %tr
-        %th{ scope: "row" }
-          Publisher
-        %td
-          = dc_publisher.publisher
+      - if @record.dc_publishers.any?
+        = render 'dc_publishers'
 
-    - @record.dc_descriptions.each do |dc_description|
-      %tr
-        %th{ scope: "row" }
-          Description
-        %td
-          = dc_description.description
+      - if @record.dc_descriptions.any?
+        = render 'dc_descriptions'
 
-    - @record.dc_terms_extents.each do |dc_term_extent|
-      %tr
-        %th{ scope: "row" }
-          Extent / Size of item
-        %td
-          = dc_term_extent.extent
+      - if @record.dc_terms_extents.any?
+        = render 'dc_terms_extents'
 
-    - @record.dc_types.each do |dc_type|
-      %tr
-        %th{ scope: "row" }
-          Type
-        %td
-          = dc_type.type
+      - if @record.dc_types.any?
+        = render 'dc_types'
 
-    - @record.dc_subjects.each do |dc_subject|
-      %tr
-        %th{ scope: "row" }
-          Subject
-        %td
-          = dc_subject.subject
+      - if @record.dc_subjects.any?
+        = render 'dc_subjects'
 
-    %tr
-      %th{ scope: "row" }
-        Archival collection
-      %td
+      - if @record.dc_terms_spacials.any?
+        = render 'dc_terms_spacials'
 
-    - @record.dc_terms_spacials.each do |dc_terms_spacial|
-      %tr
-        %th{ scope: "row" }
-          Location
-        %td
-          = dc_terms_spacial.spacial
+      - if @record.dc_languages.any?
+        = render 'dc_languages'
 
-    - @record.dc_languages.each do |dc_language|
-      %tr
-        %th{ scope: "row" }
-          Language
-        %td
-          = dc_language.language
+      - if @record.dc_identifiers.any?
+        = render 'dc_identifiers'
 
-    - @record.dc_identifiers.each do |dc_identifier|
-      %tr
-        - if dc_identifier.identifier_is_url?
-          %th{ scope: "row" }
-            View full item
-          %td
-            = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
-        - else
-          %th{ scope: "row" }
-            Identifier
-          %td
-            = dc_identifier.identifier
+      - if !@record.repository_id.blank?
+        = render 'repository'
 
-    %tr
-      %th{ scope: "row" }
-        Contributing institution
-      %td
-        = @record.repository.name
+      - if @record.dc_rights.any?
+        = render 'dc_rights'
 
-    - @record.dc_rights.each do |dc_right|
-      %tr
-        %th{ scope: "row" }
-          Rights
-        %td
-          = dc_right.rights
-    - if @record.file_name
-      %tr
-        %th{ scope: "row" }
-          Sample image
-        %td
-          - if @record.dc_identifiers.map{|id| id.identifier_is_url? }.any?
-            %a{ href: "#{@record.dc_identifiers.find{|id| id.identifier_is_url? }.identifier}", target: "_blank"}
-              = image_tag(@record.file_name)
-          - else
-            = image_tag(@record.file_name)
-
-
+      - if @record.file_name
+        = render 'image_sample'

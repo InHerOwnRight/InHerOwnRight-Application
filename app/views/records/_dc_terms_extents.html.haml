@@ -1,0 +1,6 @@
+- @record.dc_terms_extents.each do |dc_term_extent|
+  %tr
+    %th{ scope: "row" }
+      Extent / Size of item
+    %td
+      = dc_term_extent.extent

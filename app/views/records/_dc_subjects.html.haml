@@ -1,0 +1,16 @@
+- if @record.dc_subjects.count > 1
+  %tr
+    %th{ scope: "row" }
+      Subjects
+    %td
+      - @record.dc_subjects.each do |dc_subject|
+        = link_to dc_subject.subject, search_catalog_path( search_field: 'subject', q: @record.dc_subjects.first.subject )
+        = "<span>|</span>".html_safe unless dc_subject.last
+
+- else
+  %tr
+    %th{ scope: "row" }
+      Subject
+    %td
+      - @record.dc_subjects.each do |dc_subject|
+        = link_to dc_subject.subject, search_catalog_path( search_field: 'subject', q: @record.dc_subjects.first.subject )

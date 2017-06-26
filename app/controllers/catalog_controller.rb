@@ -18,6 +18,11 @@ class CatalogController < ApplicationController
   end
   helper_method :render_repository_name
 
+  def render_collection_name value
+    value = Record.find(value).dc_titles.first.title
+  end
+  helper_method :render_collection_name
+
   configure_blacklight do |config|
     ## Class for sending and receiving requests from a search index
     # config.repository_class = Blacklight::Solr::Repository
@@ -106,6 +111,10 @@ class CatalogController < ApplicationController
     # config.add_facet_field 'creator_s', label: 'Creator'
     config.add_facet_field 'dc_creator_ids_im', label: "Creator / Author", helper_method: :render_contributor_name
     config.add_facet_field 'repository_id_i', label: "Repository", helper_method: :render_repository_name
+
+    config.add_facet_field 'collection_id_im', label: "Facet By Collection", helper_method: :render_collection_name
+
+    config.add_facet_field 'is_collection_id_i', label: "Collections", helper_method: :render_collection_name
 
     config.add_facet_field 'date_', label: "Date Range", query: {
       years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
