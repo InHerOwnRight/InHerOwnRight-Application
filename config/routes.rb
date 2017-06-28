@@ -26,5 +26,8 @@ Rails.application.routes.draw do
   mount Blacklight::Engine => '/'
   resource :home, only: [:index], as: 'home', path: '/', controller: 'home'
   root to: "home#index"
+
+  resources :oai, only: [:index], controller: 'pacscl_oai'
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
