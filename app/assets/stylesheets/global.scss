@@ -1,18 +1,43 @@
 #header-navbar {
-    background-color: #DDDDDD;
-    height: 80px;
+    background-color: #2b4562;
+    height: 100px;
 }
 
 #header-navbar {
   .navbar-brand {  /* The main logo image for the Blacklight instance */
-    height: 75px;
-    background:transparent image_url('logo_sm.png') no-repeat top left;
-    display: inline-block;
-    text-indent: 100%;
-    white-space: nowrap;
+    height: 85px;
+    background:transparent image_url("logo_sm_lite.png") no-repeat top 5px left 2px;
+    width: 95px;
+    padding-right: 6em;
+    margin-left: 1em;
+  }
 
-    padding-right:0;
-    margin-right:20px;
-    padding-left: 0;
+  #header-text-wrapper {
+    border-bottom: solid 2px #fff;
+    height: 87px;
+  }
+
+  #main-header-text {
+    font-family: 'Helvetica Neue', sans-serif;
+    letter-spacing: 0.15em;
+    color: #fff;
+    line-height: 0.5em;
+    font-weight: lighter;
+    font-size: 2.84em;
+  }
+
+  #main-header-subtitle {
+    font-family: "Garamond", "Times New Roman", "Times", serif;
+    color: #bdbdbd;
+    line-height: 0.5em;
+    letter-spacing: 0.015em;
+    font-size: 1.4em;
+  }
+   #navigation-container {
+    padding-top: 25px;
+  }
+
+  #navigation-container a:hover{
+    color: #2b4562;
   }
 }
