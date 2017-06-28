@@ -154,10 +154,12 @@ class Record < ActiveRecord::Base
     if node.text =~ /^\d{4}\-\d{4}$/
       date_range_points = node.text.split("-")
       year_range = date_range_points[0].to_i..date_range_points[1].to_i
-      year_range.each do |year|
+      year_range.each_with_index do |year, index|
+        year + index
         date = date = Date.new(year)
         dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: node.text)
         dc_date.save
+        index += 1
       end
     elsif node.text =~ /^\d{4}$/
       date = Date.new(node.text.to_i)
