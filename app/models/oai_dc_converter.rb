@@ -18,11 +18,7 @@ class OaiDcConverter
 
   def dates
     if !doc.dc_dates.blank?
-      if doc.dc_dates.map(&:unprocessed_date).any? =~ /^\d{4}\-\d{4}$/
-        [doc.dc_dates.first.unprocessed_date]
-      else
-        doc.dc_dates.map(&:unprocessed_date)
-      end
+      doc.dc_dates.map(&:unprocessed_date).uniq
     else
       []
     end
