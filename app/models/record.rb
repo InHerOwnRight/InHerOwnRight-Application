@@ -110,7 +110,7 @@ class Record < ActiveRecord::Base
     text :type do
       dc_types.map(&:type)
     end
-  end #searchable
+  end
 
   searchable :if => proc { |record| !record.collection_id.nil? } do
     integer :collection_id, references: Record, multiple: true
@@ -118,7 +118,9 @@ class Record < ActiveRecord::Base
 
   searchable :if => proc { |record| record.is_collection? } do
     integer :is_collection_id, references: Record
-  end
+  end #searchable
+
+########################## Record and record part creation ################################
 
   def create_dc_creator(node, record)
     if DcCreator.find_by_creator(node.text).blank?
