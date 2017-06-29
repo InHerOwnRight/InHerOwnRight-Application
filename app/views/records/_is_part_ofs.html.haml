@@ -1,0 +1,6 @@
+- @record.dc_terms_is_part_ofs.each do |dc_terms_is_part_of|
+  %tr
+    %th{ scope: "row" }
+      Archival collection (physical)
+    %td
+      = dc_terms_is_part_of.is_part_of

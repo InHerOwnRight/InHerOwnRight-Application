@@ -37,7 +37,7 @@
       - if @record.dc_types.any?
         = render 'dc_types'
 
-      - if @record.dc_subjects.any?
+      - if @record.dc_subjects.any? && !@record.is_collection?
         = render 'dc_subjects'
 
       - if @record.dc_terms_spacials.any?
@@ -46,11 +46,14 @@
       - if @record.is_collection? && !@collection_repository_url.nil?
         = render 'collection_home_repo_link'
 
-      - if @record.dc_languages.any?
+      - if @record.dc_languages.any? && !@record.is_collection?
         = render 'dc_languages'
 
       - if @record.dc_identifiers.any?
         = render 'dc_identifiers'
+
+      - if @record.is_collection? && @record.dc_terms_is_part_ofs.any?
+        = render 'is_part_ofs'
 
       - if !@record.repository_id.blank?
         = render 'repository'
