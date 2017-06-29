@@ -24,7 +24,11 @@
 
     = link_to instance.dc_titles.first.title, record_path(instance)
     - if instance.is_collection?
-      %h5.col-sm-4
-        Collection of In Her Own Right Records
+      %h5.col-sm-12
+        = "Learn more about the #{instance.dc_titles.first.title}"
+      %h5.col-sm-12
+        = link_to "View more items by #{instance.dc_creators.first.creator}", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
+      - if Record.records_for_collection(instance.id).any?
+        %h5.col-sm-12
+          = link_to "View items from the #{instance.dc_titles.first.title}", search_catalog_path( f: {"collection_id_im" => [instance.id]} )
 
-  = document_actions

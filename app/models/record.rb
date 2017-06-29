@@ -46,6 +46,19 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def collection_repository_url
+    if dc_identifiers.map{ |id| id.identifier_is_url? }.any?
+      dc_identifiers.map do |id|
+        if id.identifier_is_url?
+          return id.identifier
+          break
+        end
+      end
+    else
+      nil
+    end
+  end
+
   searchable do
     text :oai_identifier
 

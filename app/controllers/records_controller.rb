@@ -1,7 +1,13 @@
 class RecordsController < ApplicationController
 
+
   def show
     @record = Record.find(params[:id])
+
+    if @record.is_collection?
+      @collection_repository_url = @record.collection_repository_url
+    end
+
   end
 
   def display_date_range(record)

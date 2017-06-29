@@ -43,6 +43,9 @@
       - if @record.dc_terms_spacials.any?
         = render 'dc_terms_spacials'
 
+      - if @record.is_collection? && !@collection_repository_url.nil?
+        = render 'collection_home_repo_link'
+
       - if @record.dc_languages.any?
         = render 'dc_languages'
 
