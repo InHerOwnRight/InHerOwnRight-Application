@@ -8,6 +8,8 @@ class Record < ActiveRecord::Base
   has_many :dc_creators, through: :record_dc_creator_tables
   has_many :record_dc_type_tables, dependent: :destroy
   has_many :dc_types, through: :record_dc_type_tables
+  has_many :record_dc_subject_tables, dependent: :destroy
+  has_many :dc_subjects, through: :record_dc_subject_tables
   has_many :dc_dates, dependent: :destroy
   has_many :dc_descriptions, dependent: :destroy
   has_many :dc_formats, dependent: :destroy
@@ -17,7 +19,6 @@ class Record < ActiveRecord::Base
   has_many :dc_relations, dependent: :destroy
   has_many :dc_rights, dependent: :destroy
   has_many :dc_sources, dependent: :destroy
-  has_many :dc_subjects, dependent: :destroy
   has_many :dc_titles, dependent: :destroy
   has_many :dc_terms_extents, dependent: :destroy
   has_many :dc_terms_spacials, dependent: :destroy
