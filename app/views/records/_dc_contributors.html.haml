@@ -3,4 +3,4 @@
     %th{ scope: "row" }
       Creator
       %td
-        = link_to dc_contributor.contributor, search_catalog_path( search_field: "contributor", q: @record.dc_contributor.first.contributor )
+        = link_to dc_contributor.contributor, search_catalog_path( search_field: "contributor", q: @record.dc_contributors.first.contributor )

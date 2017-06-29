@@ -4,4 +4,4 @@
       %th{ scope: "row" }
         Publisher
         %td
-          = link_to dc_publisher.publisher, search_catalog_path( search_field: "publisher", q: @record.dc_publisher.first.publisher )
+          = link_to dc_publisher.publisher, search_catalog_path( search_field: "publisher", q: @record.dc_publishers.first.publisher )

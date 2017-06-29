@@ -5,6 +5,17 @@
     %tr
   %thead
     %tbody
+      - if @record.file_name
+        %tr
+          %th{ scope: "row" }
+            Image
+          %td
+            - if @record.dc_identifiers.map{|id| id.identifier_is_url? }.any?
+              %a{ href: "#{@record.dc_identifiers.find{|id| id.identifier_is_url? }.identifier}", target: "_blank"}
+                = image_tag(@record.file_name)
+            - else
+              = image_tag(@record.file_name)
+
       - if @record.dc_dates.any?
         = render 'dc_dates'
 
@@ -12,7 +23,7 @@
         = render 'dc_creators'
 
       - if @record.dc_contributors.any?
-        = render 'dc_contributor'
+        = render 'dc_contributors'
 
       - if @record.dc_publishers.any?
         = render 'dc_publishers'
@@ -43,18 +54,6 @@
 
       - if @record.dc_rights.any?
         = render 'dc_rights'
-
-      - if @record.file_name
-        %tr
-          %th{ scope: "row" }
-            Sample image
-          %td
-            - if @record.dc_identifiers.map{|id| id.identifier_is_url? }.any?
-              %a{ href: "#{@record.dc_identifiers.find{|id| id.identifier_is_url? }.identifier}", target: "_blank"}
-                = image_tag(@record.file_name)
-            - else
-              = image_tag(@record.file_name)
-
 
       - if @record.is_collection? && Record.records_for_collection(@record.id)
         = render 'collection_records_link'
