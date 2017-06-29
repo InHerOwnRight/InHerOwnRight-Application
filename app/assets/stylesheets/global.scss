@@ -8,7 +8,7 @@
     height: 85px;
     background:transparent image_url("sm_light_logo.png") no-repeat top 5px left 2px;
     width: 95px;
-    padding-right: 6em;
+    padding-right: 0em;
     margin-left: 1em;
   }
 
@@ -53,6 +53,19 @@
     background-color: #edebe9;
     color: #2b4562;
   }
+}
+
+#search-container {
+  margin: 0 0 0 0;
+  padding: 0;
+}
+
+#navigation-container {
+  margin-top: 8px;
+}
+
+#search-navbar .search-query-form {
+  width: 100%;
 }
 
 .carousel-caption a {

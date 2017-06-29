@@ -8,9 +8,10 @@
             In Her Own Right
           %h3#main-header-subtitle
             Women asserting their civil rights, 1820–1920
-      #navigation-container.col-md-6
-        = render partial: 'shared/site_navigation'
 
-#search-navbar.navbar.navbar-default.navbar-static-top.col-md-12{role: "navigation"}
-  %div{class: "#{container_classes}"}
-    = render_search_bar
+#search-navbar.navbar.navbar-default.navbar-static-top.col-med-12{role: "navigation"}
+  %div.container
+    #search-container.col-sm-4
+      = render_search_bar
+    #navigation-container.col-md-8
+      = render partial: 'shared/site_navigation'
