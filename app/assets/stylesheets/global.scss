@@ -17,6 +17,10 @@
     height: 87px;
   }
 
+  #header-text-wrapper a:hover{
+    text-decoration: none;
+  }
+
   #main-header-text {
     font-family: 'Helvetica Neue', sans-serif;
     letter-spacing: 0.15em;
@@ -37,7 +41,16 @@
     padding-top: 25px;
   }
 
+  #navigation-container a {
+    color: #9d9d9d;
+  }
+
   #navigation-container a:hover{
+    color: #2b4562;
+  }
+
+  #navigation-container .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    background-color: #edebe9;
     color: #2b4562;
   }
 }
