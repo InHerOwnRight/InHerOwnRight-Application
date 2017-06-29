@@ -24,11 +24,11 @@ class Record < ActiveRecord::Base
   has_many :full_texts, dependent: :destroy
   has_many :dc_terms_is_part_ofs, dependent: :destroy
 
-  # scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name).first }
   scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
-  # scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
+  scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
   scope :not_collections, -> { joins(:raw_record).where(raw_records: {record_type: nil}) }
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
+  scope :records_for_collection, -> (record_id) { where(collection_id: record_id) }
 
   def is_collection?
     raw_record.record_type == "collection"

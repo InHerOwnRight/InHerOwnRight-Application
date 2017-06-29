@@ -10,17 +10,16 @@
 
         %li.dropdown
           %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
-            Collection Guides
+            Collections
             %span.caret
           %ul.dropdown-menu
-            - Dir["app/views/pages/collection_guides/*"].each do |file|
+            - collection_records.each do | collection |
               %li
-                - page_id = file.split("/").last.split('.').first
-                = link_to "#{page_id}", page_path("collection_guides/#{page_id}")
+                = link_to collection.dc_titles.first.title, record_path(collection.id)
 
         %li.dropdown
           %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
-            Essays
+            Essays and Exibits
             %span.caret
           %ul.dropdown-menu
             - Dir["app/views/pages/essays/*"].each do |file|

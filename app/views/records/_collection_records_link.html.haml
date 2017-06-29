@@ -1,0 +1,5 @@
+%tr
+  %th{ scope: "row" }
+    View Records in this Collection
+  %td
+    = link_to "Records in the #{@record.dc_titles.first.title} Collection", search_catalog_path( f: {"collection_id_im" => [@record.id]} )
