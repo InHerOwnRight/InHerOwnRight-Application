@@ -3,8 +3,10 @@
     %th{ scope: "row" }
       Subjects
     %td
-      - @record.dc_subjects.each do |dc_subject|
+      - @record.dc_subjects.each_with_index do |dc_subject, index|
         = link_to dc_subject.subject, search_catalog_path( search_field: 'subject', q: @record.dc_subjects.first.subject )
+
+        = "|" unless index == @record.dc_subjects.size - 1
 
 - else
   %tr
