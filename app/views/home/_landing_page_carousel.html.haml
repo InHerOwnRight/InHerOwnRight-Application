@@ -5,14 +5,28 @@
     %li{"data-slide-to" => "2", "data-target" => "#landingPageCarousel"}
   .carousel-inner{role: "listbox"}
     .item.active
-      %img.d-block.img-fluid{alt: "First slide", src: "/static_images/katzenstein_HSP13739_edit.jpg"}
+      %img.d-block.img-fluid{alt: "First slide", src: "/static_images/MDHR_MC78_F32_landing2.jpg"}
+      .carousel-caption.d-none.d-md-block{style: "left: -30%;"}
+        %p
+          %a{href: "/catalog?utf8=✓&search_field=all_fields&q=Student+Photo%2C+Mildred+Lillian+Ennis"}
+            Mildred Lillian Ennis, circa 1916
     .item
-      %img.d-block.img-fluid{alt: "Second slide", src: "/static_images/katzenstein_HSP13739_edit.jpg"}
+      %img.d-block.img-fluid{alt: "Second slide", src: "/static_images/MDHR_MC78_BX04_landing.jpg"}
+      .carousel-caption.d-none.d-md-block{style: "left: 50%;"}
+        %p
+          %a{href: "/catalog?utf8=%E2%9C%93&search_field=all_fields&q=Student+Photo%2C+Camilla+Alberta+Grant"}
+            Camilla Alberta Grant, circa 1918
     .item
       %img.d-block.img-fluid{alt: "Third slide", src: "/static_images/katzenstein_HSP13739_edit.jpg"}
+      .carousel-caption.d-none.d-md-block{style: "left: -30%;"}
+        %p
+          %a{href: "/catalog?utf8=✓&search_field=all_fields&q=Portraits+of+Caroline+Katzenstein"}
+            Caroline Katzenstein, 1911
   %a.carousel-control-prev{"data-slide" => "prev", href: "#landingPageCarousel", role: "button"}
-    %span.carousel-control-prev-icon{"aria-hidden" => "true"}
+    %span.carousel-control-prev-icon{"aria-hidden" => "false"}
     %span.sr-only Previous
   %a.carousel-control-next{"data-slide" => "next", href: "#landingPageCarousel", role: "button"}
-    %span.carousel-control-next-icon{"aria-hidden" => "true"}
+    %span.carousel-control-next-icon{"aria-hidden" => "false"}
     %span.sr-only Next
+
+
