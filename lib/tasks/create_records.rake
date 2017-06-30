@@ -1,7 +1,7 @@
 namespace :create_records do
   desc "Create records and Dublin Core parts from raw records"
 
-  task all: [:collections, :records] do
+  task all: [:collections, :records, :create_enhanced_data] do
   end
 
   task collections: :environment do
@@ -84,6 +84,49 @@ namespace :create_records do
         else
           puts "Record for #{raw_record.oai_identifier} not created. Duplicate?"
         end
+      end
+    end
+  end
+
+  task create_enhanced_data: :environment do
+    filepath = "lib/documents/csv/enhanced_metadata.csv"
+    CSV.foreach(filepath, headers: true) do |row|
+      if DcIdentifier.find_by_identifier(row[1])
+        record = DcIdentifier.find_by_identifier(row[1]).record
+
+        if !row[2].blank?
+          subjects = row[2].split("|")
+          subjects.each do |subj|
+            if DcSubject.find_by_subject(subj).blank?
+              dc_subject = DcSubject.new
+              dc_subject.subject = subj
+              dc_subject.save
+              record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
+              record_dc_subject.save
+            else
+              dc_subject = DcSubject.find_by_subject(subj)
+              record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
+              record_dc_subject.save
+            end
+          end
+        end
+
+        if !row[3].blank?
+          dc_terms_spacial = DcTermsSpacial.new
+          dc_terms_spacial.spacial = row[3]
+          dc_terms_spacial.record_id = record.id
+          dc_terms_spacial.save
+        end
+
+        if !row[4].blank?
+          full_text = FullText.new
+          full_text.transcription = row[4]
+          full_text.record_id = record.id
+          full_text.save
+        end
+
+      else
+        puts "Didn't find #{row[1]}!!!"
       end
     end
   end
