@@ -28,7 +28,7 @@
 <p>The pilot phase will be followed by ongoing digitization of relevant collections and additional development of the system for fluid aggregation and presentation.
 </p>
  <figure class="figure">
-      <img src="/static_images/NEH50.jpg" class="figure-img img-fluid rounded" alt="NEH 50 logo"></figure>
+      <img src="/static_images/neh_logo.png" class="figure-img img-fluid rounded" alt="NEH 50 logo"></figure>
   <p>The “In Her Own Right” project has been made possible in part by a Humanities Collections and Reference Resources Foundations Grant from the National Endowment for the Humanities: Celebrating 50 Years of Excellence.  Any views, findings, conclusions, or recommendations expressed in site do not necessarily represent those of the National Endowment for the Humanities.</p>
   
 </div>
@@ -79,7 +79,7 @@ Scott Ziegler, American Philosophical Society<br/>
 <div style="color: #696969"><a href="http://neomindlabs.com">Neomind Labs</a></div>
 
 <h5>Metadata Enhancement Contributors</h5>
-		<div style="color: #696969">Celia Caust-Ellenbogen<br/>
+<div style="color: #696969">Celia Caust-Ellenbogen<br/>
 Kristina DeVoe<br/>
 Anna Goslen<br/>
 Skylar Harris<br/>
@@ -96,5 +96,5 @@ Kaitlyn Pettengill<br/>
 Chelsea Reed<br/>
 Chloe Rotman<br/>
 </div>
-	</div>
+</div>
 </div> 
