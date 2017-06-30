@@ -264,6 +264,10 @@ class CatalogController < ApplicationController
       field.solr_parameters = { qf: 'subject_text'}
     end
 
+    config.add_search_field('type') do |field|
+      field.solr_parameters = { qf: 'type_text'}
+    end
+
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and
     # whether the sort is ascending or descending (it must be asc or desc
