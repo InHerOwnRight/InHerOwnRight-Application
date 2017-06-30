@@ -2,11 +2,21 @@
   .container-fluid
     .collapse.navbar-collapse
       %ul.nav.navbar-nav.col-md-12#site-nav-list
-        %li
-          = link_to "About", page_path("about/about")
 
         %li
-          = link_to "Search/Browse", page_path("catalog")
+          = link_to "Search", page_path("catalog")
+
+        %li.dropdown
+          %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
+            Essays & Exibits
+            %span.caret
+          %ul.dropdown-menu
+            - Dir["app/views/pages/essays/*"].each do |file|
+              %li
+                - page_id = file.split("/").last.split('.').first
+                = link_to titleize_dropdown_links("#{page_id}"), page_path("essays/#{page_id}")
+        %li
+          = link_to "Collection Guide", page_path("collection_guide/collection_guide")
 
         %li.dropdown
           %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
@@ -17,19 +27,12 @@
               %li
                 = link_to collection.dc_titles.first.title, record_path(collection.id)
 
-        %li.dropdown
-          %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
-            Essays and Exibits
-            %span.caret
-          %ul.dropdown-menu
-            - Dir["app/views/pages/essays/*"].each do |file|
-              %li
-                - page_id = file.split("/").last.split('.').first
-                = link_to titleize_dropdown_links("#{page_id}"), page_path("essays/#{page_id}")
+        %li
+          = link_to "About", page_path("about/about")
 
         %li.dropdown
           %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
-            Tutorials
+            Data
             %span.caret
           %ul.dropdown-menu
             - Dir["app/views/pages/Tutorials/*"].each do |file|
