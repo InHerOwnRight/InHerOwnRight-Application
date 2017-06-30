@@ -92,7 +92,7 @@ namespace :import_images do
   task library_company: :environment do
     missing_records = []
     Dir.glob("#{Rails.root}/public/images/LibraryCompany/*.png") do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first.match(/.*(?=\-)/).to_s
+      current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
       relative_path = "/images/LibraryCompany/#{current_identifier}_#{file_size}.png"
 
