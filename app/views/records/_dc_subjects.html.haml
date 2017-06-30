@@ -9,9 +9,10 @@
         = "|" unless index == @record.dc_subjects.size - 1
 
 - else
-  %tr
-    %th{ scope: "row" }
-      Subject
-    %td
-      - @record.dc_subjects.each do |dc_subject|
-        = link_to dc_subject.subject, search_catalog_path( search_field: 'subject', q: @record.dc_subjects.first.subject )
+  - if !@record.dc_subjects.first.subject.blank?
+    %tr
+      %th{ scope: "row" }
+        Subject
+      %td
+        - @record.dc_subjects.each do |dc_subject|
+          = link_to dc_subject.subject, search_catalog_path( search_field: 'subject', q: @record.dc_subjects.first.subject )
