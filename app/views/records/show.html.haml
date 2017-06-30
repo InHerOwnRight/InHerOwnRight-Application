@@ -64,3 +64,6 @@
       - if @record.is_collection? && Record.records_for_collection(@record.id)
         = render 'collection_records_link'
 
+      - if @record.full_texts.any?
+        = render 'full_text'
+
