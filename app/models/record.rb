@@ -81,6 +81,8 @@ class Record < ActiveRecord::Base
 
     integer :dc_type_ids, references: DcType, multiple: true
 
+    integer :dc_subject_ids, references: DcSubject, multiple: true
+
     date :pub_date, references: DcDate, multiple: true do
       dc_dates.original_creation_date.map(&:date)
     end
@@ -147,6 +149,21 @@ class Record < ActiveRecord::Base
       record = self
       record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
       record_dc_creator.save
+    end
+  end
+
+
+  def create_dc_subject(node, record)
+    if DcSubject.find_by_subject(node.text).blank?
+      dc_subject = DcSubject.new(subject: node.text)
+      dc_subject.save
+      record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
+      record_dc_subject.save
+    else
+      dc_subject = DcSubject.find_by_subject(node.text)
+      record = self
+      record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
+      record_dc_subject.save
     end
   end
 
@@ -254,6 +271,10 @@ class Record < ActiveRecord::Base
         create_dc_type(node, record)
       end
 
+      if node_name == "subject"
+        create_dc_subject(node, record)
+      end
+
       if node_name == "date" || node_name == "created"
         create_dc_date(node, record)
       end
@@ -280,7 +301,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial', 'dc_text', 'dc_isPartOf', 'dc_identifier']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spacial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id
