@@ -1,6 +1,15 @@
-%nav.navbar.navbar-default.navbar-left
+%nav.navbar.navbar-default
   .container-fluid
-    .collapse.navbar-collapse
+    .navbar-header
+      %button.navbar-toggle.collapsed#hamburger{type: "button", "data-toggle" => "collapse", "data-target" => "#main_navigation", "aria-expanded" => "false"}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      #search-container
+        = render_search_bar
+
+    .collapse.navbar-collapse#main_navigation.navbar-right
       %ul.nav.navbar-nav.col-md-12#site-nav-list
 
         %li
