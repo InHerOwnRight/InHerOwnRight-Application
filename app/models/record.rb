@@ -154,16 +154,23 @@ class Record < ActiveRecord::Base
 
 
   def create_dc_subject(node, record)
-    if DcSubject.find_by_subject(node.text).blank?
-      dc_subject = DcSubject.new(subject: node.text)
-      dc_subject.save
-      record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
-      record_dc_subject.save
+    if node.text =~ /\;/
+      subjects = node.text.split("; ")
     else
-      dc_subject = DcSubject.find_by_subject(node.text)
-      record = self
-      record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
-      record_dc_subject.save
+      subjects = node.text.split("|")
+    end
+    subjects.each do |subject|
+      if DcSubject.find_by_subject(node.text).blank?
+        dc_subject = DcSubject.new(subject: subject)
+        dc_subject.save
+        record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
+        record_dc_subject.save
+      else
+        dc_subject = DcSubject.find_by_subject(subject)
+        record = self
+        record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
+        record_dc_subject.save
+      end
     end
   end
 
