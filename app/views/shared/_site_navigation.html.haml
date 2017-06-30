@@ -35,4 +35,4 @@
             - Dir["app/views/pages/Tutorials/*"].each do |file|
               %li
                 - page_id = file.split("/").last.split('.').first
-                = link_to "#{page_id}", page_path("tutorials/#{page_id}")
+                = link_to titleize_dropdown_links("#{page_id}"), page_path("tutorials/#{page_id}")
