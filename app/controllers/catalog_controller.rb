@@ -137,6 +137,9 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'dc_type_ids_im', label: "Type", helper_method: :render_type_name
 
+    config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
+      is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
+    }, show: false
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
     # config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
