@@ -4,7 +4,8 @@
     %br
 
     %p.lead
-      Primary sources* and essays
+      %a{href: "#", "data-toggle" => "tooltip", title: "Primary sources are documents or physical objects created at the time an event or historical moment occurred."}
+        Primary sources and essays
       %br
       revealing stories of women's activism leading up to the right to vote.
 
@@ -60,5 +61,7 @@
     %p
       %a{href: "../play/data_access.html.md/"}
         See how others have used the data on this site ... then try it for yourself.
-
-
+:javascript
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+  });
