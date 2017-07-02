@@ -1,0 +1,18 @@
+%a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
+  Essays & Exibits
+  %span.caret
+%ul.dropdown-menu
+  %li.dropdown.dropdown-submenu
+    %a.dropdown-toggle{href: "#", "data-toggle" => "dropdown" }
+      Breaking New Ground on Race and Class
+    %ul.dropdown-menu.nav-submenu
+      %li
+        = link_to "Breaking New Ground on Race and Class", page_path("essays/breaking_new_ground_on_race_and_class")
+      %li
+        = link_to "Work and Friendship Across Racial Lines", page_path("essays/work_and_friendship_across_racial_lines")
+      %li
+        = link_to "Philanthropy or Self-Determination?", page_path("essays/philanthropy_or_self-determination")
+      %li
+        = link_to "Medical Women", page_path("essays/medical_women")
+  %li
+    = link_to "The Complexity of Activism", page_path("essays/the_complexity_of_activism")

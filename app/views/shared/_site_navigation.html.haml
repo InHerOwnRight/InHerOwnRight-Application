@@ -16,14 +16,7 @@
           = link_to "Search", page_path("catalog")
 
         %li.dropdown
-          %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
-            Essays & Exibits
-            %span.caret
-          %ul.dropdown-menu
-            - Dir["app/views/pages/essays/*"].each do |file|
-              %li
-                - page_id = file.split("/").last.split('.').first
-                = link_to titleize_dropdown_links("#{page_id}"), page_path("essays/#{page_id}")
+          = render partial: "shared/essays_and_exibits"
 
         %li
           = link_to "Collections", search_catalog_path( f: {"is_collection_id_i" => ['is_collection_id_i']} )
@@ -31,12 +24,19 @@
         %li
           = link_to "About", page_path("about/about")
 
-        %li.dropdown
-          %a.dropdown-toggle{href: "#", role: "button", "data-toggle" => "dropdown", "aria-haspopup"=>"true", "aria-expanded"=>"false"}
-            Data
-            %span.caret
-          %ul.dropdown-menu
-            - Dir["app/views/pages/Tutorials/*"].each do |file|
-              %li
-                - page_id = file.split("/").last.split('.').first
-                = link_to titleize_dropdown_links("#{page_id}"), page_path("tutorials/#{page_id}")
+        %li
+          = link_to "Data", page_path("tutorials/data_access")
+
+:javascript
+  (function($){
+    $(document).ready(function(){
+      $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        $(this).parent().siblings().removeClass('open');
+        $(this).parent().toggleClass('open');
+      });
+    });
+  })(jQuery);
+
+
