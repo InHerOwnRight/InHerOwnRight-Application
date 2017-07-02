@@ -24,8 +24,6 @@
               %li
                 - page_id = file.split("/").last.split('.').first
                 = link_to titleize_dropdown_links("#{page_id}"), page_path("essays/#{page_id}")
-        %li
-          = link_to "Collection Guide", page_path("collection_guide/collection_guide")
 
         %li
           = link_to "Collections", search_catalog_path( f: {"is_collection_id_i" => ['is_collection_id_i']} )
