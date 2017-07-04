@@ -12,12 +12,6 @@
     %p
       Long before the women's suffrage movement brought about the ratification of the Nineteenth Amendment in 1920, women were making themselves heard in a wide variety of ways that broadly transformed the American experience, including working for moral reform, abolition, and increased opportunities for education and employment. The Philadelphia region was among the most important centers for these movements.
 
-    %p.small
-      %em
-        *Primary sources are documents or physical objects created at the time an event or historical moment occurred.
-
-    // A primary source is an artifact, document, diary, manuscript, autobiography, a recording, or any other source of information that was created at the time under study.
-
   .col-md-8
     = render partial: 'landing_page_carousel'
 
@@ -48,10 +42,14 @@
     %h3{align: "center"}
       DISCOVER
     %p
-      = link_to "Use the search and discovery tools to further explore resources, or browse the documents themselves.", '/catalog'
+      Use search and browse tools to find documents and collection descriptions.
       %br
-      %a{href: "../essays/exhibits_and_essays.html.md/" }
-        Online exhibitions and essays that shed light on the above questions, and more.
+      %a{href: "/catalog" }
+        Search and Browse
+      %br
+
+      %a{href: "../essays/collection_guides/" }
+        View collection descriptions
       %br
       %br
 
@@ -59,8 +57,10 @@
     %h3{align: "center"}
       PLAY
     %p
+      Access raw data and find tools for using the data.<br/>
       %a{href: "../play/data_access.html.md/"}
-        See how others have used the data on this site ... then try it for yourself.
+        Data access and use
+
 :javascript
   $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
