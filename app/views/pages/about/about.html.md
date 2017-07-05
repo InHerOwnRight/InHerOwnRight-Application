@@ -70,7 +70,7 @@ Laurie Allen, University of Pennsylvania<br/>
 Kate Lynch, University of Pennsylvania<br/>
 Doreva Belfiore, Temple University<br/>
 Holly Mengel, University of Pennsylvania<br/>
-Emily Thaisrivong, Haverford College <br/>
+Emily Thaisrivongs, Haverford College <br/>
 Holly Tomren, Drexel University <br/>
 Heather Willever-Farr, Historical Society of Pennsylvania<br/>
 Scott Ziegler, American Philosophical Society<br/>
