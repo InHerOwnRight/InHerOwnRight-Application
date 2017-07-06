@@ -30,6 +30,7 @@ class Record < ActiveRecord::Base
   scope :not_collections, -> { joins(:raw_record).where(raw_records: {record_type: nil}) }
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
   scope :records_for_collection, -> (record_id) { where(collection_id: record_id) }
+  scope :for_same_creator, -> (creator_id) { joins(:dc_creators).where('dc_creators.id = ?', creator_id) }
 
   def is_collection?
     raw_record.record_type == "collection"

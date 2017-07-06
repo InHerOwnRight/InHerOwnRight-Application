@@ -26,8 +26,10 @@
     - if instance.is_collection?
       %h5.col-sm-12.collections_subhead
         = "Learn more about the #{instance.dc_titles.first.title}"
-      %h5.col-sm-12
-        = link_to "View items by #{instance.dc_creators.first.creator}", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
+      - if !instance.dc_creators.blank?
+        - if Record.for_same_creator(instance.dc_creators.first.id).count > 1
+          %h5.col-sm-12
+            = link_to "View items by #{instance.dc_creators.first.creator}", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
       - if Record.records_for_collection(instance.id).count > 1
         %h5.col-sm-12
           = link_to "View items from the #{instance.dc_titles.first.title}", search_catalog_path( f: {"collection_id_im" => [instance.id]} )
