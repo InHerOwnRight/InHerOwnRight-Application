@@ -138,7 +138,9 @@ namespace :import_metadata do
           xml.contributing_repository row[0]
           xml['oai_qdc'].qualifieddc(name_spaces) do
             xml['dc'].title row[1]
-            xml['dc'].creator row[2]
+            if !row[2].blank?
+              xml['dc'].creator row[2]
+            end
             xml['dc'].date row[3]
             xml['dc'].identifier row[4]
             xml['dc'].coverage row[5]
