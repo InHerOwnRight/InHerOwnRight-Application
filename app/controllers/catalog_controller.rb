@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 class CatalogController < ApplicationController
 
+  before_filter :extend_catalog_paginiation, only: [:index]
+
   include Blacklight::Catalog
 
   def render_contributor_name value
@@ -27,6 +29,15 @@ class CatalogController < ApplicationController
     value = Record.find(value).dc_titles.first.title
   end
   helper_method :render_collection_name
+
+  # extend results pagination if collection view
+  def extend_catalog_paginiation
+    if request.params["f"] && request.params["f"]["is_collection_id_i"]
+      if request.params["f"]["is_collection_id_i"] == ["is_collection_id_i"]
+        self.blacklight_config.per_page = [50, 100]
+      end
+    end
+  end
 
   configure_blacklight do |config|
     ## Class for sending and receiving requests from a search index
