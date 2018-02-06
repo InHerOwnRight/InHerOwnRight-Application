@@ -17,5 +17,8 @@ RUN chown -R app:app /var/www
 RUN su -c "ln -s /var/www/rails /home/app/" app
 
 RUN su -c "cd /var/www/rails && bundle install --deployment" app
+# you need a SECRET_KEY_BASE to get the rake task to run
+ENV SECRET_KEY_BASE=1234
+RUN su -c "cd /var/www/rails && RAILS_ENV=production rake assets:precompile" app
 
 EXPOSE 80

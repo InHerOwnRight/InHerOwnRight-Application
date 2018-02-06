@@ -30,5 +30,12 @@ NOTE about database.yml: You'll need to copy the database and username parameter
 
 ### TODO how to push to DockerHub ###
 
-    docker build -f docker/rails_app/Dockerfile -t neomindlabs/pacscl_app .
-    TODO: This might get pushed automatically by docker-compose build now that we have the image name in docker-compose.yml
+    cd ../pacscl-rails
+    docker build -f Dockerfile --no-cache -t neomindlabs/pacscl-rails .
+    docker push neomindlabs/pacscl-rails
+
+### Loading the data
+
+After your app is running and your database is setup, run the following commands to load all available data into the site:
+
+    cd /var/www/rails && RAILS_ENV=production bin/rails setup:project
