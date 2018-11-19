@@ -2,6 +2,7 @@
 /.bundle
 
 /config/database.yml
+/config/secrets.yml
 .env
 
 # Ignore the default SQLite database.
