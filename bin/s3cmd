@@ -1,0 +1,6 @@
+#!/bin/bash
+
+ACCESS_KEY=`bin/rails runner "puts Rails.application.secrets.aws_access_key_id" 2>/dev/null`
+SECRET_KEY=`bin/rails runner "puts Rails.application.secrets.aws_secret_access_key" 2>/dev/null`
+
+s3cmd --access_key="$ACCESS_KEY" --secret_key="$SECRET_KEY" $@

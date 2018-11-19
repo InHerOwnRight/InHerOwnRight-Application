@@ -12,9 +12,9 @@
           %td
             - if @record.dc_identifiers.map{|id| id.identifier_is_url? }.any?
               %a{ href: "#{@record.dc_identifiers.find{|id| id.identifier_is_url? }.identifier}", target: "_blank"}
-                = image_tag(@record.file_name)
+                = image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production#{@record.file_name}")
             - else
-              = image_tag(@record.file_name)
+              = image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production#{@record.file_name}")
 
       - if @record.dc_dates.any?
         = render 'dc_dates'
