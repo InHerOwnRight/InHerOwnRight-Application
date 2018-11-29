@@ -81,17 +81,17 @@ namespace :import_metadata do
 
   task from_drexel: :environment do
     identifiers_relations_hash = {}
+    repo_path = "https://idea.library.drexel.edu/oai/request"
     set_specs = ['lca_3']
 
     set_specs.map do |set|
-      client = OAI::Client.new "https://idea.library.drexel.edu/oai/request", :headers => { "From" => "oai@example.com" }
+      client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
       client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
         identifiers_relations_hash[record.header.identifier] = ''
       end
     end
 
     repository = Repository.find_by_name("Drexel University College of Medicine Legacy Center")
-    repo_path = "https://idea.library.drexel.edu/oai/request"
     base_response_record_path = "http://hdl.handle.net/1860/"
     metadata_prefix = "oai_dc"
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
@@ -99,10 +99,19 @@ namespace :import_metadata do
 
   task from_swarthmore: :environment do
     identifiers_relations_hash = {}
-    repository = Repository.find_by_name("Friends Historical Library: Swarthmore College")
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
+    set_specs = ['InHOR']
+
+    set_specs.map do |set|
+      client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
+      client.list_records(metadata_prefix: 'oai_qdc', set: "#{set}").full.each do |record|
+        identifiers_relations_hash[record.header.identifier] = ''
+      end
+    end
+    puts "identifiers_relations_hash is #{identifiers_relations_hash.inspect}"
+
+    repository = Repository.find_by_name("Friends Historical Library: Swarthmore College")
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
-    identifiers_relations_hash['oai:tricontentdm.brynmawr.edu:HC_QuakSlav/12403'] = ''
     metadata_prefix = "oai_qdc"
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
   end
