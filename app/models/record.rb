@@ -36,6 +36,13 @@ class Record < ActiveRecord::Base
     raw_record.record_type == "collection"
   end
 
+  def thumbnail
+    relative_path = super
+    return nil unless relative_path
+
+    "https://s3.us-east-2.amazonaws.com/pacscl-production#{relative_path}"
+  end
+
   def repository_id
     repository.id
   end
