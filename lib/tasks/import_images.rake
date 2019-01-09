@@ -1,7 +1,8 @@
 namespace :import_images do
   desc "Import images for records"
 
-  task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple] do
+  task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple,
+             :drexel2, :swarthmore2, :temple2, :hsp2] do
   end
 
   task bates: :environment do
@@ -47,6 +48,30 @@ namespace :import_images do
     puts missing_records
   end
 
+  task drexel2: :environment do
+    missing_records = []
+    Dir.glob("#{Rails.root}/public/images/Drexel2/*.png") do |file_path|
+      filename = file_path.split("/").last
+      match = /(.*)_00\d_lg.png/.match(filename)
+      current_identifier = match && match[1]
+      file_size = file_path.split("_").last.split(".").first
+      relative_path = "/images/Drexel2/#{filename}"
+      if !DcIdentifier.find_by_identifier("local: #{current_identifier}").nil?
+        record = DcIdentifier.find_by_identifier("local: #{current_identifier}").record
+        if file_size == "lg"
+          puts "Updated #{record.id}"
+          record.file_name = relative_path
+        else
+          record.thumbnail = relative_path
+        end
+        record.save
+      else
+        missing_records.push(file_path)
+      end
+    end
+    puts missing_records
+  end
+
   task haverford: :environment do
     missing_records = []
     Dir.glob("#{Rails.root}/public/images/Haverford/*.png") do |file_path|
@@ -77,6 +102,29 @@ namespace :import_images do
       if !Record.find_by_oai_identifier(current_identifier).nil?
         record = Record.find_by_oai_identifier(current_identifier)
         if file_size == "lg"
+          record.file_name = relative_path
+        else
+          record.thumbnail = relative_path
+        end
+        record.save
+      else
+        missing_records.push(file_path)
+      end
+    end
+    puts missing_records
+  end
+
+  task hsp2: :environment do
+    # At the time of this writing, it seems that we don't have HSP2 data yet
+    missing_records = []
+    Dir.glob("#{Rails.root}/public/images/HSP2/*.png") do |file_path|
+      current_identifier = file_path.split("/").last.split("_").first
+      file_size = file_path.split("_").last.split(".").first
+      relative_path = "/images/HSP2/#{current_identifier}_#{file_size}.png"
+      if !Record.find_by_oai_identifier(current_identifier).nil?
+        record = Record.find_by_oai_identifier(current_identifier)
+        if file_size == "lg"
+          puts "Updated #{record.id}"
           record.file_name = relative_path
         else
           record.thumbnail = relative_path
@@ -132,6 +180,28 @@ namespace :import_images do
     puts missing_records
   end
 
+  task swarthmore2: :environment do
+    missing_records = []
+    Dir.glob("#{Rails.root}/public/images/Swarthmore2/*.png") do |file_path|
+      current_identifier = file_path.split("/").last.split("_").first
+      file_size = file_path.split("_").last.split(".").first
+      relative_path = "/images/Swarthmore2/#{current_identifier}_#{file_size}.png"
+      if !DcIdentifier.find_by_identifier(current_identifier).nil?
+        record = DcIdentifier.find_by_identifier(current_identifier).record
+        if file_size == "lg"
+          puts "Updated #{record.id}"
+          record.file_name = relative_path
+        else
+          record.thumbnail = relative_path
+        end
+        record.save
+      else
+        missing_records.push(file_path)
+      end
+    end
+    puts missing_records
+  end
+
   task temple: :environment do
     missing_records = []
     Dir.glob("#{Rails.root}/public/images/Temple/*.png") do |file_path|
@@ -142,6 +212,29 @@ namespace :import_images do
       if !DcIdentifier.find_by_identifier(current_identifier).nil?
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
+          record.file_name = relative_path
+        else
+          record.thumbnail = relative_path
+        end
+        record.save
+      else
+        missing_records.push(file_path)
+      end
+    end
+    puts missing_records
+  end
+
+  task temple2: :environment do
+    missing_records = []
+    Dir.glob("#{Rails.root}/public/images/Temple2/*.png") do |file_path|
+      actual_file_name = file_path.split("/").last.split("_").first
+      current_identifier = file_path.split("/").last.split("_").first.split("Y").first
+      file_size = file_path.split("_").last.split(".").first
+      relative_path = "/images/Temple2/#{actual_file_name}_#{file_size}.png"
+      if !DcIdentifier.find_by_identifier(current_identifier).nil?
+        record = DcIdentifier.find_by_identifier(current_identifier).record
+        if file_size == "lg"
+          puts "Updated #{record.id}"
           record.file_name = relative_path
         else
           record.thumbnail = relative_path

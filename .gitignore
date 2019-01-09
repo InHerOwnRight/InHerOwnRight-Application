@@ -17,6 +17,8 @@
 !/tmp/.keep
 !/.bundle/.keep
 
+/public/inbox
+
 # Ignore Byebug command history file.
 .byebug_history
 .DS_Store
