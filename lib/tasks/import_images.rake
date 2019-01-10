@@ -1,5 +1,11 @@
+require 'aws-sdk-s3'
+
 namespace :import_images do
   desc "Import images for records"
+
+  region = 'us-east-2'
+  s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+  bucket = s3.bucket('pacscl-production')
 
   task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple,
              :drexel2, :swarthmore2, :temple2, :hsp2] do
@@ -7,18 +13,17 @@ namespace :import_images do
 
   task bates: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Bates/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Bates').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.match(/.+?(?=_lg.png|_thumb.png)/).to_s
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Bates/#{current_identifier}_#{file_size}.png"
       if DcIdentifier.find_by_identifier(current_identifier).nil?
         missing_records.push(file_path)
       else
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       end
@@ -28,17 +33,15 @@ namespace :import_images do
 
   task drexel: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Drexel/*.png") do |file_path|
-      actual_file_name = file_path.split("/").last
+    bucket.objects(prefix: 'images/Drexel/').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.match(/.+?(?=_\d\d\d_lg.png|_\d\d\d_thumb.png)/).to_s
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Drexel/#{actual_file_name}"
       if !DcIdentifier.find_by_identifier("local: #{current_identifier}").nil?
         record = DcIdentifier.find_by_identifier("local: #{current_identifier}").record
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -50,19 +53,17 @@ namespace :import_images do
 
   task drexel2: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Drexel2/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Drexel2/').collect(&:key).each do |file_path|
       filename = file_path.split("/").last
       match = /(.*)_00\d_lg.png/.match(filename)
       current_identifier = match && match[1]
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Drexel2/#{filename}"
       if !DcIdentifier.find_by_identifier("local: #{current_identifier}").nil?
         record = DcIdentifier.find_by_identifier("local: #{current_identifier}").record
         if file_size == "lg"
-          puts "Updated #{record.id}"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -74,16 +75,15 @@ namespace :import_images do
 
   task haverford: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Haverford/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Haverford').collect(&:key).each  do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Haverford/#{current_identifier}_#{file_size}.png"
       if !Record.find_by_oai_identifier("oai:tricontentdm.brynmawr.edu:HC_DigReq/#{current_identifier}").nil?
         record = Record.find_by_oai_identifier("oai:tricontentdm.brynmawr.edu:HC_DigReq/#{current_identifier}")
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -95,16 +95,15 @@ namespace :import_images do
 
   task hsp: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/HSP/*.png") do |file_path|
+    bucket.objects(prefix: 'images/HSP/').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/HSP/#{current_identifier}_#{file_size}.png"
       if !Record.find_by_oai_identifier(current_identifier).nil?
         record = Record.find_by_oai_identifier(current_identifier)
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -117,17 +116,16 @@ namespace :import_images do
   task hsp2: :environment do
     # At the time of this writing, it seems that we don't have HSP2 data yet
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/HSP2/*.png") do |file_path|
+    bucket.objects(prefix: 'images/HSP2').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/HSP2/#{current_identifier}_#{file_size}.png"
       if !Record.find_by_oai_identifier(current_identifier).nil?
         record = Record.find_by_oai_identifier(current_identifier)
         if file_size == "lg"
           puts "Updated #{record.id}"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -139,17 +137,15 @@ namespace :import_images do
 
   task library_company: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/LibraryCompany/*.png") do |file_path|
+    bucket.objects(prefix: 'images/LibraryCompany').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/LibraryCompany/#{current_identifier}_#{file_size}.png"
-
       if !Record.find_by_oai_identifier(current_identifier).nil?
         record = Record.find_by_oai_identifier(current_identifier)
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -161,16 +157,15 @@ namespace :import_images do
 
   task swarthmore: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Swarthmore/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Swarthmore/').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Swarthmore/#{current_identifier}_#{file_size}.png"
       if !DcIdentifier.find_by_identifier(current_identifier).nil?
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -182,17 +177,16 @@ namespace :import_images do
 
   task swarthmore2: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Swarthmore2/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Swarthmore2').collect(&:key).each do |file_path|
       current_identifier = file_path.split("/").last.split("_").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Swarthmore2/#{current_identifier}_#{file_size}.png"
       if !DcIdentifier.find_by_identifier(current_identifier).nil?
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
           puts "Updated #{record.id}"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -204,17 +198,16 @@ namespace :import_images do
 
   task temple: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Temple/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Temple/').collect(&:key).each do |file_path|
       actual_file_name = file_path.split("/").last.split("_").first
       current_identifier = file_path.split("/").last.split("_").first.split("Y").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Temple/#{actual_file_name}_#{file_size}.png"
       if !DcIdentifier.find_by_identifier(current_identifier).nil?
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
@@ -226,18 +219,17 @@ namespace :import_images do
 
   task temple2: :environment do
     missing_records = []
-    Dir.glob("#{Rails.root}/public/images/Temple2/*.png") do |file_path|
+    bucket.objects(prefix: 'images/Temple2').collect(&:key).each do |file_path|
       actual_file_name = file_path.split("/").last.split("_").first
       current_identifier = file_path.split("/").last.split("_").first.split("Y").first
       file_size = file_path.split("_").last.split(".").first
-      relative_path = "/images/Temple2/#{actual_file_name}_#{file_size}.png"
       if !DcIdentifier.find_by_identifier(current_identifier).nil?
         record = DcIdentifier.find_by_identifier(current_identifier).record
         if file_size == "lg"
           puts "Updated #{record.id}"
-          record.file_name = relative_path
+          record.file_name = "/#{file_path}"
         else
-          record.thumbnail = relative_path
+          record.thumbnail = "/#{file_path}"
         end
         record.save
       else
