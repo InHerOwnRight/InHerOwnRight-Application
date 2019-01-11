@@ -50,6 +50,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'solr_wrapper', '>= 0.3'
   gem 'pry'
+  gem 'dotenv-rails'
 end
 
 group :development do

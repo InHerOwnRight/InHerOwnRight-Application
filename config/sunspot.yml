@@ -9,7 +9,7 @@ production:
 
 development:
   solr:
-    hostname: localhost
+    hostname: solr
     port: 8983
     log_level: INFO
     path: /solr/blacklight

@@ -34,6 +34,11 @@ NOTE about database.yml: You'll need to copy the database and username parameter
     docker build -f Dockerfile --no-cache -t neomindlabs/pacscl-rails .
     docker push neomindlabs/pacscl-rails
 
+### Deploying to Staging
+
+    docker build -t neomindlabs/pacscl-rails:staging .
+    docker push neomindlabs/pacscl-rails:staging
+
 ### Loading the data
 
 After your app is running and your database is setup, run the following commands to load all available data into the site:
