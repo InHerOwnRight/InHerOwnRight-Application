@@ -4,51 +4,47 @@ require "csv"
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
-  task all: [:collections, :from_temple, :from_swarthmore, :from_drexel, :from_bates, :from_library_co, :from_haverford, :from_hsp, :from_hsp2] do
+  task all: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford, :collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2] do
   end
 
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
     identifiers_relations_hash.each do |identifier, relations_nodes|
+      response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
+      response_record = response.record
+      raw_record = RawRecord.find_or_initialize_by(oai_identifier: response_record.header.identifier)
 
-      if RawRecord.find_by_oai_identifier(identifier).blank?
-        response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
-        response_record = response.record
-        raw_record = RawRecord.new
-        if !response_record.header.set_spec.first.text.blank?
-          raw_record.set_spec = response_record.header.set_spec.first.text
-          raw_record.original_record_url = "#{base_response_record_path}/#{raw_record.set_spec}/id/#{identifier.split('/').last}"
-        end
+      if !response_record.header.set_spec.first.text.blank?
+        raw_record.set_spec = response_record.header.set_spec.first.text
+        raw_record.original_record_url = "#{base_response_record_path}#{raw_record.set_spec}/id/#{identifier.split('/').last}"
+      end
 
-        if !response_record.header.identifier.blank?
-          raw_record.oai_identifier = response_record.header.identifier
-        end
-        if !response_record.header.datestamp.blank?
-          raw_record.original_entry_date = response_record.header.datestamp
-        end
+      if !response_record.header.identifier.blank?
+        raw_record.oai_identifier = response_record.header.identifier
+      end
 
-        if !response_record.metadata.blank?
-          if !relations_nodes.blank?
-            processed_xml_document = Nokogiri::XML.parse(response_record.metadata.to_s)
-            relations_nodes.each do |node|
-              processed_xml_document.first_element_child.first_element_child.add_child(node)
-            end
-            raw_record.xml_metadata = processed_xml_document
-          else
-            raw_record.xml_metadata = response_record.metadata
+      if !response_record.header.datestamp.blank?
+        raw_record.original_entry_date = response_record.header.datestamp
+      end
+
+      if !response_record.metadata.blank?
+        if !relations_nodes.blank?
+          processed_xml_document = Nokogiri::XML.parse(response_record.metadata.to_s)
+          relations_nodes.each do |node|
+            processed_xml_document.first_element_child.first_element_child.add_child(node)
           end
-        end
-
-        raw_record.repository_id = repository.id
-
-        if raw_record.save
-          puts "Successfully saved #{raw_record.oai_identifier}"
+          raw_record.xml_metadata = processed_xml_document
         else
-          puts "Something went wrong."
+          raw_record.xml_metadata = response_record.metadata
         end
+      end
 
+      raw_record.repository_id = repository.id
+
+      if raw_record.save
+        puts "Successfully imported #{raw_record.oai_identifier}"
       else
-        puts "#{identifier} has already been imported"
+        puts "Something went wrong."
       end
     end
   end
@@ -56,23 +52,41 @@ namespace :import_metadata do
   task from_temple: :environment do
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14']
+    repository = Repository.find_by_name("Temple University Libraries")
 
     relation_text = ["Octavia Hill Association (Philadelphia, Pa.) Records", "Young Women's Christian Association - Metropolitan Branch, Acc. URB 23", "YWCA of Philadelphia - Kensington Branch, Acc. 520, 531, 552", "YWCA of Germantown, Acc. 280", "In Her Own Right"]
 
     set_specs.map do |set|
       client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
-      client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
-        xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
-        xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
-          relation_text.each do |text|
-            if relation_node.text.include?(text)
-              identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+      if repository.raw_records.empty?
+        client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+          xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
+          xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
+            relation_text.each do |text|
+              if relation_node.text.include?(text)
+                identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+              end
             end
           end
         end
+      elsif Rails.env == "staging"
+        last_update = repository.raw_records.order('updated_at DESC').first.updated_at
+        begin
+          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
+            xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
+            xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
+              relation_text.each do |text|
+                if relation_node.text.include?(text)
+                  identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+                end
+              end
+            end
+          end
+        rescue
+          puts "All Temple OAI records are up to date."
+        end
       end
     end
-    repository = Repository.find_by_name("Temple University Libraries")
     repo_path = 'http://digital.library.temple.edu/oai/oai.php'
     base_response_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
     metadata_prefix = "oai_qdc"
@@ -83,11 +97,23 @@ namespace :import_metadata do
     identifiers_relations_hash = {}
     repo_path = "https://idea.library.drexel.edu/oai/request"
     set_specs = ['lca_3']
+    repository = Repository.find_by_name("Drexel University College of Medicine Legacy Center")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
-        identifiers_relations_hash[record.header.identifier] = ''
+      if repository.raw_records.empty?
+        client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+          identifiers_relations_hash[record.header.identifier] = ''
+        end
+      elsif Rails.env == "staging"
+        last_update = repository.raw_records.order('updated_at DESC').first.updated_at
+        begin
+          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
+            identifiers_relations_hash[record.header.identifier] = ''
+          end
+        rescue
+          puts "All Drexel OAI records are up to date."
+        end
       end
     end
 
@@ -101,16 +127,26 @@ namespace :import_metadata do
     identifiers_relations_hash = {}
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
+    repository = Repository.find_by_name("Friends Historical Library: Swarthmore College")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      client.list_records(metadata_prefix: 'oai_qdc', set: "#{set}").full.each do |record|
-        identifiers_relations_hash[record.header.identifier] = ''
+      if repository.raw_records.empty?
+        client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+          identifiers_relations_hash[record.header.identifier] = ''
+        end
+      elsif Rails.env == "staging"
+        last_update = repository.raw_records.order('updated_at DESC').first.updated_at
+        begin
+          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
+            identifiers_relations_hash[record.header.identifier] = ''
+          end
+        rescue
+          puts "All Swarthmore OAI records are up to date."
+        end
       end
     end
-    puts "identifiers_relations_hash is #{identifiers_relations_hash.inspect}"
 
-    repository = Repository.find_by_name("Friends Historical Library: Swarthmore College")
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     metadata_prefix = "oai_qdc"
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
