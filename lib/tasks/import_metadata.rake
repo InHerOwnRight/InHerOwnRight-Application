@@ -4,7 +4,7 @@ require "csv"
 namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
-  task all: [:collections, :from_temple, :from_swarthmore, :from_drexel, :from_bates, :from_library_co, :from_haverford, :from_hsp] do
+  task all: [:collections, :from_temple, :from_swarthmore, :from_drexel, :from_bates, :from_library_co, :from_haverford, :from_hsp, :from_hsp2] do
   end
 
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
