@@ -28,6 +28,15 @@ NOTE about database.yml: You'll need to copy the database and username parameter
     docker exec -it pacscl_app bash          # Open terminal to Rails container
     docker-compose run app [RAILS_COMMAND]   # Run typical Rails commands
 
+### Troubleshooting
+
+If you get an error message that looks like this:
+
+    E: Failed to fetch http://security.ubuntu.com/ubuntu/pool/main/t/tzdata/tzdata_2018g-0ubuntu0.18.04_all.deb  404  Not Found [IP: 91.189.88.162 80]
+    E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
+
+Add "--no-cache" to your docker build command. It caused by a cache of the apt sources that has become out of date.
+
 ### TODO how to push to DockerHub ###
 
     cd ../pacscl-rails
@@ -36,8 +45,15 @@ NOTE about database.yml: You'll need to copy the database and username parameter
 
 ### Deploying to Staging
 
-    docker build -t neomindlabs/pacscl-rails:staging .
+    docker build -t --no-cache neomindlabs/pacscl-rails:staging .
     docker push neomindlabs/pacscl-rails:staging
+
+### Reloading the data on Staging from scratch
+
+    cd ~/pacscl && docker-compose exec webapp bash
+    su app
+    cd /home/app/rails
+    RAILS_ENV=staging rake db:drop db:create setup:project
 
 ### Loading the data
 

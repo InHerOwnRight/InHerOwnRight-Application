@@ -37,6 +37,7 @@ gem 'oai'
 gem 'haml', '~> 5.0', '>= 5.0.1'
 gem 'high_voltage', '~> 3.0'
 gem 'redcarpet', '~> 3.4'
+gem 'dotenv-rails'
 # gem 'carpetbomb'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
@@ -51,7 +52,6 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'solr_wrapper', '>= 0.3'
   gem 'pry'
-  gem 'dotenv-rails'
 end
 
 group :development do
