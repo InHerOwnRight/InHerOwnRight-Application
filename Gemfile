@@ -7,6 +7,7 @@ end
 
 gem 'rails', '~> 5.0.1'
 gem "activejob", ">= 5.0.7.1"
+gem "iso639"
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
