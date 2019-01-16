@@ -55,7 +55,7 @@ namespace :import_images do
     missing_records = []
     bucket.objects(prefix: 'images/Drexel2/').collect(&:key).each do |file_path|
       filename = file_path.split("/").last
-      match = /(.*)_00\d_lg.png/.match(filename)
+      match = /(.*)_00\d_lg.png/.match(filename) || /(.*)_00\d_thumb.png/.match(filename)
       current_identifier = match && match[1]
       file_size = file_path.split("_").last.split(".").first
       if !DcIdentifier.find_by_identifier("local: #{current_identifier}").nil?
