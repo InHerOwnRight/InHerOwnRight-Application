@@ -69,7 +69,7 @@ namespace :import_metadata do
             end
           end
         end
-      elsif Rails.env == "staging"
+      else
         last_update = repository.raw_records.order('updated_at DESC').first.updated_at
         begin
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
@@ -105,7 +105,7 @@ namespace :import_metadata do
         client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
           identifiers_relations_hash[record.header.identifier] = ''
         end
-      elsif Rails.env == "staging"
+      else
         last_update = repository.raw_records.order('updated_at DESC').first.updated_at
         begin
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
@@ -135,7 +135,7 @@ namespace :import_metadata do
         client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
           identifiers_relations_hash[record.header.identifier] = ''
         end
-      elsif Rails.env == "staging"
+      else
         last_update = repository.raw_records.order('updated_at DESC').first.updated_at
         begin
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
