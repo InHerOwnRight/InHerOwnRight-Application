@@ -2,6 +2,11 @@ require 'oai'
 require "csv"
 
 namespace :import_metadata do
+
+  # Error messages different versions of OAI-PMH return when no records are returned
+  EmptyImportErrors = [ "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.",
+                        "The combination of the given values results in an empty list."]
+
   desc "Import metadata raw_records from repositories"
 
   task all: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford, :collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2] do
@@ -82,8 +87,12 @@ namespace :import_metadata do
               end
             end
           end
-        rescue
-          puts "All Temple OAI records are up to date."
+        rescue OAI::Exception => e
+          if EmptyImportErrors.include?(e.message.strip)
+            puts "All Temple OAI records for set #{set} are up to date as of #{last_update}."
+          else
+            raise e
+          end
         end
       end
     end
@@ -111,8 +120,12 @@ namespace :import_metadata do
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
           end
-        rescue
-          puts "All Drexel OAI records are up to date."
+        rescue OAI::Exception => e
+          if EmptyImportErrors.include?(e.message.strip)
+            puts "All Drexel OAI records for set #{set} are up to date as of #{last_update}."
+          else
+            raise e
+          end
         end
       end
     end
@@ -141,8 +154,12 @@ namespace :import_metadata do
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
           end
-        rescue
-          puts "All Swarthmore OAI records are up to date."
+        rescue OAI::Exception => e
+          if EmptyImportErrors.include?(e.message.strip)
+            puts "All Swarthmore OAI records for set #{set} are up to date as of #{last_update}."
+          else
+            raise e
+          end
         end
       end
     end
