@@ -75,7 +75,8 @@ namespace :import_metadata do
           end
         end
       else
-        last_update = repository.raw_records.order('updated_at DESC').first.updated_at
+        # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
+        last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
             xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
@@ -91,6 +92,7 @@ namespace :import_metadata do
           if EmptyImportErrors.include?(e.message.strip)
             puts "All Temple OAI records for set #{set} are up to date as of #{last_update}."
           else
+            puts "!!from_date is #{last_update}"
             raise e
           end
         end
@@ -115,7 +117,9 @@ namespace :import_metadata do
           identifiers_relations_hash[record.header.identifier] = ''
         end
       else
-        last_update = repository.raw_records.order('updated_at DESC').first.updated_at
+        # Drexel will accept a date or time here, but the others require a date. So standardize
+        # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
+        last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
@@ -149,7 +153,8 @@ namespace :import_metadata do
           identifiers_relations_hash[record.header.identifier] = ''
         end
       else
-        last_update = repository.raw_records.order('updated_at DESC').first.updated_at
+        # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
+        last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
           client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
