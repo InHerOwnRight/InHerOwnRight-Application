@@ -16,24 +16,24 @@ Forced to confront their ideas about race, class, and womanhood, women activists
       <h4 style="text-align:center; color:#696969">Work &amp; Friendship Across Racial Lines</h4>
    <br/><br/>
     <figure class="figure" style="text-align:center">
-    <a href="http://pacscl.neomindlabs.com/essays/work_and_friendship_across_racial_lines"><img src="/static_images/mott_swarthmore_crop.jpg"></a>
+    <a href="/essays/work_and_friendship_across_racial_lines"><img src="/static_images/mott_swarthmore_crop.jpg"></a>
     <br/><br/>
     <figcaption class="figure-caption text-left">
       Examine nineteenth-century black and white women’s attempts to form organizations and friendships across racial lines, especially in the abolitionist movement, including documents produced by the Philadelphia Female Anti-Slavery Society, white Quaker abolitionist Lucretia Mott, African American abolitionist and educator Sarah Mapps Douglass, and various members of Philadelphia’s free black elite.</figcaption> 
       </figure>
-      <a href="http://pacscl.neomindlabs.com/essays/work_and_friendship_across_racial_lines">View exhibit</a>
+      <a href="/essays/work_and_friendship_across_racial_lines">View exhibit</a>
       <br/>
   </div>
   <div class="col-md-4">
     <h4 style="text-align:center; color:#696969">Philanthropy or self-determination?</h4>
     <br/><br/>
     <figure class="figure" style="text-align:center">
-    <a href="http://pacscl.neomindlabs.com/essays/philanthropy_or_self-determination"><img src="/static_images/AMANUZ201504000145Y1017_17_crop.jpg"></a>
+    <a href="/essays/philanthropy_or_self-determination"><img src="/static_images/AMANUZ201504000145Y1017_17_crop.jpg"></a>
     <br/><br/>
     <figcaption class="figure-caption text-left">
       Explore various ways women activists came to terms with the growth of cities, an influx of immigrants, and the expansion of wage work in the late 1800s and early 1900s. </figcaption>
       </figure>
-      <a href="http://pacscl.neomindlabs.com/essays/philanthropy_or_self-determination">View exhibit</a>
+      <a href="/essays/philanthropy_or_self-determination">View exhibit</a>
       <br/>
   </div>
   <div class="col-md-4">
@@ -42,12 +42,12 @@ Forced to confront their ideas about race, class, and womanhood, women activists
     </h4>
     <br/>
     <figure class="figure" style="text-align:center">
-    <a href="http://pacscl.neomindlabs.com/essays/medical_women"><img src="/static_images/drexel_longshore_crop.jpg"></a>
+    <a href="/essays/medical_women"><img src="/static_images/drexel_longshore_crop.jpg"></a>
     <br/><br/>
     <figcaption class="figure-caption text-left">
       Medical women who constructed identities for themselves as knowledgeable professionals were often elite white women. Consider how different groups of women used ideas such as efficiency and respectability to advance their careers and, in the case of African American women, their race. </figcaption>
       </figure>
-      <a href="http://pacscl.neomindlabs.com/essays/medical_women">View exhibit</a>
+      <a href="/essays/medical_women">View exhibit</a>
       <br/>
   </div>
 </div>

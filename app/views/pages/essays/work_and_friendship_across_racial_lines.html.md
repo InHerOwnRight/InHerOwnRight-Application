@@ -18,7 +18,7 @@ Founded in 1833, the Philadelphia Female Anti-Slavery Society was an interracial
     <p style="margin: 0px 00px 0px 10px">
       Documents produced by individual women associated with this organization, both black and white, supplement our understanding of race and gender relations in the abolitionist movement. Lucretia Mott has long been recognized as the center of Philadelphia’s abolitionist and reform community. The diary she kept during the 1840 World Anti-Slavery Convention speaks in detail about women’s treatment both at the convention and in the movement more generally.
     <br/><br/>
-    <a href="http://pacscl.neomindlabs.com/records/108">Explore Lucretia Mott’s diary</a>
+    <a href="/records/108">Explore Lucretia Mott’s diary</a>
     </p>
   </div>
   <div class="col-md-1">
@@ -38,7 +38,7 @@ Founded in 1833, the Philadelphia Female Anti-Slavery Society was an interracial
     <p style="margin: 0px 00px 0px 10px">
       Between 1854 and her death in 1882, Sarah Mapps Douglass, an African-American abolitionist and educator, wrote several letters to her friend Rebecca White, who was white. While Douglass was a leader in the Philadelphia Female Anti-Slavery Society, these letters are unique in providing her individual voice, offering an illuminating look at Douglass’s activism and the challenges she faced, as well as the nature of an interracial friendship in the nineteenth-century US.
     <br/><br/>
-    <a href="http://pacscl.neomindlabs.com/catalog?q=Douglass%2C+S.+M.+%28Sarah+Mapps%29%2C+1806-1882&search_field=creator">Explore documents</a>
+    <a href="/catalog?q=Douglass%2C+S.+M.+%28Sarah+Mapps%29%2C+1806-1882&search_field=creator">Explore documents</a>
     </p>
   </div>
   <div class="col-md-1">
@@ -58,7 +58,7 @@ Founded in 1833, the Philadelphia Female Anti-Slavery Society was an interracial
     <p style="margin: 0px 00px 0px 10px">
       The Amy Matilda Cassey, Mary Anna Dickerson, Martina Dickerson Friendship Albums offer a stunning look at social networks in action, showing how close-knit the abolitionist community was. Although most entries come from members of Philadelphia’s free black elite, contributors come from as far away as Boston and include such notable figures as the women and men in the Forten and Purvis families, Sarah Mapps Douglass, William Lloyd Garrison, Lucy Stone, and others. 
     <br/><br/>
-    <a href="http://pacscl.neomindlabs.com/records/248">Explore the friendship albums</a>
+    <a href="/records/248">Explore the friendship albums</a>
     </p>
   </div>
   <div class="col-md-1">

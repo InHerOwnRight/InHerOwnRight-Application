@@ -17,7 +17,7 @@
     <p style="margin: 0px 00px 0px 10px">
       The Octavia Hill Association was founded in 1896 by Philadelphia resident Helen Parrish, who had studied with British housing activist Octavia Hill.  Its goals were to improve working class housing conditions through the sympathetic management of dwellings which it purchased and renovated.  Helen Parrish’s diaries document her “friendly visits” to her tenants. Similar to other early social welfare work, these visits were periodically invasive, policing tenants’ sexual behavior, childcare practices, financial decisions, and drinking habits.
     <br/><br/>
-    <a href="http://pacscl.neomindlabs.com/catalog?f%5Bcollection_id_im%5D%5B%5D=21">Explore documents</a>
+    <a href="/catalog?f%5Bcollection_id_im%5D%5B%5D=21">Explore documents</a>
     </p>
   </div>
   <div class="col-md-2">
@@ -30,7 +30,7 @@
     <p style="margin: 0px 00px 0px 10px">
       The Germantown YWCA also tried to provide both material aid and moral instruction to both white and black working women. This collection offers the opportunity to chart changing ideas of ideal womanhood, especially as envisioned in cross-class relationships. While in the early years of the organization directors cast their patrons as “women adrift,” alternately downtrodden and wanton, in later years they appealed to their audience as modern, independent, and useful. For students in particular, this collection provides a good illustration of the shift from true to new womanhood.
     <br/><br/>
-    <a href="http://pacscl.neomindlabs.com/catalog?f%5Bcollection_id_im%5D%5B%5D=24">Explore documents</a>
+    <a href="/catalog?f%5Bcollection_id_im%5D%5B%5D=24">Explore documents</a>
     </p>
   </div>
   <div class="col-md-3">
@@ -57,7 +57,7 @@
     <p style="margin: 0px 00px 0px 10px">
       The New Century Guild was somewhere between a settlement house, a union, and a social club by and for self-supporting women. Despite the presence of prominent Philadelphians on the Executive Board, the guild aimed to be an organization by and for working women, whose voices come through clearly. This is especially true of the guild’s journal, which gave members an opportunity to share their thoughts on a staggering variety of topics. Essays address issues including women’s education, pay discrimination, suffrage, gender roles, race relations, marriage, and labor legislation. 
     <br/><br/>
-    <a href="http://pacscl.neomindlabs.com/catalog?f%5Bcollection_id_im%5D%5B%5D=17">Explore documents</a>
+    <a href="/catalog?f%5Bcollection_id_im%5D%5B%5D=17">Explore documents</a>
     </p>
   </div>
   <div class="col-md-2">

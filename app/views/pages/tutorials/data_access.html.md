@@ -12,11 +12,11 @@ The In Her Own Right project exposes an API endpoint conforming with <a href="ht
 
 Return all records from collection:
 
-`curl "http://pacscl.neomindlabs.com/oai?verb=ListRecords&metadataPrefix=oai_dc"`
+`curl "http://inherownright.org/oai?verb=ListRecords&metadataPrefix=oai_dc"`
 
 Return a specific record:
 
-`curl "http://pacscl.neomindlabs.com/oai?verb=GetRecord&identifier=oai:pacscl/1&metadataPrefix=oai_dc"`
+`curl "http://inherownright.org/oai?verb=GetRecord&identifier=oai:pacscl/1&metadataPrefix=oai_dc"`
 
 
 <div class="row">
