@@ -9,8 +9,11 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-  task all: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford, :collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2] do
-  end
+
+  task all_oai: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford]
+  task all_csv: [:collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2]
+  # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
+  task all: [:all_oai, :all_csv]
 
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
