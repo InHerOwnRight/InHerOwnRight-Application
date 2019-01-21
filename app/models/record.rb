@@ -135,6 +135,10 @@ class Record < ActiveRecord::Base
       dc_titles.map(&:title)
     end
 
+    string :sort_title do
+      dc_titles.map(&:title).first
+    end
+
     text :type do
       dc_types.map(&:type)
     end
