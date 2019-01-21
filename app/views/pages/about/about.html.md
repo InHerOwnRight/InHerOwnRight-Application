@@ -4,7 +4,7 @@
   <h3>About the project</h3>
     <div class="lead"><em>In Her Own Right: Women Asserting Their Civil Rights, 1820-1920</em> showcases Philadelphia-area collections highlighting women’s struggle leading to the passage of the 19th Amendment.
     </div>
-    <p>In Her Own Right is a pilot project executed by members of the <a href="pacscl.org">Philadelphia Area Consortium of Special Collections Libraries (PACSCL)</a>, with funding from the National Endowment of the Humanities.</p>
+    <p>In Her Own Right is a pilot project executed by members of the <a href="http://pacscl.org">Philadelphia Area Consortium of Special Collections Libraries (PACSCL)</a>, with funding from the National Endowment of the Humanities.</p>
     <p>The Greater Philadelphia region has a strong tradition of women’s initiatives to expand their rights and opportunities with regard to political participation, education, work, property-holding, and cultural activities. The region’s documentary collections reflect Philadelphia’s Quaker origins and the Quaker traditions of women’s equality and outspokenness; the city’s role as a center for African-American politics and culture; and the development of institutions such as the world’s first medical college for women.</p>
 
     <p>Taken together, these collections demonstrate that the campaign for women’s suffrage did not happen in a vacuum, but was the result of decades of women of all kinds moving out of the home and into the schools and workplaces of the nation.</p>
