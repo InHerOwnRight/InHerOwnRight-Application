@@ -91,8 +91,8 @@ class Record < ActiveRecord::Base
 
     integer :dc_type_ids, references: DcType, multiple: true
 
-    string :subject do
-      dc_subjects.map(&:subject).first
+    string :subject, multiple: true do
+      dc_subjects.map(&:subject)
     end
 
     date :pub_date, references: DcDate, multiple: true do

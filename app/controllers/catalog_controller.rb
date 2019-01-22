@@ -132,7 +132,7 @@ class CatalogController < ApplicationController
       years_1920_to_1930: { label: '1920 to 1930', fq: "pub_date_dm:[1920-01-01T00:00:00Z TO 1930-12-31T00:00:00Z]" }
     }
 
-    config.add_facet_field 'subject_s', label: "Subject", solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'collection_id_im', label: "Collection", helper_method: :render_collection_name, solr_params: { 'facet.mincount' => 1 }
 
