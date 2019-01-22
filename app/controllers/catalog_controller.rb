@@ -10,11 +10,6 @@ class CatalogController < ApplicationController
   end
   helper_method :render_type_name
 
-  def render_subject_name(value)
-    value = DcSubject.find(value).subject
-  end
-  helper_method :render_subject_name
-
   def render_repository_name value
     value = Repository.find(value).name
   end
@@ -137,7 +132,7 @@ class CatalogController < ApplicationController
       years_1920_to_1930: { label: '1920 to 1930', fq: "pub_date_dm:[1920-01-01T00:00:00Z TO 1930-12-31T00:00:00Z]" }
     }
 
-    config.add_facet_field 'dc_subject_ids_im', label: "Subject", helper_method: :render_subject_name, solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'subject_s', label: "Subject", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'collection_id_im', label: "Collection", helper_method: :render_collection_name, solr_params: { 'facet.mincount' => 1 }
 
