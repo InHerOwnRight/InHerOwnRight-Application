@@ -5,11 +5,6 @@ class CatalogController < ApplicationController
 
   include Blacklight::Catalog
 
-  def render_contributor_name value
-    value = DcCreator.find(value).creator
-  end
-  helper_method :render_contributor_name
-
   def render_type_name value
     value = DcType.find(value).type
   end
@@ -126,7 +121,7 @@ class CatalogController < ApplicationController
     #   end
     # config.add_facet_field 'creator_s', label: 'Creator'
 
-    config.add_facet_field 'dc_creator_ids_im', label: "Creator / Author", helper_method: :render_contributor_name, solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }
     # config.add_facet_field 'repository_id_i', label: "Repository", helper_method: :render_repository_name
     config.add_facet_field 'date_', label: "Date Range", query: {
       years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },

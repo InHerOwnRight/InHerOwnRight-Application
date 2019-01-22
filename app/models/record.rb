@@ -83,7 +83,9 @@ class Record < ActiveRecord::Base
       dc_creators.map(&:creator)
     end
 
-    integer :dc_creator_ids, references: DcCreator, multiple: true
+    string :creator do
+      dc_creators.map(&:creator).first
+    end
 
     integer :repository_id, references: Repository
 
