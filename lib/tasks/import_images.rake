@@ -117,7 +117,7 @@ namespace :import_images do
     # At the time of this writing, it seems that we don't have HSP2 data yet
     missing_records = []
     bucket.objects(prefix: 'images/HSP2').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
+      current_identifier = file_path.split("/").last.split("-").first
       file_size = file_path.split("_").last.split(".").first
       if !Record.find_by_oai_identifier(current_identifier).nil?
         record = Record.find_by_oai_identifier(current_identifier)
