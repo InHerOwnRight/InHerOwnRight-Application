@@ -17,6 +17,7 @@ namespace :import_metadata do
 
   def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
+    nil_metadata_identifiers = []
     identifiers_relations_hash.each do |identifier, relations_nodes|
       response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
       response_record = response.record
@@ -45,6 +46,8 @@ namespace :import_metadata do
         else
           raw_record.xml_metadata = response_record.metadata
         end
+      else
+        nil_metadata_identifiers << response_record.header.identifier
       end
 
       raw_record.repository_id = repository.id
@@ -55,6 +58,7 @@ namespace :import_metadata do
         puts "Something went wrong."
       end
     end
+    puts nil_metadata_identifiers
   end
 
   task from_temple: :environment do
