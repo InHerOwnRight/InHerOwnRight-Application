@@ -98,7 +98,9 @@ namespace :create_records do
 
         if !row[2].blank?
           subjects = row[2].split("|")
-          subjects.each do |subj|
+          stripped_subjects = subjects.map { |s| s.strip }
+          stripped_subjects -= [""]
+          stripped_subjects.each do |subj|
             if DcSubject.find_by_subject(subj).blank?
               dc_subject = DcSubject.new
               dc_subject.subject = subj

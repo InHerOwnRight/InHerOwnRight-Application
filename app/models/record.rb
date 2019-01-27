@@ -171,12 +171,14 @@ class Record < ActiveRecord::Base
 
   def create_dc_subject(node, record)
     if node.text =~ /\;/
-      subjects = node.text.split("; ")
+      subjects = node.text.split(";")
     else
       subjects = node.text.split("|")
     end
-    subjects.each do |subject|
-      if DcSubject.find_by_subject(node.text).blank?
+    stripped_subjects = subjects.map { |s| s.strip }
+    stripped_subjects -= [""]
+    stripped_subjects.each do |subject|
+      if DcSubject.find_by_subject(subject).blank?
         dc_subject = DcSubject.new(subject: subject)
         dc_subject.save
         record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
