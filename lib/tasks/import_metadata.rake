@@ -350,6 +350,7 @@ namespace :import_metadata do
               xml['dc'].identifier row[0]
               xml['dc'].title row[3]
               xml['dcterms'].created row[4]
+              xml['dcterms'].created row[5]
               xml['dc'].creator row[6]
               xml['dcterms'].licence row[7]
               xml['dc'].identifier row[1]
