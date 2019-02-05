@@ -68,25 +68,25 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def all_creators
+    creators = dc_creators.map(&:creator)
+    contributors = dc_contributors.map(&:contributor)
+    creators + contributors
+  end
+
   searchable do
     text :oai_identifier
-
-    text :contributor do
-      dc_contributors.map(&:contributor)
-    end
 
     text :coverage do
       dc_coverages.map(&:coverage)
     end
 
     text :creator do
-      dc_creators.map(&:creator)
+      all_creators
     end
 
     string :sort_creator do
-      creators = dc_creators.map(&:creator)
-      contributors = dc_contributors.map(&:contributor)
-      (creators + contributors).first
+      all_creators.first
     end
 
     date :sort_date do
