@@ -100,7 +100,7 @@ class Record < ActiveRecord::Base
     integer :dc_type_ids, references: DcType, multiple: true
 
     string :subject, multiple: true do
-      dc_subjects.map(&:subject)
+      dc_subjects.map { |dc_subj| dc_subj.subject.capitalize }
     end
 
     date :pub_date, references: DcDate, multiple: true do
