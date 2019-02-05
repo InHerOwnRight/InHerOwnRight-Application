@@ -116,7 +116,7 @@ class CatalogController < ApplicationController
     #   end
     # config.add_facet_field 'creator_s', label: 'Creator'
 
-    config.add_facet_field 'creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'sort_creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }
     # config.add_facet_field 'repository_id_i', label: "Repository", helper_method: :render_repository_name
     config.add_facet_field 'date_', label: "Date Range", query: {
       years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
@@ -280,6 +280,10 @@ class CatalogController < ApplicationController
     # config.add_sort_field 'pub_date_sort desc, title_sort asc', label: 'year'
     config.add_sort_field 'sort_title_s asc', label: 'Title A-Z'
     config.add_sort_field 'sort_title_s desc', label: 'Title Z-A'
+    config.add_sort_field 'sort_creator_s asc', label: 'Creator A-Z'
+    config.add_sort_field 'sort_creator_s desc', label: 'Creator Z-A'
+    config.add_sort_field 'sort_date_d asc', label: 'Date: Oldest'
+    config.add_sort_field 'sort_date_d desc', label: 'Date: Most Recent'
 
     # If there are more than this many search results, no spelling ("did yo
     # mean") suggestion is offered.

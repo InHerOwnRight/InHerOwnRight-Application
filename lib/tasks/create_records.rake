@@ -32,7 +32,7 @@ namespace :create_records do
   task records: :environment do
     raw_records = RawRecord.where(record_type: nil)
     raw_records.each do |raw_record|
-      if !raw_record.xml_metadata.nil?
+      if !raw_record.xml_metadata.blank?
         if Record.where(oai_identifier: raw_record.oai_identifier).blank?
           record = Record.new
           record.raw_record_id = raw_record.id

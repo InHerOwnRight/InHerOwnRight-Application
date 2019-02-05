@@ -83,8 +83,16 @@ class Record < ActiveRecord::Base
       dc_creators.map(&:creator)
     end
 
-    string :creator do
-      dc_creators.map(&:creator).first
+    string :sort_creator do
+      creators = dc_creators.map(&:creator)
+      contributors = dc_contributors.map(&:contributor)
+      (creators + contributors).first
+    end
+
+    date :sort_date do
+      if !dc_dates.first.nil?
+        dc_dates.map(&:date).first
+      end
     end
 
     integer :repository_id, references: Repository
@@ -155,16 +163,18 @@ class Record < ActiveRecord::Base
 ########################## Record and record part creation ################################
 
   def create_dc_creator(node, record)
-    if DcCreator.find_by_creator(node.text).blank?
-      dc_creator = DcCreator.new(creator: node.text)
-      dc_creator.save
-      record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-      record_dc_creator.save
-    else
-      dc_creator = DcCreator.find_by_creator(node.text)
-      record = self
-      record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-      record_dc_creator.save
+    if !node.text.blank?
+      if DcCreator.find_by_creator(node.text).blank?
+        dc_creator = DcCreator.new(creator: node.text)
+        dc_creator.save
+        record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
+        record_dc_creator.save
+      else
+        dc_creator = DcCreator.find_by_creator(node.text)
+        record = self
+        record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
+        record_dc_creator.save
+      end
     end
   end
 
