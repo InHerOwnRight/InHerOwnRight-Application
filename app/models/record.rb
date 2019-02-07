@@ -86,7 +86,9 @@ class Record < ActiveRecord::Base
     end
 
     string :sort_creator do
-      all_creators.first
+      creators = dc_creators.map(&:creator)
+      contributors = dc_contributors.map(&:contributor)
+      (creators + contributors).first
     end
 
     date :sort_date do
