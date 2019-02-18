@@ -12,231 +12,205 @@ namespace :import_images do
   end
 
   task bates: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Bates').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.match(/.+?(?=_lg.png|_thumb.png)/).to_s
-      file_size = file_path.split("_").last.split(".").first
-      if DcIdentifier.find_by_identifier(current_identifier).nil?
-        missing_records.push(file_path)
-      else
-        record = DcIdentifier.find_by_identifier(current_identifier).record
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Bates').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        all_image_paths.each do |image_path|
+          if image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
       end
     end
-    puts missing_records
   end
 
   task drexel: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Drexel/').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.match(/.+?(?=_\d\d\d_lg.png|_\d\d\d_thumb.png)/).to_s
-      file_size = file_path.split("_").last.split(".").first
-      if !DcIdentifier.find_by_identifier("local: #{current_identifier}").nil?
-        record = DcIdentifier.find_by_identifier("local: #{current_identifier}").record
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Drexel/').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        if dc_identifier.identifier[0..5] == "local:"
+          all_image_paths.each do |image_path|
+            if image_path.include?(dc_identifier.identifier[7..-1])
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
+            end
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task drexel2: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Drexel2/').collect(&:key).each do |file_path|
-      filename = file_path.split("/").last
-      match = /(.*)_00\d_lg.png/.match(filename) || /(.*)_00\d_thumb.png/.match(filename)
-      current_identifier = match && match[1]
-      file_size = file_path.split("_").last.split(".").first
-      if !DcIdentifier.find_by_identifier("local: #{current_identifier}").nil?
-        record = DcIdentifier.find_by_identifier("local: #{current_identifier}").record
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Drexel2').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        if dc_identifier.identifier[0..5] == "local:"
+          all_image_paths.each do |image_path|
+            if image_path.include?(dc_identifier.identifier[7..-1])
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
+            end
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task haverford: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Haverford').collect(&:key).each  do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
-      file_size = file_path.split("_").last.split(".").first
-      if !Record.find_by_oai_identifier("oai:tricontentdm.brynmawr.edu:HC_DigReq/#{current_identifier}").nil?
-        record = Record.find_by_oai_identifier("oai:tricontentdm.brynmawr.edu:HC_DigReq/#{current_identifier}")
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Haverford').collect(&:key)
+    Record.all.each do |record|
+      all_image_paths.each do |image_path|
+        if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
+          if image_path.include?(record.oai_identifier[40..-1])
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task hsp: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/HSP/').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
-      file_size = file_path.split("_").last.split(".").first
-      if !Record.find_by_oai_identifier(current_identifier).nil?
-        record = Record.find_by_oai_identifier(current_identifier)
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/HSP').collect(&:key)
+    Record.all.each do |record|
+      all_image_paths.each do |image_path|
+        if !record.oai_identifier.blank?
+          if image_path.include?(record.oai_identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task hsp2: :environment do
-    # At the time of this writing, it seems that we don't have HSP2 data yet
-    missing_records = []
-    bucket.objects(prefix: 'images/HSP2').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.split("-").first
-      file_size = file_path.split("_").last.split(".").first
-      if !Record.find_by_oai_identifier(current_identifier).nil?
-        record = Record.find_by_oai_identifier(current_identifier)
-        if file_size == "lg"
-          puts "Updated #{record.id}"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/HSP2').collect(&:key)
+    Record.all.each do |record|
+      all_image_paths.each do |image_path|
+        if !record.oai_identifier.blank?
+          if image_path.include?(record.oai_identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task library_company: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/LibraryCompany').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
-      file_size = file_path.split("_").last.split(".").first
-      if !Record.find_by_oai_identifier(current_identifier).nil?
-        record = Record.find_by_oai_identifier(current_identifier)
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/LibraryCompany').collect(&:key)
+    Record.all.each do |record|
+      all_image_paths.each do |image_path|
+        if !record.oai_identifier.blank?
+          if image_path.include?(record.oai_identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task swarthmore: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Swarthmore/').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
-      file_size = file_path.split("_").last.split(".").first
-      if !DcIdentifier.find_by_identifier(current_identifier).nil?
-        record = DcIdentifier.find_by_identifier(current_identifier).record
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Swarthmore/').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        all_image_paths.each do |image_path|
+          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task swarthmore2: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Swarthmore2').collect(&:key).each do |file_path|
-      current_identifier = file_path.split("/").last.split("_").first
-      file_size = file_path.split("_").last.split(".").first
-      if !DcIdentifier.find_by_identifier(current_identifier).nil?
-        record = DcIdentifier.find_by_identifier(current_identifier).record
-        if file_size == "lg"
-          puts "Updated #{record.id}"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Swarthmore2/').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        all_image_paths.each do |image_path|
+          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task temple: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Temple/').collect(&:key).each do |file_path|
-      actual_file_name = file_path.split("/").last.split("_").first
-      current_identifier = file_path.split("/").last.split("_").first.split("Y").first
-      file_size = file_path.split("_").last.split(".").first
-      if !DcIdentifier.find_by_identifier(current_identifier).nil?
-        record = DcIdentifier.find_by_identifier(current_identifier).record
-        if file_size == "lg"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Temple/').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        all_image_paths.each do |image_path|
+          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   task temple2: :environment do
-    missing_records = []
-    bucket.objects(prefix: 'images/Temple2').collect(&:key).each do |file_path|
-      actual_file_name = file_path.split("/").last.split("_").first
-      current_identifier = file_path.split("/").last.split("_").first.split("Y").first
-      file_size = file_path.split("_").last.split(".").first
-      if !DcIdentifier.find_by_identifier(current_identifier).nil?
-        record = DcIdentifier.find_by_identifier(current_identifier).record
-        if file_size == "lg"
-          puts "Updated #{record.id}"
-          record.file_name = "/#{file_path}"
-        else
-          record.thumbnail = "/#{file_path}"
+    all_image_paths = bucket.objects(prefix: 'images/Temple2/').collect(&:key)
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        all_image_paths.each do |image_path|
+          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
         end
-        record.save
-      else
-        missing_records.push(file_path)
       end
     end
-    puts missing_records
   end
 
   require 'fileutils'
