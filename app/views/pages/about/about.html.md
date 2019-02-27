@@ -13,14 +13,14 @@
 <ul>
 <li><a href="../essays/work_and_friendship_across_racial_lines.html.md">Working and making friends across racial lines</a></li>
 <li><a href="../essays/philanthropy_or_self-determination?.md">Doing good works and practicing self-improvement in the progressive-era city</a></li>
-<li><a href="../essays/medical_women_confront_race,_professionalism,_respectability.md">Confronting race, professionalism, and respectability in the medical profession </a></li>
+<li><a href="../essays/medical_women.html.md">Confronting race, professionalism, and respectability in the medical profession </a></li>
 </ul>
 <p>The project data is available through the API for researchers to use freely.</p>
-<p>Although the digitization of all surveyed materials was beyond the scope of the pilot project, users can search and browse brief descriptions of the additional collections, or download a listing of all collections. For more information, see the “Collection Guide” link at the top of the page.</p> 
+<p>Although the digitization of all surveyed materials was beyond the scope of the pilot project, users can search and browse brief descriptions of the additional collections, or download a listing of all collections. For more information, see the “Collection Guide” link at the top of the page.</p>
   <br/><h5>Technology</h5>
   <p>Project technology development was driven by an inspired and talented group of PACSCL repositories staff (see full list at right), with aggregation and application development by <a href="http://neomindlabs.com">Neomind Labs</a>.</p> 
 <p>The application is built using Postgres and Ruby on Rails and incorporates an OAI-PMH harvester and API endpoint.</p>
-<p>To encourage participation, basic metadata was required, and more robust metadata encouraged. Neomind harvested the original metadata, normalized and processed it, and saved both versions.</p> 
+<p>To encourage participation, basic metadata was required, and more robust metadata encouraged. Neomind harvested the original metadata, normalized and processed it, and saved both versions.</p>
 <p><a href="https://docs.google.com/document/d/1TRClU0exh30UyrLwaHOlj17Kck7fGyNNY7TEmdLKg4U/edit?usp=sharing">Metadata guidelines</a><br/>
 <a href="https://docs.google.com/document/d/1gidYN92pfkx91S2oxSb5v4YiyMafKd9g51_4Hbrzot8/edit">Digital file and digitization guidelines</a></p>
 <br/>
