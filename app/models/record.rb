@@ -85,6 +85,14 @@ class Record < ActiveRecord::Base
       all_creators
     end
 
+    text :repository do
+      repository.name
+    end
+
+    string :repository do
+      repository.name
+    end
+
     string :sort_creator do
       creators = dc_creators.map(&:creator)
       contributors = dc_contributors.map(&:contributor)

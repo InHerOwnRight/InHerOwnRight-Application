@@ -134,6 +134,8 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }
 
+    config.add_facet_field 'repository_s', label: "Contributing Institution", solr_params: { 'facet.mincount' => 1 }
+
     config.add_facet_field 'collection_id_im', label: "Collection", helper_method: :render_collection_name, solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'dc_type_ids_im', label: "Type", helper_method: :render_type_name, solr_params: { 'facet.mincount' => 1 }
@@ -250,8 +252,9 @@ class CatalogController < ApplicationController
 
     config.add_search_field('all_fields', {label: "All Fields"}) do |field|
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
+      field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text'
+        qf: 'creator_text title_text description_text subject_text repository_text'
         }
     end
 
@@ -270,6 +273,10 @@ class CatalogController < ApplicationController
 
     config.add_search_field('type') do |field|
       field.solr_parameters = { qf: 'type_text'}
+    end
+
+    config.add_search_field('contributing_institution') do |field|
+      field.solr_parameters = { qf: 'repository_text'}
     end
 
     # "sort results by" select (pulldown)
