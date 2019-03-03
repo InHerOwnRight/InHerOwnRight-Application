@@ -7,15 +7,17 @@ namespace :create_records do
   task collections: :environment do
     raw_records = RawRecord.where(record_type: "collection")
     raw_records.each do |raw_record|
-      record = Record.new
-      record.raw_record_id = raw_record.id
-      record.oai_identifier = raw_record.oai_identifier
-      xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
-      xml_doc.remove_namespaces!
-      if record.save
-        node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spacial", "text", "isPartOf"]
-        node_names.each do | node_name |
-          record.create_dc_part(node_name, xml_doc, record)
+      if Record.where(oai_identifier: raw_record.oai_identifier).blank?
+        record = Record.new
+        record.raw_record_id = raw_record.id
+        record.oai_identifier = raw_record.oai_identifier
+        xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
+        xml_doc.remove_namespaces!
+        if record.save
+          node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spacial", "text", "isPartOf"]
+          node_names.each do | node_name |
+            record.create_dc_part(node_name, xml_doc, record)
+          end
         end
       end
     end
