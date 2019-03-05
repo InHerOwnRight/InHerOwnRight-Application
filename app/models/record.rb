@@ -121,10 +121,6 @@ class Record < ActiveRecord::Base
       dc_subjects.map { |dc_subj| dc_subj.subject.slice(0,1).capitalize + dc_subj.subject.slice(1..-1) }
     end
 
-    string :type, multiple: true do
-      dc_types.map { |dc_type| dc_type.type.slice(0,1).capitalize + dc_type.type.slice(1..-1)  }
-    end
-
     date :pub_date, references: DcDate, multiple: true do
       dc_dates.original_creation_date.map(&:date)
     end
