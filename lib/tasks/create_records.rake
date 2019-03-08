@@ -7,7 +7,7 @@ namespace :create_records do
   task collections: :environment do
     raw_records = RawRecord.where(record_type: "collection")
     raw_records.each do |raw_record|
-      if Record.where(oai_identifier: raw_record.oai_identifier).blank?
+      if Record.where(raw_record_id: raw_record.id).blank?
         record = Record.new
         record.raw_record_id = raw_record.id
         record.oai_identifier = raw_record.oai_identifier
