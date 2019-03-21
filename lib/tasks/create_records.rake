@@ -73,7 +73,7 @@ namespace :create_records do
             if raw_record.repository.abbreviation == "DrexelMed | DXU"
               if record.dc_relations.map{|dc_relation| dc_relation.relation =~ /Alumnae Association/}.any?
                 collection = Record.collection_for("Reports and Transactions of the Annual Meetings of the Alumnae Association of the Woman's Medical College of Pennsylvania").first
-                record.collection_id = collection.id
+                record.collection_id = collection.id if !collection.blank?
                 record.save
               end
             end
