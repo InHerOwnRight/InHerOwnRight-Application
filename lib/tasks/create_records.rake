@@ -14,7 +14,7 @@ namespace :create_records do
         xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
         xml_doc.remove_namespaces!
         if record.save
-          node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spacial", "text", "isPartOf"]
+          node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spacial", "text", "isPartOf", "coverage"]
           node_names.each do | node_name |
             record.create_dc_part(node_name, xml_doc, record)
           end
@@ -43,7 +43,7 @@ namespace :create_records do
           xml_doc.remove_namespaces!
 
           if record.save
-            node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spacial", "text", "isPartOf"]
+            node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "license", "identifier", "description", "contributor", "publisher", "extent", "source", "spatial", "text", "isPartOf", "coverage"]
             node_names.each do | node_name |
               record.create_dc_part(node_name, xml_doc, record)
             end
