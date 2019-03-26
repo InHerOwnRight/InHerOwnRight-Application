@@ -85,6 +85,10 @@ class Record < ActiveRecord::Base
       all_creators
     end
 
+    text :full_text do
+      full_texts.map(&:transcription)
+    end
+
     text :repository do
       repository.name
     end
@@ -378,7 +382,7 @@ class Record < ActiveRecord::Base
         create_dc_terms_is_part_of(node, record)
       end
 
-      if node_name == "text"
+      if node_name == "text" && !node.text.empty?
         create_full_text(node, record)
       end
 
