@@ -388,7 +388,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id
