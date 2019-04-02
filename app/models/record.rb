@@ -121,6 +121,10 @@ class Record < ActiveRecord::Base
       dc_subjects.map { |dc_subj| dc_subj.subject.slice(0,1).capitalize + dc_subj.subject.slice(1..-1) }
     end
 
+    string :type, multiple: true do
+      dc_types.map { |dc_type| dc_type.type.slice(0,1).capitalize + dc_type.type.slice(1..-1)  }
+    end
+
     date :pub_date, references: DcDate, multiple: true do
       dc_dates.original_creation_date.map(&:date)
     end
@@ -237,16 +241,18 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_type(node, record)
-    if DcType.find_by_type(node.text).blank?
-      dc_type = DcType.new(type: node.text)
-      dc_type.save
-      record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
-      record_dc_type.save
-    else
-      dc_type = DcType.find_by_type(node.text)
-      record = self
-      record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
-      record_dc_type.save
+    if !node.text.blank?
+      if DcType.find_by_type(node.text).blank?
+        dc_type = DcType.new(type: node.text)
+        dc_type.save
+        record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
+        record_dc_type.save
+      else
+        dc_type = DcType.find_by_type(node.text)
+        record = self
+        record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
+        record_dc_type.save
+      end
     end
   end
 

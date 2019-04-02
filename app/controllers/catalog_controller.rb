@@ -5,11 +5,6 @@ class CatalogController < ApplicationController
 
   include Blacklight::Catalog
 
-  def render_type_name value
-    value = DcType.find(value).type
-  end
-  helper_method :render_type_name
-
   def render_repository_name value
     value = Repository.find(value).name
   end
@@ -139,7 +134,7 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'collection_id_im', label: "Collection", helper_method: :render_collection_name, solr_params: { 'facet.mincount' => 1 }
 
-    config.add_facet_field 'dc_type_ids_im', label: "Type", helper_method: :render_type_name, solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'type_sm', label: "Type", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
       is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
