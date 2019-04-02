@@ -17,7 +17,7 @@
     <p style="margin: 0px 00px 0px 10px">
       Founded in 1850 as the Female Medical College of Pennsylvania, the Woman’s Medical College of Pennsylvania was one of the first institutions in the nations founded specifically to provide women with a medical education. Beginning in 1876, alumnae gathered each year to present papers and report on their activities. Graduates saw it as their duty as enlightened American women to uplift women in other parts of the world—particularly India, where the phenomenon of “child brides” was especially concerning. Less prominently featured, but still included, are arguments that attribute racial and class disparities to biological factors.
     <br/><br/>
-    <a href="/catalog?f%5Bcollection_id_im%5D%5B%5D=11&search_field=creator">Explore documents</a>
+    <a href="/catalog?f%5Bsort_creator_s%5D%5B%5D=Women%27s+Medical+College+of+Pennsylvania&q=&search_field=creator">Explore documents</a>
     </p>
   </div>
   <div class="col-md-1">
@@ -30,7 +30,7 @@
     <p style="margin: 0px 00px 0px 10px">
       In 1918, Edith Madeira traveled abroad to serve as chief nurse for the American Red Cross Commission to Palestine. Her papers show how women negotiated a place they were not supposed to be—the front lines of war—in a profession that was not always recognized as such—nursing. In addition to commentary on the war, Madeira’s writing is replete with observations on Palestinian natives hired to work in the hospital, Armenian refugees, Africans, and others. In relation to these groups, she saw herself as a benevolent helper armed with the gifts of civilization, efficiency, and professionalism.
     <br/><br/>
-    <a href="/records/285">Explore documents</a>
+    <a href="/catalog?utf8=✓&search_field=creator&q=Edith+Madeira">Explore documents</a>
     </p>
   </div>
   <div class="col-md-6">
