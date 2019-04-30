@@ -81,8 +81,16 @@ class Record < ActiveRecord::Base
       dc_coverages.map(&:coverage)
     end
 
+    text :spatial do
+      dc_terms_spacials.map(&:spacial)
+    end
+
     text :creator do
       all_creators
+    end
+
+    text :full_text do
+      full_texts.map(&:transcription)
     end
 
     text :repository do
@@ -378,7 +386,7 @@ class Record < ActiveRecord::Base
         create_dc_terms_is_part_of(node, record)
       end
 
-      if node_name == "text"
+      if node_name == "text" && !node.text.empty?
         create_full_text(node, record)
       end
 

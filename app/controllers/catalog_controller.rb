@@ -41,7 +41,8 @@ class CatalogController < ApplicationController
 
     ## Default parameters to send to solr for all search-like requests. See also SearchBuilder#processed_parameters
     config.default_solr_params = {
-      rows: 10
+      rows: 10,
+      qf: 'transcription^0.5'
     }
 
     # solr path which will be added to solr base url before the other solr params.
@@ -254,7 +255,7 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text spatial_text'
         }
     end
 
@@ -279,12 +280,21 @@ class CatalogController < ApplicationController
       field.solr_parameters = { qf: 'repository_text'}
     end
 
+    config.add_search_field('transcription') do |field|
+      field.solr_parameters = { qf: 'full_text_text' }
+    end
+
+    config.add_search_field('location') do |field|
+      field.solr_parameters = { qf: 'spatial_text' }
+    end
+
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and
     # whether the sort is ascending or descending (it must be asc or desc
     # except in the relevancy case).
     # config.add_sort_field 'score desc, pub_date_sort desc, title_sort asc', label: 'relevance'
     # config.add_sort_field 'pub_date_sort desc, title_sort asc', label: 'year'
+    config.add_sort_field 'score desc', label: 'Relevance'
     config.add_sort_field 'sort_title_s asc', label: 'Title A-Z'
     config.add_sort_field 'sort_title_s desc', label: 'Title Z-A'
     config.add_sort_field 'sort_creator_s asc', label: 'Creator A-Z'
