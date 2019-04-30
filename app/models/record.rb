@@ -81,6 +81,10 @@ class Record < ActiveRecord::Base
       dc_coverages.map(&:coverage)
     end
 
+    text :spatial do
+      dc_terms_spacials.map(&:spacial)
+    end
+
     text :creator do
       all_creators
     end

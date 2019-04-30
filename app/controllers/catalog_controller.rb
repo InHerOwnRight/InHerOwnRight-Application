@@ -255,7 +255,7 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text full_text_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text spatial_text'
         }
     end
 
@@ -283,6 +283,11 @@ class CatalogController < ApplicationController
     config.add_search_field('transcription') do |field|
       field.solr_parameters = { qf: 'full_text_text' }
     end
+
+    config.add_search_field('location') do |field|
+      field.solr_parameters = { qf: 'spatial_text' }
+    end
+
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and
     # whether the sort is ascending or descending (it must be asc or desc
