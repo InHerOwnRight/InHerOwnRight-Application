@@ -85,6 +85,10 @@ class Record < ActiveRecord::Base
       all_creators
     end
 
+    text :full_text do
+      full_texts.map(&:transcription)
+    end
+
     text :repository do
       repository.name
     end
@@ -378,7 +382,7 @@ class Record < ActiveRecord::Base
         create_dc_terms_is_part_of(node, record)
       end
 
-      if node_name == "text"
+      if node_name == "text" && !node.text.empty?
         create_full_text(node, record)
       end
 
@@ -388,7 +392,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.new
         dc_model.record_id = record.id

@@ -37,7 +37,7 @@
       - if @record.dc_subjects.any? && !@record.is_collection?
         = render 'dc_subjects'
 
-      - if @record.dc_terms_spacials.any?
+      - if @record.dc_terms_spacials.any? && !@record.dc_terms_spacials.empty?
         = render 'dc_terms_spacials'
 
       - if @record.is_collection? && !@collection_repository_url.nil?
