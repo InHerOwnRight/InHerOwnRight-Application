@@ -279,7 +279,7 @@ class CatalogController < ApplicationController
       field.solr_parameters = { qf: 'full_text_text' }
     end
 
-    config.add_search_field('location') do |field|
+    config.add_search_field('place') do |field|
       field.solr_parameters = { qf: 'spatial_text' }
     end
 
