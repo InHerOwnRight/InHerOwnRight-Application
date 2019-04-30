@@ -4,7 +4,7 @@
       Subjects
     %td
       - @record.dc_subjects.each_with_index do |dc_subject, index|
-        = link_to dc_subject.subject.slice(0,1).capitalize + dc_subject.subject.slice(1..-1), search_catalog_path( search_field: 'subject', q: dc_subject.subject )
+        = link_to dc_subject.subject.slice(0,1).capitalize + dc_subject.subject.slice(1..-1), search_catalog_path( search_field: 'subject', q: dc_subject.subject 
         = "|" unless index == @record.dc_subjects.size - 1
 
 - else
