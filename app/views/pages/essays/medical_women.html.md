@@ -17,7 +17,7 @@
     <p style="margin: 0px 00px 0px 10px">
       Founded in 1850 as the Female Medical College of Pennsylvania, the Woman’s Medical College of Pennsylvania was one of the first institutions in the nations founded specifically to provide women with a medical education. Beginning in 1876, alumnae gathered each year to present papers and report on their activities. Graduates saw it as their duty as enlightened American women to uplift women in other parts of the world—particularly India, where the phenomenon of “child brides” was especially concerning. Less prominently featured, but still included, are arguments that attribute racial and class disparities to biological factors.
     <br/><br/>
-    <a href="/catalog?f%5Bsort_creator_s%5D%5B%5D=Women%27s+Medical+College+of+Pennsylvania&q=&search_field=creator">Explore documents</a>
+    <a href="/catalog?f%5Bsort_creator_s%5D%5B%5D=Woman%27s+Medical+College+of+Pennsylvania&q=&search_field=creator">Explore documents</a>
     </p>
   </div>
   <div class="col-md-1">
