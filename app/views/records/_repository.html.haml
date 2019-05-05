@@ -2,4 +2,4 @@
   %th{ scope: "row" }
     Contributing institution
   %td
-    = link_to @record.repository.name, search_catalog_path( search_field: 'contributing_institution', q: @record.repository.name )
+    = link_to @record.repository.name, @record.repository.url 

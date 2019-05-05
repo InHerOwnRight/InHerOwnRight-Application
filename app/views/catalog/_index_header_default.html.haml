@@ -17,12 +17,19 @@
     %a{ href: "#{record_path(instance.id)}", style: 'float:left;'}
       = image_tag(instance.thumbnail)
 
+  - if instance.is_collection?
+    %a{ href: "#{record_path(instance)}", style: 'float:left;'}
+      = image_tag "/static_images/collection.jpg"
+
   %h3.index_title.document-title-heading.col-sm-9.col-lg-10
     %div
       - if counter = document_counter_with_offset(document_counter)
         %span.document-counter
           = t('blacklight.search.documents.counter', counter: counter)
-      = link_to instance.dc_titles.first.title, record_path(instance)
+      - if instance.is_collection?
+        = link_to "#{instance.dc_titles.first.title} (collection description)", record_path(instance)
+      - else
+        = link_to instance.dc_titles.first.title, record_path(instance)
       %br
       %br
       - if !instance.dc_creators.first.blank?
@@ -51,13 +58,8 @@
       - if instance.is_collection?
         - if !instance.dc_creators.blank?
           - if Record.for_same_creator(instance.dc_creators.first.id).count > 1
-            %h5.col-sm-12.collections_subhead
-              = "Learn more about the #{instance.dc_titles.first.title}"
             %h5.col-sm-12
-              = link_to "View items by #{instance.dc_creators.first.creator}", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
+              = link_to "View digitized items from this collection", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
         - if Record.records_for_collection(instance.id).count > 1
-          %h5.col-sm-12.collections_subhead
-            = "Learn more about the #{instance.dc_titles.first.title}"
           %h5.col-sm-12
-            = link_to "View items from the #{instance.dc_titles.first.title}", search_catalog_path( f: {"collection_id_im" => [instance.id]} )
-
+            = link_to "View digitized items from this collection", search_catalog_path( f: {"collection_id_im" => [instance.id]} )
