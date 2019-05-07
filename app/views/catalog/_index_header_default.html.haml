@@ -13,13 +13,13 @@
     = # bookmark functions for items/docs
     = render_index_doc_actions document, wrapping_class: "index-document-functions col-sm-3 col-lg-2"
 
-  - if instance.thumbnail
-    %a{ href: "#{record_path(instance.id)}", style: 'float:left;'}
-      = image_tag(instance.thumbnail)
-
   - if instance.is_collection?
     %a{ href: "#{record_path(instance)}", style: 'float:left;'}
       = image_tag "/static_images/collection.png"
+
+  - elsif instance.thumbnail
+    %a{ href: "#{record_path(instance.id)}", style: 'float:left;'}
+      = image_tag(instance.thumbnail)
 
   %h3.index_title.document-title-heading.col-sm-9.col-lg-10
     %div
