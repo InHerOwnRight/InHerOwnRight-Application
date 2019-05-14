@@ -350,7 +350,7 @@ class Record < ActiveRecord::Base
       @part_model_name = "dc_right"
     elsif node_name == "created"
       @part_model_name = "dc_date"
-    elsif node_name == "license"
+    elsif node_name == "licence"
       @part_model_name = "dc_right"
     else
       @part_model_name = "dc_#{node_name}"
@@ -396,7 +396,7 @@ class Record < ActiveRecord::Base
         create_full_text(node, record)
       end
 
-      if node_name == "license"
+      if node_name == "licence"
         node_name = "rights"
       end
 
