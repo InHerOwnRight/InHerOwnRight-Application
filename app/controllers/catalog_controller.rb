@@ -112,7 +112,7 @@ class CatalogController < ApplicationController
     #   end
     # config.add_facet_field 'creator_s', label: 'Creator'
 
-    config.add_facet_field 'sort_creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'sort_creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }, limit: 100
     # config.add_facet_field 'repository_id_i', label: "Repository", helper_method: :render_repository_name
     config.add_facet_field 'date_', label: "Date Range", query: {
       years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
@@ -128,7 +128,7 @@ class CatalogController < ApplicationController
       years_1920_to_1930: { label: '1920 to 1930', fq: "pub_date_dm:[1920-01-01T00:00:00Z TO 1930-12-31T00:00:00Z]" }
     }
 
-    config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }
+    config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }, limit: 200
 
     config.add_facet_field 'repository_s', label: "Contributing Institution", solr_params: { 'facet.mincount' => 1 }
 
