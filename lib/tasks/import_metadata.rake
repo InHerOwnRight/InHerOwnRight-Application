@@ -11,7 +11,7 @@ namespace :import_metadata do
 
 
   task all_oai: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford]
-  task all_csv: [:collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2]
+  task all_csv: [:collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2, :from_bates2]
   # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
   task all: [:all_oai, :all_csv]
 
@@ -324,72 +324,84 @@ namespace :import_metadata do
     filepath = "lib/documents/csv/hsp/HSP2.csv"
     original_entry_date = "2017-4-26" # hardcoded until we get a filenaming scheme
 
-    name_spaces = {
-        "xmlns:oai_qdc" => "http://worldcat.org/xmlschemas/qdc-1.0/",
-        "xmlns:dcterms" => "http://purl.org/dc/terms/",
-        "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
-    }
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
 
-    CSV.foreach(filepath, headers: true) do |row|
-      if RawRecord.find_by_oai_identifier(row[0]).blank?
-        raw_record = RawRecord.new
-        raw_record.repository_id = repository.id
-        raw_record.original_record_url = row[1]
-        raw_record.oai_identifier = row[0]
-        raw_record.original_entry_date = original_entry_date # hardcoded until we get a filenaming scheme
+  task from_bates2: :environment do
+    repository = Repository.find_by_name("Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing")
+    filepath = "lib/documents/csv/bates_center/BatesCenter2.csv"
+    original_entry_date = "2019-5-15" # hardcoded until we get a filenaming scheme
 
-        @full_text = nil
-        if row[16] == "y" || row[16] == "Y"
-          CSV.foreach("lib/documents/csv/hsp/HSP2_full_text.csv", headers: true) do |text_row|
-            if text_row[0] == row[0] && !text_row[1].nil?
-              @full_text = text_row[1]
-            end
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+end
+
+def import_from_csv2(filepath, repository, original_entry_date)
+  name_spaces = {
+      "xmlns:oai_qdc" => "http://worldcat.org/xmlschemas/qdc-1.0/",
+      "xmlns:dcterms" => "http://purl.org/dc/terms/",
+      "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
+  }
+  
+  CSV.foreach(filepath, headers: true) do |row|
+    if RawRecord.find_by_oai_identifier(row[0]).blank?
+      raw_record = RawRecord.new
+      raw_record.repository_id = repository.id
+      raw_record.original_record_url = row[1]
+      raw_record.oai_identifier = row[0]
+      raw_record.original_entry_date = original_entry_date # hardcoded until we get a filenaming scheme
+
+      @full_text = nil
+      if row[16] == "y" || row[16] == "Y"
+        CSV.foreach("lib/documents/csv/hsp/HSP2_full_text.csv", headers: true) do |text_row|
+          if text_row[0] == row[0] && !text_row[1].nil?
+            @full_text = text_row[1]
           end
         end
-
-        builder = Nokogiri::XML::Builder.new { |xml|
-          xml.metadata {
-            xml.contributing_repository row[2]
-            xml['oai_qdc'].qualifieddc(name_spaces) do
-              xml['dc'].identifier row[0]
-              xml['dc'].title row[3]
-              xml['dcterms'].created row[4]
-              xml['dcterms'].created row[5]
-              xml['dc'].creator row[6]
-              xml['dcterms'].licence row[7]
-              xml['dc'].identifier row[1]
-              xml['dc'].type row[10]
-              xml['dc'].language row[8]
-              xml['dcterms'].extent row[11]
-              if row[9] =~ /\;/
-                subjects = row[9].split("; ")
-                subjects.each do |subj|
-                  xml['dc'].subject subj
-                end
-              elsif row[9] =~ /\\|/
-                subjects = row[9].split("|")
-                subjects.each do |subj|
-                  xml['dc'].subject subj
-                end
-              else
-                xml['dc'].subject row[9]
-              end
-              xml['dcterms'].spacial row[12]
-              xml['dc'].description row[13]
-              xml['dc'].publisher row[14]
-              xml['dcterms'].isPartOf row[15]
-              xml['dcterms'].text_ @full_text
-              xml['dcterms'].localData row[17]
-              xml['dcterms'].localData row[18]
-              xml['dcterms'].localData row[19]
-            end
-          }
-        }
-        raw_record.xml_metadata = builder.to_xml
-        raw_record.save
-      else
-        puts "Raw record for OAI ID #{row[0]} already exists."
       end
+
+      builder = Nokogiri::XML::Builder.new { |xml|
+        xml.metadata {
+          xml.contributing_repository row[2]
+          xml['oai_qdc'].qualifieddc(name_spaces) do
+            xml['dc'].identifier row[0]
+            xml['dc'].title row[3]
+            xml['dcterms'].created row[4]
+            xml['dcterms'].created row[5]
+            xml['dc'].creator row[6]
+            xml['dcterms'].licence row[7]
+            xml['dc'].identifier row[1]
+            xml['dc'].type row[10]
+            xml['dc'].language row[8]
+            xml['dcterms'].extent row[11]
+            if row[9] =~ /\;/
+              subjects = row[9].split("; ")
+              subjects.each do |subj|
+                xml['dc'].subject subj
+              end
+            elsif row[9] =~ /\\|/
+              subjects = row[9].split("|")
+              subjects.each do |subj|
+                xml['dc'].subject subj
+              end
+            else
+              xml['dc'].subject row[9]
+            end
+            xml['dcterms'].spacial row[12]
+            xml['dc'].description row[13]
+            xml['dc'].publisher row[14]
+            xml['dcterms'].isPartOf row[15]
+            xml['dcterms'].text_ @full_text
+            xml['dcterms'].localData row[17]
+            xml['dcterms'].localData row[18]
+            xml['dcterms'].localData row[19]
+          end
+        }
+      }
+      raw_record.xml_metadata = builder.to_xml
+      raw_record.save
+    else
+      puts "Raw record for OAI ID '#{row[0]}' already exists."
     end
   end
 end
