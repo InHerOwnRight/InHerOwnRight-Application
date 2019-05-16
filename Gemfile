@@ -39,6 +39,7 @@ gem 'haml', '~> 5.0', '>= 5.0.1'
 gem 'high_voltage', '~> 3.0'
 gem 'redcarpet', '~> 3.4'
 gem 'dotenv-rails'
+gem "mini_magick"
 # gem 'carpetbomb'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'

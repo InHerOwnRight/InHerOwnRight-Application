@@ -143,6 +143,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     method_source (0.9.2)
+    mini_magick (4.9.3)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
@@ -286,6 +287,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
+  mini_magick
   oai
   pg
   progress_bar
