@@ -265,7 +265,7 @@ class Record < ActiveRecord::Base
         full_dates = raw_date.split("-") if raw_date =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
         full_dates.each do |full_date|
           date_components = full_date.split("-")
-          date = Date.new(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i)
+          date = Date.new(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i) if Date.valid_date?(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i)
           dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
           dc_date.save
         end

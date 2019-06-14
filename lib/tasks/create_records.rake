@@ -116,7 +116,7 @@ task create_enhanced_data: :environment do
           end
         end
       end
-      
+
       if !row[3].blank?
           dc_terms_spacial = DcTermsSpacial.new
           dc_terms_spacial.spacial = row[3]

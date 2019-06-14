@@ -1,5 +1,6 @@
 require 'oai'
 require "csv"
+require 'pry'
 
 namespace :import_metadata do
 
@@ -156,8 +157,17 @@ namespace :import_metadata do
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
       if repository.raw_records.empty?
-        client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
-          identifiers_relations_hash[record.header.identifier] = ''
+        begin
+          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+            identifiers_relations_hash[record.header.identifier] = ''
+          end
+        rescue OAI::Exception => e
+          if EmptyImportErrors.include?(e.message.strip)
+            puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+            next
+          else
+            raise e
+          end
         end
       else
         # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
@@ -342,7 +352,7 @@ def import_from_csv2(filepath, repository, original_entry_date)
       "xmlns:dcterms" => "http://purl.org/dc/terms/",
       "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
   }
-  
+
   CSV.foreach(filepath, headers: true) do |row|
     if RawRecord.find_by_oai_identifier(row[0]).blank?
       raw_record = RawRecord.new
