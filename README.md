@@ -1,12 +1,17 @@
-#PACSCL: In Her Own Right
+# PACSCL: In Her Own Right
 
-## About this Application
+## Application Overview
+* The project uses [Blacklight](https://github.com/projectblacklight/blacklight) and [Solr](https://lucene.apache.org/solr/) in order to search imported document records.  
+* Document metadata is imported from the [OAI API](https://www.openarchives.org/) and CSVs provided by the client via several rake tasks.
+* Images related to records are stored on AWS S3 and imported via a rake task.
+* This repository [pacscl](https://github.com/NeomindLabs/pacscl) is the outer project layer used to encapsulate the project with Docker.
+* This repository (pacscl-rails) is the inner layer that holds the rails app.
 
-#### Prerequisites
+## Prerequisites
 
 - git
 - docker
-- docker-compose (if you install docker without docker-compose)
+- [docker-compose](https://docs.docker.com/compose/) (if you install docker without docker-compose)
 
 ## Common Environment pre-setup
 
@@ -20,43 +25,40 @@ NOTE about database.yml: You'll need to copy the database and username parameter
 
 ## Set up the project
 
-    rake db:migrate
-    rake setup:project
+    rake db:create
+    rake setup:project #imports all records
 
-### Additional Useful Commands
+## Additional Useful Commands
 
     docker exec -it pacscl_app bash          # Open terminal to Rails container
     docker-compose run app [RAILS_COMMAND]   # Run typical Rails commands
 
-### Troubleshooting
+## Building the Docker image
 
-If you get an error message that looks like this:
+    docker build -t neomindlabs/pacscl-rails:staging --no-cache .
 
-    E: Failed to fetch http://security.ubuntu.com/ubuntu/pool/main/t/tzdata/tzdata_2018g-0ubuntu0.18.04_all.deb  404  Not Found [IP: 91.189.88.162 80]
-    E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?
+## Pushing the Docker image to DockerHub
 
-Add "--no-cache" to your docker build command. It caused by a cache of the apt sources that has become out of date.
-
-### TODO how to push to DockerHub ###
-
-    cd ../pacscl-rails
-    docker build -f Dockerfile --no-cache -t neomindlabs/pacscl-rails .
-    docker push neomindlabs/pacscl-rails
-
-### Deploying to Staging
-
-    docker build -t --no-cache neomindlabs/pacscl-rails:staging .
     docker push neomindlabs/pacscl-rails:staging
+OR
 
-### Reloading the data on Staging from scratch
+    docker push neomindlabs/pacscl-rails:production
+
+## Deploying
+
+    ssh pacscl-staging # ssh config information in 1Password
+OR
+
+    ssh pacscl-production # ssh config information in 1Password
+THEN
+
+    docker pull neomindlabs/pacscl-rails:staging / :production
+    docker-compose down
+    docker-compose up
+
+## Reloading the data from scratch
 
     cd ~/pacscl && docker-compose exec webapp bash
     su app
     cd /home/app/rails
-    RAILS_ENV=staging rake db:drop db:create setup:project
-
-### Loading the data
-
-After your app is running and your database is setup, run the following commands to load all available data into the site:
-
-    cd /var/www/rails && RAILS_ENV=production bin/rails setup:project
+    RAILS_ENV=staging rake db:{drop, create} setup:project
