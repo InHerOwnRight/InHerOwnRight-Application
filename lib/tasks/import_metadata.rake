@@ -164,6 +164,9 @@ namespace :import_metadata do
         rescue OAI::Exception => e
           if EmptyImportErrors.include?(e.message.strip)
             puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+            base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
+            metadata_prefix = "oai_qdc"
+            import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
             next
           else
             raise e

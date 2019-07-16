@@ -159,7 +159,7 @@ namespace :import_images do
   end
 
   task swarthmore: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/Swarthmore/').collect(&:key)
+    all_image_paths = bucket.objects(prefix: 'images/Swarthmore').collect(&:key)
     Record.all.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         all_image_paths.each do |image_path|
