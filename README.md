@@ -33,6 +33,13 @@ NOTE about database.yml: You'll need to copy the database and username parameter
     docker exec -it pacscl_app bash          # Open terminal to Rails container
     docker-compose run app [RAILS_COMMAND]   # Run typical Rails commands
 
+
+## Troubleshooting
+
+- Occasionally delete development logs to free up space within the image:
+
+    echo -n "" > development.log
+
 ## Building the Docker image
 
     docker build -t neomindlabs/pacscl-rails:staging --no-cache .
