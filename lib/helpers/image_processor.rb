@@ -1,5 +1,4 @@
 require 'aws-sdk-s3'
-require "mini_magick"
 require 'pry'
 
 class ImageProcessor
@@ -33,11 +32,14 @@ class ImageProcessor
     end
 
     def convert_images
-      tif_images = Dir["./tmp_images_#{@repository}/Inbox/*.tif"]
+      tif_images = Dir["./tmp_images_#{@repository}/Inbox/*f"]
       tif_images.each do |img|
-        image = MiniMagick::Image.open(img)
-        image.format "png"
-        image.write(img[0..-4] + "png")
+        if img[-2..-1] == "ff"
+          png_file = img[0..-6] + ".png"
+        else
+          png_file = img[0..-5] + ".png"
+        end
+        system("convert #{img} #{png_file}")
         File.delete(img)
       end
     end
@@ -45,9 +47,8 @@ class ImageProcessor
     def resize_lg_images
       png_images = Dir["./tmp_images_#{@repository}/Inbox/*.png"]
       png_images.each do |img|
-        image = MiniMagick::Image.open(img)
-        image.resize("500x")
-        image.write(img[0..-5] + "_lg.png")
+        lg_file = img[0..-5] + "_lg.png"
+        system("convert #{img} -resize 500x #{lg_file}")
         old_img = "#{img}"
         img.slice!("Inbox/")
         `mv #{old_img[0..-5] + "_lg.png"} #{img[0..-5] + "_lg.png"}`
@@ -57,9 +58,8 @@ class ImageProcessor
     def resize_thumb_images
       png_images = Dir["./tmp_images_#{@repository}/Inbox/*.png"]
       png_images.each do |img|
-        image = MiniMagick::Image.open(img)
-        image.resize("92x")
-        image.write(img[0..-5] + "_thumb.png")
+        thumb_file = img[0..-5] + "_thumb.png"
+        system("convert #{img} -resize 92x #{thumb_file}")
         old_img = "#{img}"
         img.slice!("Inbox/")
         `mv #{old_img[0..-5] + "_thumb.png"} #{img[0..-5] + "_thumb.png"}`
@@ -71,18 +71,20 @@ class ImageProcessor
       processed_images = Dir["./tmp_images_#{@repository}/*.png"]
       processed_images.each do |img|
         old_img = "#{img}"
-        img.slice!("./tmp_images_Temple/")
-        `s3cmd put --acl-public --guess-mime-type #{old_img} s3://pacscl-production/images/#{@repository}/#{img}`
+        img.slice!("./tmp_images_#{@repository}/")
+        `s3cmd put --acl-public #{old_img} s3://pacscl-production/images/#{@repository}/#{img}`
+        puts "uploaded #{img}"
       end
     end
 
     def move_inbox_images_to_archive
       image_paths = `s3cmd ls s3://pacscl-production/images/#{@repository}/Inbox/`
-      file_paths = image_paths.split(' ').find_all { |p| p.include?(".tif") || p.include?(".png") }
+      file_paths = image_paths.split(' ').find_all { |p| p.include?(".tif") || p.include?(".png") || p.include?(".tiff") }
       file_paths.each do |path|
         old_path = "#{path}"
         path.slice!("s3://pacscl-production/images/#{@repository}/Inbox/")
         `s3cmd mv #{old_path} 's3://pacscl-production/images/#{@repository}/Archive/CLIR Archive/#{path}'`
+        puts "Moved #{old_path} to s3://pacscl-production/images/#{@repository}/Archive/CLIR Archive/#{path}"
       end
     end
 
