@@ -122,7 +122,9 @@ class Record < ActiveRecord::Base
     end
 
     string :type, multiple: true do
-      dc_types.map { |dc_type| dc_type.type.slice(0,1).capitalize + dc_type.type.slice(1..-1)  }
+      dc_types.map do |dc_type|
+        dc_type.type.slice(0,1).capitalize + dc_type.type.slice(1..-1) if !dc_type.type.nil?
+      end
     end
 
     date :pub_date, references: DcDate, multiple: true do
