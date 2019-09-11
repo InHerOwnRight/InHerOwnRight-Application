@@ -191,27 +191,23 @@ class Record < ActiveRecord::Base
           if DcCreator.find_by_creator(creator).blank?
             dc_creator = DcCreator.new(creator: creator)
             dc_creator.save
-            record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-            record_dc_creator.save
           else
             dc_creator = DcCreator.find_by_creator(creator)
-            record = self
-            record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-            record_dc_creator.save
           end
+          record_dc_creator = RecordDcCreatorTable.find_or_initialize_by(record_id: record.id)
+          record_dc_creator.dc_creator_id = dc_creator.id
+          record_dc_creator.save
         end
       else
         if DcCreator.find_by_creator(node.text).blank?
           dc_creator = DcCreator.new(creator: node.text)
           dc_creator.save
-          record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-          record_dc_creator.save
         else
           dc_creator = DcCreator.find_by_creator(node.text)
-          record = self
-          record_dc_creator = RecordDcCreatorTable.new(dc_creator_id: dc_creator.id, record_id: record.id)
-          record_dc_creator.save
         end
+        record_dc_creator = RecordDcCreatorTable.find_or_initialize_by(record_id: record.id)
+        record_dc_creator.dc_creator_id = dc_creator.id
+        record_dc_creator.save
       end
     end
   end
@@ -229,14 +225,12 @@ class Record < ActiveRecord::Base
       if DcSubject.find_by_subject(subject).blank?
         dc_subject = DcSubject.new(subject: subject)
         dc_subject.save
-        record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
-        record_dc_subject.save
       else
         dc_subject = DcSubject.find_by_subject(subject)
-        record = self
-        record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
-        record_dc_subject.save
       end
+      record_dc_subject = RecordDcSubjectTable.find_or_initialize_by(record_id: record.id)
+      record_dc_subject.dc_subject_id = dc_subject.id
+      record_dc_subject.save
     end
   end
 
@@ -245,14 +239,12 @@ class Record < ActiveRecord::Base
       if DcType.find_by_type(node.text).blank?
         dc_type = DcType.new(type: node.text)
         dc_type.save
-        record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
-        record_dc_type.save
       else
         dc_type = DcType.find_by_type(node.text)
-        record = self
-        record_dc_type = RecordDcTypeTable.new(dc_type_id: dc_type.id, record_id: record.id)
-        record_dc_type.save
       end
+      record_dc_type = RecordDcTypeTable.find_or_initialize_by(record_id: record.id)
+      record_dc_type.dc_type_id = dc_type.id
+      record_dc_type.save
     end
   end
 
@@ -266,7 +258,9 @@ class Record < ActiveRecord::Base
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i) if Date.valid_date?(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i)
-          dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
+          dc_date = DcDate.find_or_initialize_by(record_id: record.id)
+          dc_date.date = date
+          dc_date.unprocessed_date = raw_date
           dc_date.save
         end
       elsif raw_date =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/ || raw_date =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
@@ -275,7 +269,9 @@ class Record < ActiveRecord::Base
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i)
-          dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
+          dc_date = DcDate.find_or_initialize_by(record_id: record.id)
+          dc_date.date = date
+          dc_date.unprocessed_date = raw_date
           dc_date.save
         end
       elsif raw_date =~ /^\d{4} - \d{4}$/ || raw_date =~ /^\d{4}\-\d{4}$/
@@ -283,22 +279,30 @@ class Record < ActiveRecord::Base
         years = raw_date.split("-") if raw_date =~ /^\d{4}\-\d{4}$/
         years.each do |year|
           date = Date.new(year.to_i)
-          dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
+          dc_date = DcDate.find_or_initialize_by(record_id: record.id)
+          dc_date.date = date
+          dc_date.unprocessed_date = raw_date
           dc_date.save
         end
       elsif raw_date =~ /^\d{4}\-\d{2}$/
         date_components = raw_date.split("-")
         date = Date.new(date_components[0].to_i, date_components[1].to_i)
-        dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
+        dc_date = DcDate.find_or_initialize_by(record_id: record.id)
+        dc_date.date = date
+        dc_date.unprocessed_date = raw_date
         dc_date.save
       elsif raw_date =~ /^\d{4}$/
         date = Date.new(raw_date.to_i)
-        dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
+        dc_date = DcDate.find_or_initialize_by(record_id: record.id)
+        dc_date.date = date
+        dc_date.unprocessed_date = raw_date
         dc_date.save
       else
         begin
           date = Date.parse(raw_date)
-          dc_date = DcDate.new(record_id: record.id, date: date, unprocessed_date: raw_date)
+          dc_date = DcDate.find_or_initialize_by(record_id: record.id)
+          dc_date.date = date
+          dc_date.unprocessed_date = raw_date
           dc_date.save
         rescue
           dc_date = DcDate.find_or_initialize_by(record_id: record.id)
@@ -310,38 +314,38 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_terms_extent(node, record)
-    dc_terms_extent = DcTermsExtent.new(extent: node.text)
-    dc_terms_extent.record_id = record.id
+    dc_terms_extent = DcTermsExtent.find_or_initialize_by(record_id: record.id)
+    dc_terms_extent.extent = node.text
     dc_terms_extent.save
   end
 
   def create_dc_terms_spacial(node, record)
-    dc_terms_spacial = DcTermsSpacial.new(spacial: node.text)
-    dc_terms_spacial.record_id = record.id
+    dc_terms_spacial = DcTermsSpacial.find_or_initialize_by(record_id: record.id)
+    dc_terms_spacial.spacial = node.text
     dc_terms_spacial.save
   end
 
   def create_dc_terms_is_part_of(node, record)
-    dc_terms_ipo = DcTermsIsPartOf.new(is_part_of: node.text)
-    dc_terms_ipo.record_id = record.id
+    dc_terms_ipo = DcTermsIsPartOf.find_or_initialize_by(record_id: record.id)
+    dc_terms_ipo.is_part_of = node.text
     dc_terms_ipo.save
   end
 
   def create_full_text(node, record)
-    full_text = FullText.new(transcription: node.text)
-    full_text.record_id = record.id
+    full_text = FullText.find_or_initialize_by(record_id: record.id)
+    full_text.transcription = node.text
     full_text.save
   end
 
   def create_dc_identifier(node, record)
+    dc_identifier = DcIdentifier.find_or_initialize_by(record_id: record.id)
     if node.text =~ /;$/
-      dc_identifier = DcIdentifier.new(identifier: node.text.split(";").first)
+      dc_identifier.identifier = node.text.split(";").first
     elsif node.text =~ /^\s/
-      dc_identifier = DcIdentifier.new(identifier: node.text.split(" ").last)
+      dc_identifier.identifier = node.text.split(" ").last
     else
-      dc_identifier = DcIdentifier.new(identifier: node.text)
+      dc_identifier.identifier = node.text
     end
-    dc_identifier.record_id = record.id
     dc_identifier.save
   end
 
@@ -404,8 +408,7 @@ class Record < ActiveRecord::Base
 
       modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial']
       if !modular_creators.include?(@part_model_name)
-        dc_model = "#{@part_model_name.camelize}".constantize.new
-        dc_model.record_id = record.id
+        dc_model = "#{@part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
         dc_model[node_name] = node.text
         dc_model.save
       end
