@@ -72,7 +72,14 @@ namespace :import_metadata do
     set_specs.map do |set|
       client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
       if repository.raw_records.empty?
-        client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
+        metadata_records = []
+        response.each { |r| metadata_records << r }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |r| metadata_records << r }
+        end
+        metadata_records.each do |record|
           xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
           xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
             relation_text.each do |text|
@@ -86,7 +93,14 @@ namespace :import_metadata do
         # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
         last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
-          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
+          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
+          metadata_records = []
+          response.each { |r| metadata_records << r }
+          until response.resumption_token.nil?
+            response = client.list_records(resumption_token: response.resumption_token)
+            response.each { |r| metadata_records << r }
+          end
+          metadata_records.each do |record|
             xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
             xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
               relation_text.each do |text|
@@ -121,7 +135,14 @@ namespace :import_metadata do
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
       if repository.raw_records.empty?
-        client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
+        metadata_records = []
+        response.each { |r| metadata_records << r }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |r| metadata_records << r }
+        end
+        metadata_records.each do |record|
           identifiers_relations_hash[record.header.identifier] = ''
         end
       else
@@ -129,7 +150,14 @@ namespace :import_metadata do
         # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
         last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
-          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
+          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
+          metadata_records = []
+          response.each { |r| metadata_records << r }
+          until response.resumption_token.nil?
+            response = client.list_records(resumption_token: response.resumption_token)
+            response.each { |r| metadata_records << r }
+          end
+          metadata_records.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
           end
         rescue OAI::Exception => e
@@ -158,7 +186,14 @@ namespace :import_metadata do
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
       if repository.raw_records.empty?
         begin
-          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}").full.each do |record|
+          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
+          metadata_records = []
+          response.each { |r| metadata_records << r }
+          until response.resumption_token.nil?
+            response = client.list_records(resumption_token: response.resumption_token)
+            response.each { |r| metadata_records << r }
+          end
+          metadata_records.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
           end
         rescue OAI::Exception => e
@@ -176,7 +211,14 @@ namespace :import_metadata do
         # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
         last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
-          client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update).full.each do |record|
+          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
+          metadata_records = []
+          response.each { |r| metadata_records << r }
+          until response.resumption_token.nil?
+            response = client.list_records(resumption_token: response.resumption_token)
+            response.each { |r| metadata_records << r }
+          end
+          metadata_records.each do |record|
             identifiers_relations_hash[record.header.identifier] = ''
           end
         rescue OAI::Exception => e
