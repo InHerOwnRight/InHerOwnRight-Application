@@ -272,6 +272,7 @@ class Record < ActiveRecord::Base
       elsif raw_date =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/ || raw_date =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
         full_dates = raw_date.split(" - ") if raw_date =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/
         full_dates = raw_date.split("-") if raw_date =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
+        full_dates = ["#{full_dates[0]}-#{full_dates[1]}", "#{full_dates[2]}-#{full_dates[3]}"] if full_dates.count == 4
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i)
