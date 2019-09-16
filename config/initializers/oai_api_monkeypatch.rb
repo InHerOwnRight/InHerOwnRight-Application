@@ -19,8 +19,8 @@ module OAI
              builder.response :follow_redirects, :limit => count
            end
            builder.adapter :net_http
-           builder.options.timeout = 120 #https://github.com/lostisland/faraday/issues/812#issuecomment-414258614
-           builder.options.open_timeout = 120 #https://github.com/lostisland/faraday/issues/812#issuecomment-414258614
+           builder.options.timeout = 240 #https://github.com/lostisland/faraday/issues/812#issuecomment-414258614
+           builder.options.open_timeout = 240 #https://github.com/lostisland/faraday/issues/812#issuecomment-414258614
          end
        end
 
