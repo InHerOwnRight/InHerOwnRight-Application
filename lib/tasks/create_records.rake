@@ -144,7 +144,8 @@ namespace :create_records do
               record.save
             end
           else
-          puts "Record for #{raw_record.oai_identifier} not created. Duplicate?"
+            puts "Record for #{raw_record.oai_identifier} not created. Duplicate?"
+          end
         end
       end
     end
@@ -166,18 +167,17 @@ task create_enhanced_data: :environment do
             dc_subject = DcSubject.new
             dc_subject.subject = subj
             dc_subject.save
-            record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
-            record_dc_subject.save
           else
             dc_subject = DcSubject.find_by_subject(subj)
-            record_dc_subject = RecordDcSubjectTable.new(dc_subject_id: dc_subject.id, record_id: record.id)
-            record_dc_subject.save
           end
+          record_dc_subject = RecordDcSubjectTable.find_or_initialize_by(record_id: record.id)
+          record_dc_subject.id = dc_subject.id,
+          record_dc_subject.save
         end
       end
 
       if !row[3].blank?
-          dc_terms_spacial = DcTermsSpacial.new
+          dc_terms_spacial = DcTermsSpacial.find_or_initialize_by(record_id: record.id)
           dc_terms_spacial.spacial = row[3]
           dc_terms_spacial.save
         end
