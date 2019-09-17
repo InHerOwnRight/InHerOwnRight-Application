@@ -1,4 +1,5 @@
 require 'aws-sdk-s3'
+require 'pry'
 
 namespace :import_images do
   desc "Import images for records"
@@ -11,17 +12,21 @@ namespace :import_images do
   end
 
   task bates: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/Bates').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/Bates').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Bates/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        all_image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        record.dc_identifiers.each do |dc_identifier|
+          image_paths.each do |image_path|
+            if image_path.include?(dc_identifier.identifier)
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
             end
-            record.save
           end
         end
       end
@@ -47,18 +52,22 @@ namespace :import_images do
   # end
 
   task drexel: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/Drexel/').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/Drexel').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Drexel/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        if dc_identifier.identifier[0..5] == "local:"
-          all_image_paths.each do |image_path|
-            if image_path.include?(dc_identifier.identifier[7..-1])
-              if image_path[-9..-1] == "thumb.png"
-                record.thumbnail = "/#{image_path}"
-              elsif image_path[-6..-1] == "lg.png"
-                record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        record.dc_identifiers.each do |dc_identifier|
+          if dc_identifier.identifier[0..5] == "local:"
+            image_paths.each do |image_path|
+              if image_path.include?(dc_identifier.identifier[7..-1])
+                if image_path[-9..-1] == "thumb.png"
+                  record.thumbnail = "/#{image_path}"
+                elsif image_path[-6..-1] == "lg.png"
+                  record.file_name = "/#{image_path}"
+                end
+                record.save
               end
-              record.save
             end
           end
         end
@@ -87,17 +96,21 @@ namespace :import_images do
   # end
 
   task haverford: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/Haverford').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/Haverford').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Haverford/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      all_image_paths.each do |image_path|
-        if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
-          if image_path.include?(record.oai_identifier[40..-1])
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        image_paths.each do |image_path|
+          if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
+            if image_path.include?(record.oai_identifier[40..-1])
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
             end
-            record.save
           end
         end
       end
@@ -105,17 +118,21 @@ namespace :import_images do
   end
 
   task hsp: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/HSP').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/HSP').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/HSP/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      all_image_paths.each do |image_path|
-        if !record.oai_identifier.blank?
-          if image_path.include?(record.oai_identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        image_paths.each do |image_path|
+          if !record.oai_identifier.blank?
+            if image_path.include?(record.oai_identifier)
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
             end
-            record.save
           end
         end
       end
@@ -141,17 +158,21 @@ namespace :import_images do
   # end
 
   task library_company: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/LibraryCompany').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/LibraryCompany').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/LibraryCompany/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      all_image_paths.each do |image_path|
-        if !record.oai_identifier.blank?
-          if image_path.include?(record.oai_identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        image_paths.each do |image_path|
+          if !record.oai_identifier.blank?
+            if image_path.include?(record.oai_identifier)
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
             end
-            record.save
           end
         end
       end
@@ -159,17 +180,21 @@ namespace :import_images do
   end
 
   task swarthmore: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/Swarthmore').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/Swarthmore').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Swarthmore/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        all_image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        record.dc_identifiers.each do |dc_identifier|
+          image_paths.each do |image_path|
+            if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
             end
-            record.save
           end
         end
       end
@@ -195,17 +220,21 @@ namespace :import_images do
   # end
 
   task temple: :environment do
-    all_image_paths = bucket.objects(prefix: 'images/Temple/').collect(&:key)
+    all_repo_paths = bucket.objects(prefix: 'images/Temple').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Temple/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
     Record.all.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        all_image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+      if record.thumbnail.nil? || record.file_name.nil?
+        record.dc_identifiers.each do |dc_identifier|
+          image_paths.each do |image_path|
+            if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
             end
-            record.save
           end
         end
       end
