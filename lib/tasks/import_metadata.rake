@@ -180,7 +180,7 @@ namespace :import_metadata do
     identifiers_relations_hash = {}
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
-    repository = Repository.find_by_name("Friends Historical Library: Swarthmore College")
+    repository = Repository.find_by_name("TriCollege Libraries")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
