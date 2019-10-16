@@ -1,6 +1,5 @@
 require 'oai'
 require "csv"
-require 'pry'
 
 namespace :import_metadata do
 
@@ -10,8 +9,7 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-
-  task all_oai: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford]
+  task all_oai: [:from_temple, :from_tri_colleges, :from_drexel, :from_haverford]
   task all_csv: [:collections, :from_bates, :from_bates2, :from_library_co, :from_hsp, :from_hsp2, :from_hsp3, :from_german_society, :from_udel, :from_nara]
   # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
   task all: [:all_oai, :all_csv]
@@ -51,7 +49,18 @@ namespace :import_metadata do
         nil_metadata_identifiers << response_record.header.identifier
       end
 
+      friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
+      peace = Repository.find_by_name("Swarthmore College Peace Collection")
+      haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
+      brynmawr = Repository.find_by_name("Bryn Mawr College")
+
       raw_record.repository_id = repository.id
+      if !raw_record.xml_metadata.nil?
+        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
+        raw_record.repository_id = brynmawr.id if raw_record.xml_metadata.include?("Bryn Mawr College Special Collections")
+        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
+        raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("Haverford")
+      end
 
       if raw_record.save
         puts "Successfully imported #{raw_record.oai_identifier}"
@@ -176,15 +185,19 @@ namespace :import_metadata do
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
   end
 
-  task from_swarthmore: :environment do
+  task from_tri_colleges: :environment do
     identifiers_relations_hash = {}
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
-    repository = Repository.find_by_name("TriCollege Libraries")
+
+    friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
+    peace = Repository.find_by_name("Swarthmore College Peace Collection")
+    haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
+    brynmawr = Repository.find_by_name("Bryn Mawr College")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      if repository.raw_records.empty?
+      if friends.raw_records.empty?
         begin
           response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
           metadata_records = []
@@ -209,7 +222,7 @@ namespace :import_metadata do
         end
       else
         # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
-        last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
+        last_update = friends.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
         begin
           response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
           metadata_records = []
@@ -223,7 +236,7 @@ namespace :import_metadata do
           end
         rescue OAI::Exception => e
           if EmptyImportErrors.include?(e.message.strip)
-            puts "All Swarthmore OAI records for set #{set} are up to date as of #{last_update}."
+            puts "All Tri-Colleges OAI records for set #{set} are up to date as of #{last_update}."
           else
             raise e
           end
@@ -233,7 +246,7 @@ namespace :import_metadata do
 
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     metadata_prefix = "oai_qdc"
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    import_from_oai_client(friends, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
   end
 
   task from_haverford: :environment do
@@ -446,6 +459,9 @@ def import_from_csv2(filepath, repository, original_entry_date)
         xml.contributing_repository row[2]
         xml['oai_qdc'].qualifieddc(name_spaces) do
           xml['dc'].identifier row[0]
+          if row[1]
+            xml['dc'].identifier row[1]
+          end
           xml['dc'].title row[3]
           xml['dcterms'].created row[4]
           xml['dcterms'].created row[5]

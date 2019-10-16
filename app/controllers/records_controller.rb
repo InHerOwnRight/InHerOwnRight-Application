@@ -2,7 +2,7 @@ class RecordsController < ApplicationController
 
 
   def show
-    @record = Record.find(params[:id])
+    @record = Record.find_by(oai_identifier: params[:oai_identifier])
 
     if @record.is_collection?
       @collection_repository_url = @record.collection_repository_url

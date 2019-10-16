@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
     concern :searchable, Blacklight::Routes::Searchable.new
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :records, only: [:show]
+  resources :records, only: [:show], param: :oai_identifier
 
   mount Blacklight::Engine => '/'
   resource :home, only: [:index], as: 'home', path: '/', controller: 'home'
