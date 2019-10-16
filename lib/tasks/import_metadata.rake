@@ -52,7 +52,7 @@ namespace :import_metadata do
       end
 
       friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-      peace = Repository.find_by_name("Swarthmore College Peace Collection")
+      peace = Repository.find_by_name("Swarthmore College Peace Collections")
       haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
       brynmawr = Repository.find_by_name("Bryn Mawr College")
 
