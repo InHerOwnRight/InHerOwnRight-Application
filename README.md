@@ -36,9 +36,10 @@ NOTE about database.yml: You'll need to copy the database and username parameter
 
 ## Troubleshooting
 
-- Occasionally delete development logs to free up space within the image:
+- Occasionally delete development logs and stale docker containers to free up space on the disk:
 
-    echo -n "" > development.log
+    Development logs (within image): echo -n "" > development.log
+    Stale Docker Containers:  sudo docker system prune -a
 
 ## Building the Docker image
 
@@ -68,4 +69,4 @@ THEN
     cd ~/pacscl && docker-compose exec webapp bash
     su app
     cd /home/app/rails
-    RAILS_ENV=staging rake db:{drop, create} setup:project
+    RAILS_ENV=staging rake setup:project
