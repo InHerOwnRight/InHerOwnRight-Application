@@ -7,15 +7,15 @@ class ImageProcessor
   end
 
   def process_images
-    # make_tmp_directory
-    # import_inbox_images
-    # convert_images_to_png
-    # resize_lg_images
-    # resize_thumb_images
-    # upload_processed_images
-    # move_inbox_images_to_archive
+    make_tmp_directory
+    import_inbox_images
+    convert_images_to_png
+    resize_lg_images
+    resize_thumb_images
+    upload_processed_images
+    move_inbox_images_to_archive
     delete_inbox_images
-    # delete_tmp_directory
+    delete_tmp_directory
   end
 
   private
