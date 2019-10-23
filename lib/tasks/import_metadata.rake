@@ -12,7 +12,7 @@ namespace :import_metadata do
 
 
   task all_oai: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford]
-  task all_csv: [:collections, :from_bates, :from_library_co, :from_hsp, :from_hsp2, :from_bates2]
+  task all_csv: [:collections, :from_bates, :from_bates2, :from_library_co, :from_hsp, :from_hsp2, :from_hsp3, :from_german_society, :from_udel, :from_nara]
   # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
   task all: [:all_oai, :all_csv]
 
@@ -355,6 +355,14 @@ namespace :import_metadata do
     import_from_csv(filepath, repository, original_entry_date)
   end
 
+  task from_bates2: :environment do
+    repository = Repository.find_by_name("Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing")
+    filepath = "lib/documents/csv/bates_center/BatesCenter2.csv"
+    original_entry_date = "2019-5-15" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
   task from_library_co: :environment do
     repository = Repository.find_by_name("The Library Company of Philadelphia")
     filepath = "lib/documents/csv/library_company/LibraryCompany.csv"
@@ -377,10 +385,34 @@ namespace :import_metadata do
     import_from_csv2(filepath, repository, original_entry_date)
   end
 
-  task from_bates2: :environment do
-    repository = Repository.find_by_name("Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing")
-    filepath = "lib/documents/csv/bates_center/BatesCenter2.csv"
-    original_entry_date = "2019-5-15" # hardcoded until we get a filenaming scheme
+  task from_hsp3: :environment do
+    repository = Repository.find_by_name("Historical Society of Pennsylvania")
+    filepath = "lib/documents/csv/hsp/HSP3.csv"
+    original_entry_date = "2017-10-23" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_german_society: :environment do
+    repository = Repository.find_by_name("The German Society of Pennsylvania")
+    filepath = "lib/documents/csv/german_society/german_society.csv"
+    original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_udel: :environment do
+    repository = Repository.find_by_name("University of Delaware")
+    filepath = "lib/documents/csv/udel/udel.csv"
+    original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_nara: :environment do
+    repository = Repository.find_by_name("The National Archives at Philadelphia")
+    filepath = "lib/documents/csv/nara/nara.csv"
+    original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
 
     import_from_csv2(filepath, repository, original_entry_date)
   end

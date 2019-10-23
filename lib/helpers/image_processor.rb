@@ -63,7 +63,7 @@ class ImageProcessor
     end
 
     def upload_processed_images
-      `s3cmd sync --acl-public --verbose tmp_images_#{@repository}/ s3://pacscl-production/images/#{@repository}/`
+      `s3cmd sync --acl-public --verbose tmp_images_#{@repository}/*png s3://pacscl-production/images/#{@repository}/`
     end
 
     def move_inbox_images_to_archive
@@ -71,7 +71,7 @@ class ImageProcessor
     end
 
     def delete_inbox_images
-      `s3cmd del -r s3://pacscl-production/images/#{@repository}/Inbox/`
+      `s3cmd del -r s3://pacscl-production/images/#{@repository}/Inbox/*`
     end
 
     def delete_tmp_directory
@@ -80,7 +80,7 @@ class ImageProcessor
 
 end
 
-repositories = ["Haverford"]
+repositories = ["UDel"]
 repositories.each do |r|
   processor = ImageProcessor.new(r)
   processor.process_images
