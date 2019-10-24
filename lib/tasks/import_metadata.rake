@@ -10,7 +10,7 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-  task all_oai: [:from_temple, :from_swarthmore, :from_drexel, :from_haverford]
+  task all_oai: [:from_temple, :from_tri_colleges, :from_drexel, :from_haverford]
   task all_csv: [:collections, :from_bates, :from_bates2, :from_library_co, :from_hsp, :from_hsp2, :from_hsp3, :from_german_society, :from_udel, :from_nara]
   # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
   task all: [:all_oai, :all_csv]
@@ -192,10 +192,9 @@ namespace :import_metadata do
     set_specs = ['InHOR']
 
     friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-    peace = Repository.find_by_name("Swarthmore College Peace Collection")
+    peace = Repository.find_by_name("Swarthmore College Peace Collections")
     haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
     brynmawr = Repository.find_by_name("Bryn Mawr College")
-    repositories = [friends, peace, haverford, brynmawr]
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
