@@ -192,7 +192,7 @@ namespace :import_metadata do
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
     friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-    peace = Repository.find_by_name("Swarthmore College Peace Collection")
+    peace = Repository.find_by_name("Swarthmore College Peace Collections")
     haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
     brynmawr = Repository.find_by_name("Bryn Mawr College")
 
