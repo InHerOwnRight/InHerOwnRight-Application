@@ -60,7 +60,7 @@ namespace :import_metadata do
       if !raw_record.xml_metadata.nil?
         raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
         raw_record.repository_id = brynmawr.id if raw_record.xml_metadata.include?("Bryn Mawr College Special Collections")
-        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
+        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collections")
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("Haverford")
       end
 
@@ -460,6 +460,9 @@ def import_from_csv2(filepath, repository, original_entry_date)
         xml.contributing_repository row[2]
         xml['oai_qdc'].qualifieddc(name_spaces) do
           xml['dc'].identifier row[0]
+          if row[1]
+            xml['dc'].identifier row[1]
+          end
           xml['dc'].title row[3]
           xml['dcterms'].created row[4]
           xml['dcterms'].created row[5]
