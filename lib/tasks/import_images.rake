@@ -8,7 +8,7 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple, :nara, :udel, :german_society] do
+  task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple, :nara, :udel, :german_society, :byrn_mawr] do
   end
 
   task bates: :environment do
@@ -95,6 +95,7 @@ namespace :import_images do
     all_repo_paths = bucket.objects(prefix: 'images/Haverford').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Haverford/Archive').collect(&:key)
     image_paths = all_repo_paths - archive_paths
+    binding.pry
     Record.all.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
@@ -271,6 +272,27 @@ namespace :import_images do
     all_repo_paths = bucket.objects(prefix: 'images/GermanSociety').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/GermanSociety/Archive').collect(&:key)
     image_paths = all_repo_paths - archive_paths
+    Record.all.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  task bryn_mawr: :environment do
+    all_repo_paths = bucket.objects(prefix: 'images/BrynMawr').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/BrynMawr/Archive').collect(&:key)
+    image_paths = all_repo_paths - archive_paths
+    binding.pry
     Record.all.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
