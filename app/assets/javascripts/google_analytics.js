@@ -4,4 +4,4 @@ document.addEventListener('turbolinks:load', function(event) {
       'page_location': event.data.url
     })
   }
-}
+});
