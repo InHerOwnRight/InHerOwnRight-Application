@@ -1,5 +1,7 @@
-
 class Record < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :oai_identifier, use: :slugged
+
   belongs_to :raw_record
   delegate :repository, to: :raw_record, allow_nil: true
   has_many :dc_contributors, dependent: :destroy
