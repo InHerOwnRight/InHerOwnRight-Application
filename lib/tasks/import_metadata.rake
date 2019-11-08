@@ -52,7 +52,7 @@ namespace :import_metadata do
       end
 
       friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-      peace = Repository.find_by_name("Swarthmore College Peace Collections")
+      peace = Repository.find_by_name("Swarthmore College Peace Collection")
       haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
       brynmawr = Repository.find_by_name("Bryn Mawr College")
 
@@ -60,7 +60,7 @@ namespace :import_metadata do
       if !raw_record.xml_metadata.nil?
         raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
         raw_record.repository_id = brynmawr.id if raw_record.xml_metadata.include?("Bryn Mawr College Special Collections")
-        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collections")
+        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("Haverford")
       end
 
@@ -192,7 +192,7 @@ namespace :import_metadata do
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
     friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-    peace = Repository.find_by_name("Swarthmore College Peace Collections")
+    peace = Repository.find_by_name("Swarthmore College Peace Collection")
     haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
     brynmawr = Repository.find_by_name("Bryn Mawr College")
 

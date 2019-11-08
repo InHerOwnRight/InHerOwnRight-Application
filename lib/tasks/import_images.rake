@@ -8,7 +8,7 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple, :nara, :udel, :german_society, :bryn_mawr] do
+  task all: [:hsp, :library_company, :swarthmore, :temple, :nara, :udel, :german_society, :bryn_mawr] do
   end
 
   task bates: :environment do
@@ -300,7 +300,7 @@ namespace :import_images do
     Record.all.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && (image_path[/BrynMawr\/([^"]+)_lg.png/, 1] == dc_identifier.identifier || image_path[/BrynMawr\/([^"]+)_thumb.png/, 1] == dc_identifier.identifier)
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
             if image_path[-9..-1] == "thumb.png"
               record.thumbnail = "/#{image_path}"
             elsif image_path[-6..-1] == "lg.png"
