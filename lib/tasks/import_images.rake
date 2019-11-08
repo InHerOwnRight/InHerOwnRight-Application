@@ -8,7 +8,7 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  task all: [:hsp, :library_company, :swarthmore, :temple, :nara, :udel, :german_society, :bryn_mawr] do
+  task all: [:bates, :drexel, :haverford, :hsp, :library_company, :swarthmore, :temple, :nara, :udel, :german_society, :bryn_mawr] do
   end
 
   task bates: :environment do
