@@ -260,7 +260,7 @@ namespace :import_images do
     Record.all.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && (image_path[/UDel\/([^"]+)_lg.png/, 1] == dc_identifier.identifier || image_path[/UDel\/([^"]+)_thumb.png/, 1] == dc_identifier.identifier)
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
             if image_path[-9..-1] == "thumb.png"
               record.thumbnail = "/#{image_path}"
             elsif image_path[-6..-1] == "lg.png"
