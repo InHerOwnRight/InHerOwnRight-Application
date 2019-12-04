@@ -5,7 +5,6 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-ruby '2.3.8'
 gem 'rails', '~> 5.0.1'
 gem "activejob", ">= 5.0.7.1"
 gem "iso639"
