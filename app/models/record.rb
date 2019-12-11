@@ -319,8 +319,10 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_terms_is_part_of(node, record)
-    dc_terms_ipo = DcTermsIsPartOf.find_or_initialize_by(record_id: record.id, is_part_of: node.text)
-    dc_terms_ipo.save
+    if !node.text.empty?
+      dc_terms_ipo = DcTermsIsPartOf.find_or_initialize_by(record_id: record.id, is_part_of: node.text)
+      dc_terms_ipo.save
+    end
   end
 
   def create_full_text(node, record)
