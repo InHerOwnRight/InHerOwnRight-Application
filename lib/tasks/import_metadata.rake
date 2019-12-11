@@ -1,6 +1,5 @@
 require 'oai'
 require "csv"
-require 'pry'
 
 namespace :import_metadata do
 
