@@ -1,2 +1,30 @@
+.git
+.gitignore
+README.md
+
+# OS X
+.DS_Store
+
+# Rails
+.env
+.env.sample
+*.rbc
+capybara-*.html
+log
+tmp
+db/*.sqlite3
+db/*.sqlite3-journal
+public/system
+coverage/
+spec/tmp
+**.orig
+
+.bundle
+
+.ruby-version
+.ruby-gemset
+
+.rvmrc
+
 /tmp_images_Swarthmore
 /tmp_images_Swarthmore5
