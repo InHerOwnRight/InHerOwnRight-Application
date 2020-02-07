@@ -39,22 +39,21 @@
         %h6.col-sm-12.collections_subhead
           Creator: #{instance.dc_contributors.first.contributor}
 
-      - if !instance.dc_dates.first.blank?
-        - if instance.dc_dates.count > 1
-          - if instance.dc_dates.last.english_date
+      - if !instance.display_dates.empty?
+        - if instance.display_dates.count > 1
+          - instance.display_dates.each_with_index do |date, index|
             %h6.col-sm-12.collections_subhead
-              = "Date Created: #{instance.dc_dates.minimum(:date).strftime("%Y-%m-%d")} - #{instance.dc_dates.maximum(:date).strftime("%Y-%m-%d")}, #{instance.dc_dates.last.english_date}"
-          - else
-            %h6.col-sm-12.collections_subhead
-              = "Date Created: #{instance.dc_dates.minimum(:date).strftime("%Y-%m-%d")} - #{instance.dc_dates.maximum(:date).strftime("%Y-%m-%d")}"
+              Dates Created:
+              = date
+              = ", " unless index == instance.display_dates.size - 1
+
         - else
-          - if instance.dc_dates.first.date && instance.dc_dates.last.english_date
+          - instance.display_dates.each_with_index do |date, index|
             %h6.col-sm-12.collections_subhead
-              = "#{instance.dc_dates.first.date.strftime("%Y-%m-%d")}, #{instance.dc_dates.last.english_date}"
-          - else
-            - if instance.dc_dates.first.date
-              %h6.col-sm-12.collections_subhead
-                = "Date Created: #{instance.dc_dates.first.date.strftime("%Y-%m-%d")}"
+              Date Created:
+              = date
+              = ", " unless index == instance.display_dates.size - 1
+
       - if instance.is_collection?
         - if !instance.dc_creators.blank?
           - if Record.for_same_creator(instance.dc_creators.first.id).count > 1

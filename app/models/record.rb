@@ -76,6 +76,18 @@ class Record < ActiveRecord::Base
     creators + contributors
   end
 
+  def display_dates
+    dates = []
+    dc_dates.each do |d|
+      if !dates.include?(d.unprocessed_date) && !d.unprocessed_date.nil?
+        dates << d.unprocessed_date
+      elsif d.unprocessed_date.nil?
+        dates << d.english_date
+      end
+    end
+    dates
+  end
+
   searchable do
     text :oai_identifier
 
@@ -221,58 +233,68 @@ class Record < ActiveRecord::Base
 
   def create_dc_date(node, record)
     raw_date = node.text
-    raw_date.delete!(";").strip! if raw_date.include?(";")
-    if !raw_date.blank?
-      if raw_date =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/ || raw_date =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
-        full_dates = raw_date.split(" - ") if raw_date =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/
-        full_dates = raw_date.split("-") if raw_date =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
+    dates = raw_date.split(";").map { |d| d.strip }.reject(&:empty?)
+    split_dates = []
+    dates.each do |d|
+      date_remaining = d.scan(/\D/) - [" ", ","]
+      if date_remaining.empty?
+        split_dates << d.split(",").map { |d| d.strip }
+      else
+        split_dates << d
+      end
+    end
+    split_dates.flatten!
+    split_dates.each do |d|
+      if d =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/ || d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
+        full_dates = d.split(" - ") if d =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/
+        full_dates = d.split("-") if d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i) if Date.valid_date?(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i)
           dc_date = DcDate.find_or_initialize_by(record_id: record.id, date: date)
           dc_date.date = date
-          dc_date.unprocessed_date = raw_date
+          dc_date.unprocessed_date = d
           dc_date.save
         end
-      elsif raw_date =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/ || raw_date =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
-        full_dates = raw_date.split(" - ") if raw_date =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/
-        full_dates = raw_date.split("-") if raw_date =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
+      elsif d =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/ || d =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
+        full_dates = d.split(" - ") if d =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/
+        full_dates = d.split("-") if d =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
         full_dates = ["#{full_dates[0]}-#{full_dates[1]}", "#{full_dates[2]}-#{full_dates[3]}"] if full_dates.count == 4
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i)
           dc_date = DcDate.find_or_initialize_by(record_id: record.id, date: date)
-          dc_date.unprocessed_date = raw_date
+          dc_date.unprocessed_date = d
           dc_date.save
         end
-      elsif raw_date =~ /^\d{4} - \d{4}$/ || raw_date =~ /^\d{4}\-\d{4}$/
-        years = raw_date.split(" - ") if raw_date =~ /^\d{4} - \d{4}$/
-        years = raw_date.split("-") if raw_date =~ /^\d{4}\-\d{4}$/
+      elsif d =~ /^\d{4} - \d{4}$/ || d =~ /^\d{4}\-\d{4}$/
+        years = d.split(" - ") if d =~ /^\d{4} - \d{4}$/
+        years = d.split("-") if d =~ /^\d{4}\-\d{4}$/
         years.each do |year|
           date = Date.new(year.to_i)
           dc_date = DcDate.find_or_initialize_by(record_id: record.id, date: date)
-          dc_date.unprocessed_date = raw_date
+          dc_date.unprocessed_date = d
           dc_date.save
         end
-      elsif raw_date =~ /^\d{4}\-\d{2}$/
-        date_components = raw_date.split("-")
+      elsif d =~ /^\d{4}\-\d{2}$/
+        date_components = d.split("-")
         date = Date.new(date_components[0].to_i, date_components[1].to_i)
         dc_date = DcDate.find_or_initialize_by(record_id: record.id, date: date)
-        dc_date.unprocessed_date = raw_date
+        dc_date.unprocessed_date = d
         dc_date.save
-      elsif raw_date =~ /^\d{4}$/
-        date = Date.new(raw_date.to_i)
+      elsif d =~ /^\d{4}$/
+        date = Date.new(d.to_i)
         dc_date = DcDate.find_or_initialize_by(record_id: record.id, date: date)
-        dc_date.unprocessed_date = raw_date
+        dc_date.unprocessed_date = d
         dc_date.save
       else
         begin
-          date = Date.parse(raw_date)
+          date = Date.parse(d)
           dc_date = DcDate.find_or_initialize_by(record_id: record.id, date: date)
-          dc_date.unprocessed_date = raw_date
+          dc_date.unprocessed_date = d
           dc_date.save
         rescue
-          dc_date = DcDate.find_or_initialize_by(record_id: record.id, english_date: raw_date)
+          dc_date = DcDate.find_or_initialize_by(record_id: record.id, english_date: d)
           dc_date.save
         end
       end
