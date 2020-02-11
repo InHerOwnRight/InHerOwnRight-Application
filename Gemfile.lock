@@ -222,6 +222,8 @@ GEM
     sassc (2.0.0)
       ffi (~> 1.9.6)
       rake
+    sentry-raven (2.13.0)
+      faraday (>= 0.7.6, < 1.0)
     solr_wrapper (2.1.0)
       faraday
       retriable
@@ -300,6 +302,7 @@ DEPENDENCIES
   redcarpet (~> 3.4)
   rsolr (~> 1.0)
   sass-rails (~> 5.0)
+  sentry-raven
   solr_wrapper (>= 0.3)
   spring
   spring-watcher-listen (~> 2.0.0)
@@ -310,4 +313,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.16.6
+   1.17.3
