@@ -1,39 +1,39 @@
 development:
   encoding: unicode
   adapter: postgresql
-  host: <%= PACSCL_DB_HOST %>
-  database: <%= PACSCL_DB_NAME %>
-  username: <%= PACSCL_DB_USERNAME %>
-  password: <%= PACSCL_DB_PASSWORD %>
+  host: <%= ENV['PACSCL_DB_HOST'] %>
+  database: <%= ENV['PACSCL_DB_NAME'] %>
+  username: <%= ENV['PACSCL_DB_USERNAME'] %>
+  password: <%= ENV['PACSCL_DB_PASSWORD'] %>
   pool: 5
   min_messages: WARNING
 
 test:
   encoding: unicode
   adapter: postgresql
-  host: <%= PACSCL_DB_HOST %>
-  database: <%= PACSCL_DB_NAME %>
-  username: <%= PACSCL_DB_USERNAME %>
-  password: <%= PACSCL_DB_PASSWORD %>
+  host: <%= ENV['PACSCL_DB_HOST'] %>
+  database: <%= ENV['PACSCL_DB_NAME'] %>
+  username: <%= ENV['PACSCL_DB_USERNAME'] %>
+  password: <%= ENV['PACSCL_DB_PASSWORD'] %>
   pool: 5
   min_messages: WARNING
 
 staging:
   encoding: unicode
   adapter: postgresql
-  host: <%= PACSCL_DB_HOST %>
-  database: <%= PACSCL_DB_NAME %>
-  username: <%= PACSCL_DB_USERNAME %>
-  password: <%= PACSCL_DB_PASSWORD %>
+  host: <%= ENV['PACSCL_DB_HOST'] %>
+  database: <%= ENV['PACSCL_DB_NAME'] %>
+  username: <%= ENV['PACSCL_DB_USERNAME'] %>
+  password: <%= ENV['PACSCL_DB_PASSWORD'] %>
   pool: 5
   min_messages: WARNING
 
 production:
   encoding: unicode
   adapter: postgresql
-  host: <%= PACSCL_DB_HOST %>
-  database: <%= PACSCL_DB_NAME %>
-  username: <%= PACSCL_DB_USERNAME %>
-  password: <%= PACSCL_DB_PASSWORD %>
+  host: <%= ENV['PACSCL_DB_HOST'] %>
+  database: <%= ENV['PACSCL_DB_NAME'] %>
+  username: <%= ENV['PACSCL_DB_USERNAME'] %>
+  password: <%= ENV['PACSCL_DB_PASSWORD'] %>
   pool: 5
   min_messages: WARNING
