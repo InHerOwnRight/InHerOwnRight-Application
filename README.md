@@ -15,7 +15,7 @@
 
 ## Common Environment pre-setup
 
-    cp .env.sample .env  # you'll need to follow the instructions in this file!
+    cp .env.example .env  # you'll need to follow the instructions in this file!
     cp config/database.yml.example config/database.yml
     mkdir .bundle/usr_local_bundle
     sudo chown -R 33:50 .bundle/usr_local_bundle/ # www-data:staff

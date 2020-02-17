@@ -1,5 +1,4 @@
 require 'aws-sdk-s3'
-require 'pry'
 
 namespace :import_images do
   desc "Import images for records"
