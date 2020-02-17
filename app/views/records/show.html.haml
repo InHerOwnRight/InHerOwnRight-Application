@@ -19,7 +19,7 @@
       - if @record.dc_dates.any?
         = render 'dc_dates'
 
-      - if @record.dc_creators.any? || @record.dc_contributors.any?
+      - if @record.dc_creators.any?
         = render 'dc_creators'
 
       - if @record.dc_publishers.any?
@@ -63,4 +63,3 @@
 
       - if @record.full_texts.any?
         = render 'full_text'
-
