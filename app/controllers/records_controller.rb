@@ -19,7 +19,7 @@ class RecordsController < ApplicationController
       else
         dc_date.unprocessed_date
       end
-    end.join("; ")
+    end.join(" | ")
   end
   helper_method :joined_dates
 
