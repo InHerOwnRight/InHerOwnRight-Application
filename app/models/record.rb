@@ -100,7 +100,7 @@ class Record < ActiveRecord::Base
     end
 
     text :creator do
-      all_creators
+      dc_creators.map(&:creator)
     end
 
     text :full_text do
@@ -116,9 +116,7 @@ class Record < ActiveRecord::Base
     end
 
     string :sort_creator do
-      creators = dc_creators.map(&:creator)
-      contributors = dc_contributors.map(&:contributor)
-      (creators + contributors).first
+      dc_creators.map(&:creator).first
     end
 
     date :sort_date do
@@ -349,7 +347,7 @@ class Record < ActiveRecord::Base
   def create_dc_part(node_name, xml_doc, record)
     xml_doc.xpath("//#{node_name}").map do |node|
 
-      if node_name == "creator"
+      if node_name == "creator" || node_name == "contributor"
         create_dc_creator(node, record)
       end
 

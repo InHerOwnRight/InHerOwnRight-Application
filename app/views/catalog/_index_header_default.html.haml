@@ -35,9 +35,6 @@
       - if !instance.dc_creators.first.blank?
         %h6.col-sm-12.collections_subhead
           Creator: #{instance.dc_creators.first.creator}
-      - elsif !instance.dc_contributors.first.blank?
-        %h6.col-sm-12.collections_subhead
-          Creator: #{instance.dc_contributors.first.contributor}
 
       - if !instance.display_dates.empty?
         - if instance.display_dates.count > 1
