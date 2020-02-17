@@ -1,21 +1,5 @@
 %tr
   %th{ scope: "row" }
     Date created
-    - if @record.dc_dates.count > 1
-      - if @record.dc_dates.last.english_date
-        %td
-          = #{display_date_range(@record)}, @record.dc_dates.last.english_date
-      - else
-        %td
-          = display_date_range(@record)
-    - else
-      - if @record.dc_dates.first.date && @record.dc_dates.last.english_date
-        %td
-          = "#{@record.dc_dates.first.date.strftime("%Y-%m-%d")}, #{@record.dc_dates.last.english_date}"
-      - else
-        - if @record.dc_dates.first.date
-          %td
-            = @record.dc_dates.first.date.strftime("%Y-%m-%d")
-        - elsif @record.dc_dates.last.english_date
-          %td
-            = @record.dc_dates.last.english_date
+  %td
+    = joined_dates(@record.dc_dates)
