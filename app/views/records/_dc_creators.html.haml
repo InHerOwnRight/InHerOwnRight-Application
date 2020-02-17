@@ -1,18 +1,16 @@
-- if @record.all_creators.count > 1
+- if @record.dc_creators.count > 1
   %tr
     %th{ scope: "row" }
       Creators
     %td
-      - @record.all_creators.each_with_index do |creator, index|
-        = link_to creator, search_catalog_path( search_field: 'creator', q: creator )
+      - @record.dc_creators.each_with_index do |dc_creator, index|
+        = link_to dc_creator.creator, search_catalog_path( search_field: 'creator', q: dc_creator.creator)
 
-        = "|" unless index == @record.all_creators.size - 1
+        = "|" unless index == @record.dc_creators.size - 1
 
-- else
-  - if !@record.all_creators.blank?
-    %tr
-      %th{ scope: "row" }
-        Creators
-      %td
-        - @record.all_creators.each do |creator|
-          = link_to creator, search_catalog_path( search_field: 'creator', q: creator )
+- elsif @record.dc_creators.count == 1
+  %tr
+    %th{ scope: "row" }
+      Creator
+    %td
+      = link_to @record.dc_creators.first.creator, search_catalog_path( search_field: 'creator', q: @record.dc_creators.first.creator )
