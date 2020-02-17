@@ -41,6 +41,9 @@ gem 'redcarpet', '~> 3.4'
 gem 'dotenv-rails'
 gem "mini_magick"
 gem "friendly_id", '~> 5.2.4', require: "friendly_id"
+
+gem 'sentry-raven'
+
 # gem 'carpetbomb'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
