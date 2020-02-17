@@ -10,9 +10,17 @@ class RecordsController < ApplicationController
 
   end
 
-  def display_date_range(record)
-    "#{record.dc_dates.minimum(:date).strftime("%Y-%m-%d")} &ndash; #{record.dc_dates.maximum(:date).strftime("%Y-%m-%d")}".html_safe
+  def joined_dates(dc_dates)
+    dc_dates.map do |dc_date|
+      if dc_date.date
+        dc_date.date.strftime("%Y-%m-%d")
+      elsif dc_date.english_date
+        dc_date.english_date
+      else
+        dc_date.unprocessed_date
+      end
+    end.join("; ")
   end
-  helper_method :display_date_range
+  helper_method :joined_dates
 
 end
