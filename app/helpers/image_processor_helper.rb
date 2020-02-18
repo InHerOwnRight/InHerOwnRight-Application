@@ -1,0 +1,214 @@
+require 'dotenv/load'
+require "open3"
+
+module ImageProcessorHelper
+  def self.reset_failed_inbox_image_current_status
+    FailedInboxImage.update_all(current: false)
+  end
+
+  def self.create_image_process_tracker
+    ImageProcessTracker.destroy_all
+    ImageProcessTracker.create
+  end
+
+  def self.process_images
+    set_archive_phase
+    create_failed_inbox_image_map
+    reset_failed_inbox_image_table
+    create_inbox_image_map
+    update_image_process_tracker_total_files
+    batch_process_inbox_images
+    delete_image_process_tracker
+  end
+
+  private
+  def self.set_archive_phase
+    @archive_phase = "NEH Archive"
+  end
+
+    def self.create_failed_inbox_image_map
+      @failed_inbox_image_map ||= inbox_image_school_folders.inject({}) do |map, school_name|
+        map[school_name] = failed_inbox_image_file_names(school_name)
+        map
+      end
+    end
+
+    def self.failed_inbox_image_file_names(school)
+      raw_image_file_names = `s3cmd ls s3://pacscl-production/images/#{school}/Failed Inbox/`
+      # raw_image_file_names = `s3cmd ls s3://pacscl-production/test_images/#{school}/Failed Inbox/`
+      image_file_names = raw_image_file_names.scan(/Failed Inbox\/.+\n/)
+      image_file_names.map! { |file_name| file_name.gsub('Failed Inbox/', '').gsub("\n", '') }
+    end
+
+    def self.reset_failed_inbox_image_table
+      FailedInboxImage.all.each do |failed_inbox_image|
+        unless image_still_in_failed_inbox?(failed_inbox_image)
+          failed_inbox_image.destroy
+        end
+      end
+    end
+
+    def self.image_still_in_failed_inbox?(failed_inbox_image)
+      @failed_inbox_image_map.keys.include?(failed_inbox_image.school) && @failed_inbox_image_map[failed_inbox_image.school].include?(failed_inbox_image.image)
+    end
+
+    def self.create_inbox_image_map
+      @inbox_image_map ||= inbox_image_school_folders.inject({}) do |map, school_name|
+        map[school_name] = inbox_image_file_names(school_name)
+        map
+      end
+    end
+
+    def self.inbox_image_school_folders
+      school_folder_paths = `s3cmd ls s3://pacscl-production/images/`
+      # school_folder_paths = `s3cmd ls s3://pacscl-production/test_images/`
+      school_folders = school_folder_paths.scan(/images\/.+\//)
+      school_folders.map! { |folder| folder.gsub('images', '').gsub('/', '') }
+    end
+
+    def self.inbox_image_file_names(school)
+      raw_image_file_names = `s3cmd ls s3://pacscl-production/images/#{school}/Inbox/`
+      # raw_image_file_names = `s3cmd ls s3://pacscl-production/test_images/#{school}/Inbox/`
+      # [^\/] is used to ignore any images in sub-folders
+      image_file_names = raw_image_file_names.scan(/Inbox\/.+[^\/]\n/)
+      image_file_names.map! { |file_name| file_name.gsub('Inbox/', '').gsub("\n", '') }
+    end
+
+    def self.batch_process_inbox_images
+      @inbox_image_map.keys.each do |school|
+        @error_files = []
+        make_tmp_directory(school)
+        while @inbox_image_map[school].count.positive?
+          batched_inbox_image_file_names = @inbox_image_map[school].take(10)
+          import_inbox_images(school, batched_inbox_image_file_names)
+          convert_images_to_png(school)
+          resize_lg_images(school)
+          resize_thumb_images(school)
+          upload_processed_images(school)
+          delete_local_processed_images(school)
+          update_image_process_tracker_files_processed(batched_inbox_image_file_names)
+        end
+        move_failed_inbox_images_to_failed_folder(school)
+        move_inbox_images_to_archive(school)
+        delete_sub_folders_from_archive(school)
+        delete_inbox_images(school)
+        delete_tmp_directory(school)
+      end
+    end
+
+    def self.make_tmp_directory(school)
+      `mkdir -p tmp/images_#{school}/Inbox`
+    end
+
+    def self.import_inbox_images(school, imgs)
+      imgs.each do |img|
+        puts "Imported #{img}"
+        _stdout, stderr, status = Open3.capture3("s3cmd get 's3://pacscl-production/images/#{school}/Inbox/#{img}' './tmp/images_#{school}/Inbox/#{img}'")
+        # _stdout, stderr, status = Open3.capture3("s3cmd get 's3://pacscl-production/test_images/#{school}/Inbox/#{img}' './tmp/images_#{school}/Inbox/#{img}'")
+        file_name = img.split("/").last
+        FailedInboxImage.create(image: file_name, school: school, action: 'Import from S3', error: stderr, failed_at: DateTime.now) unless status.success?
+      end
+      @inbox_image_map[school] = @inbox_image_map[school] - imgs
+    end
+
+    def self.convert_images_to_png(school)
+      tif_images = Dir["./tmp/images_#{school}/Inbox/*"]
+      tif_images.each do |img|
+        if img[-2..-1] == "ff"
+          png_file = img[0..-6] + ".png"
+        else
+          png_file = img[0..-5] + ".png"
+        end
+        _stdout, stderr, status = Open3.capture3("convert '#{img}' '#{png_file}'")
+        file_name = img.split("/").last
+        FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now) unless status.success?
+        File.delete(img)
+      end
+    end
+
+    def self.resize_lg_images(school)
+      png_images = Dir["./tmp/images_#{school}/Inbox/*.png"]
+      png_images.each do |img|
+        lg_file = img[0..-5] + "_lg.png"
+        _stdout, stderr, status = Open3.capture3("convert '#{img}' -resize 500x '#{lg_file}'")
+        file_name = img.split("/").last
+        FailedInboxImage.create(image: file_name, school: school, action: 'Resize to large image', error: stderr, failed_at: DateTime.now) unless status.success?
+        old_img = "#{img}"
+        img.slice!("Inbox/")
+        `mv '#{old_img[0..-5] + "_lg.png"}' '#{img[0..-5] + "_lg.png"}'`
+      end
+    end
+
+    def self.resize_thumb_images(school)
+      png_images = Dir["./tmp/images_#{school}/Inbox/*.png"]
+      png_images.each do |img|
+        thumb_file = img[0..-5] + "_thumb.png"
+        _stdout, stderr, status = Open3.capture3("convert '#{img}' -resize 92x '#{thumb_file}'")
+        file_name = img.split("/").last
+        FailedInboxImage.create(image: file_name, school: school, action: 'Resize to thumbnail image', error: stderr, failed_at: DateTime.now) unless status.success?
+        old_img = "#{img}"
+        img.slice!("Inbox/")
+        `mv '#{old_img[0..-5] + "_thumb.png"}' '#{img[0..-5] + "_thumb.png"}'`
+      end
+    end
+
+    def self.upload_processed_images(school)
+      `s3cmd sync --acl-public --verbose tmp/images_#{school}/*png s3://pacscl-production/images/#{school}/`
+      # `s3cmd sync --acl-public --verbose tmp/images_#{school}/*png s3://pacscl-production/test_images/#{school}/`
+    end
+
+    def self.delete_local_processed_images(school)
+      `rm tmp/images_#{school}/Inbox/*`
+      `rm tmp/images_#{school}/*.png`
+    end
+
+    def self.move_failed_inbox_images_to_failed_folder(school)
+      FailedInboxImage.where(school: school).each do |failed_inbox_image|
+        `s3cmd cp 's3://pacscl-production/images/#{school}/Inbox/#{failed_inbox_image.image}' 's3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}'`
+        `s3cmd del 's3://pacscl-production/images/#{school}/Inbox/#{failed_inbox_image.image}'`
+        # `s3cmd cp 's3://pacscl-production/test_images/#{school}/Inbox/#{failed_inbox_image.image}' 's3://pacscl-production/test_images/#{school}/Failed Inbox/#{failed_inbox_image.image}'`
+        # `s3cmd del 's3://pacscl-production/test_images/#{school}/Inbox/#{failed_inbox_image.image}'`
+      end
+    end
+
+    def self.move_inbox_images_to_archive(school)
+      `s3cmd sync --verbose 's3://pacscl-production/images/#{school}/Inbox/' 's3://pacscl-production/images/#{school}/Archive/#{@archive_phase}/'`
+      # `s3cmd sync --verbose 's3://pacscl-production/test_images/#{school}/Inbox/' 's3://pacscl-production/test_images/#{school}/Archive/#{@archive_phase}/'`
+    end
+
+    def self.delete_sub_folders_from_archive(school)
+      archive_file_names = `s3cmd ls s3://pacscl-production/images/#{school}/Inbox/`
+      # archive_file_names = `s3cmd ls s3://pacscl-production/test_images/#{school}/Inbox/`
+      folder_names = archive_file_names.scan(/Inbox\/.+\/\n/)
+      folder_names.map! { |folder_name| folder_name.gsub('Inbox/', '').gsub("\n", '') }
+      folder_names.each do |folder_name|
+        # `s3cmd del -r --exclude "#{@archive_phase}/" s3://pacscl-production/images/#{school}/Archive/#{@archive_phase}/#{folder_name}`
+        # `s3cmd del -r --exclude "#{@archive_phase}/" s3://pacscl-production/test_images/#{school}/Archive/#{@archive_phase}/#{folder_name}`
+      end
+    end
+
+    def self.delete_inbox_images(school)
+      `s3cmd del s3://pacscl-production/images/#{school}/Inbox/*`
+      # `s3cmd del s3://pacscl-production/test_images/#{school}/Inbox/*`
+    end
+
+    def self.delete_tmp_directory(school)
+      `rm -rf tmp/images_#{school}`
+    end
+
+    def self.update_image_process_tracker_total_files
+      file_count = @inbox_image_map.values.flatten.count
+      ImageProcessTracker.last.update_attributes(status: 1, files_processed: 0, total_files: file_count)
+    end
+
+    def self.update_image_process_tracker_files_processed(files)
+      previous_files_processed = ImageProcessTracker.last.files_processed
+      new_files_processed = files.count
+      files_processed = previous_files_processed + new_files_processed
+      ImageProcessTracker.last.update_attributes(files_processed: files_processed)
+    end
+
+    def self.delete_image_process_tracker
+      ImageProcessTracker.destroy_all
+    end
+end
