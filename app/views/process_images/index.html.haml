@@ -1,0 +1,38 @@
+.process-images.content
+  - if @image_process_tracker
+    = button_to 'Process Images', process_images_path, method: :post, disabled: true, class: "disabled-button"
+  -else
+    = button_to 'Process Images', process_images_path, method: :post
+  %p= @image_process_tracker.humanized_status if @image_process_tracker
+%br
+%h3
+  Failed Images
+%br
+- @schools.each do |school|
+  .failed-inbox-images
+    %h4= school
+    %table
+      %thead
+        %tr
+          %th
+            Image
+          %th
+            Action
+          %th
+            Error
+          %th
+            Failed On
+      %thead
+        %tbody
+          - @failed_inbox_images.each do |failed_inbox_image|
+            - if failed_inbox_image.school == school
+              %tr
+                %td
+                  = failed_inbox_image.image
+                %td
+                  = failed_inbox_image.action
+                %td
+                  = failed_inbox_image.error
+                %td
+                  = failed_inbox_image.failed_at.in_time_zone('Eastern Time (US & Canada)').to_date
+    %br

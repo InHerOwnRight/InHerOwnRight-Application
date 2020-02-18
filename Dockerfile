@@ -1,7 +1,11 @@
 FROM phusion/passenger-ruby23
 
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y vim nodejs-dev tzdata s3cmd
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    vim \
+    nodejs-dev \
+    tzdata \
+    s3cmd \
+    imagemagick
 
 # enable nginx in the passenger image
 RUN rm -f /etc/service/nginx/down
@@ -23,6 +27,8 @@ RUN chown -R app:app /var/www
 USER app
 
 RUN bundle install
+
+# RUN su -c 'echo -e "#!/bin/bash\ncd /var/www/rails && bundle install && bin/delayed_job start" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
 
 COPY --chown=app:app . ./
 

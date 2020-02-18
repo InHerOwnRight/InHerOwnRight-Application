@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191108094657) do
+ActiveRecord::Schema.define(version: 20200212154446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,32 @@ ActiveRecord::Schema.define(version: 20191108094657) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+  end
+
+  create_table "failed_inbox_images", force: :cascade do |t|
+    t.string   "image"
+    t.string   "school"
+    t.string   "action"
+    t.string   "error"
+    t.datetime "failed_at"
+    t.boolean  "current",    default: true
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string   "slug",                      null: false
     t.integer  "sluggable_id",              null: false
@@ -172,6 +198,12 @@ ActiveRecord::Schema.define(version: 20191108094657) do
     t.text     "transcription"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+  end
+
+  create_table "image_process_trackers", force: :cascade do |t|
+    t.integer "files_processed"
+    t.integer "total_files"
+    t.integer "status",          default: 0
   end
 
   create_table "raw_records", force: :cascade do |t|
