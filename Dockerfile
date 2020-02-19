@@ -17,6 +17,8 @@ RUN ln -s /var/www/rails /home/app/
 
 WORKDIR /var/www/rails
 
+# RUN su -c 'echo -e "#!/bin/bash\ncd /var/www/rails && bundle install && bin/delayed_job start" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
+
 RUN mkdir -p public/assets
 
 COPY Gemfile* ./
@@ -27,8 +29,6 @@ RUN chown -R app:app /var/www
 USER app
 
 RUN bundle install
-
-# RUN su -c 'echo -e "#!/bin/bash\ncd /var/www/rails && bundle install && bin/delayed_job start" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
 
 COPY --chown=app:app . ./
 
