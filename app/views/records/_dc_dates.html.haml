@@ -2,4 +2,6 @@
   %th{ scope: "row" }
     Date created
   %td
-    = joined_dates(@record.dc_dates)
+    - @record.dc_dates.each_with_index do |dc_date, index|
+      = dc_date.unprocessed_date
+      = "|" unless index == @record.dc_dates.size - 1
