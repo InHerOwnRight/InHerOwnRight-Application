@@ -147,6 +147,10 @@ namespace :import_metadata do
         response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
         metadata_records = []
         response.each { |r| metadata_records << r }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |r| metadata_records << r }
+        end
         metadata_records.each do |record|
           identifiers_relations_hash[record.header.identifier] = ''
         end

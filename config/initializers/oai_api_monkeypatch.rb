@@ -40,5 +40,26 @@ module OAI
          raise OAI::Exception.new("unknown parser: #{@parser}")
        end
      end
+
+     def load_document(xml)
+        case @parser
+        when 'libxml'
+          begin
+            parser = XML::Parser.string(xml)
+            return parser.parse
+          rescue XML::Error => e
+            raise OAI::Exception, 'response not well formed XML: '+e, caller
+          end
+        when 'rexml'
+          begin
+            # Add dc identifier definition to correct bad xml error
+            xml = xml.gsub(/<dc:identifier>/,"<dc:identifier xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:srw_dc='info:srw/schema/1/dc-schema'>")
+            return REXML::Document.new(xml)
+          rescue REXML::ParseException => e
+            binding.pry
+            raise OAI::Exception, 'response not well formed XML: '+e.message, caller
+          end
+        end
+      end
    end
 end
