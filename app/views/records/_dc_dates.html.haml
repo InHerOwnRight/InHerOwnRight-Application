@@ -3,5 +3,8 @@
     Date created
   %td
     - @record.dc_dates.each_with_index do |dc_date, index|
-      = dc_date.unprocessed_date
+      - if dc_date.unprocessed_date
+        = dc_date.unprocessed_date
+      - elsif dc_date.unprocessed_date.nil?
+        = dc_date.english_date
       = "|" unless index == @record.dc_dates.size - 1

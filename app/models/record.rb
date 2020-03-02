@@ -251,16 +251,17 @@ class Record < ActiveRecord::Base
   def create_dc_date(node, record)
     raw_date = node.text
     dates = raw_date.split(";").map { |d| d.strip }.reject(&:empty?)
-    dates = ["1888", "January 4, 1900", "1900, 1920, 2010"]
-    dates.map do |d|
+    split_dates = []
+    dates.each do |d|
       date_remaining = d.scan(/\D/) - [" ", ","]
       if date_remaining.empty?
-        d.split(",").map { |d| d.strip }
+        split_dates << d.split(",").map { |d| d.strip }
       else
-        d
+        split_dates << d
       end
-    end.flatten
-    dates.each do |d|
+    end
+    split_dates.flatten!
+    split_dates.each do |d|
       if d =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/ || d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
         full_dates = d.split(" - ") if d =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/
         full_dates = d.split("-") if d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
