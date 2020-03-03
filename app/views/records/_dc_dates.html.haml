@@ -2,9 +2,6 @@
   %th{ scope: "row" }
     Date created
   %td
-    - @record.dc_dates.each_with_index do |dc_date, index|
-      - if dc_date.unprocessed_date
-        = dc_date.unprocessed_date
-      - elsif dc_date.unprocessed_date.nil?
-        = dc_date.english_date
-      = "|" unless index == @record.dc_dates.size - 1
+    - @record.display_dates.each_with_index do |date, index|
+      = date
+      = "|" unless index == @record.display_dates.size - 1

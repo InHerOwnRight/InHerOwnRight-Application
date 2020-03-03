@@ -76,6 +76,18 @@ class Record < ActiveRecord::Base
     creators + contributors
   end
 
+  def display_dates
+    dates = []
+    dc_dates.each do |d|
+      if !dates.include?(d.unprocessed_date) && !d.unprocessed_date.nil?
+        dates << d.unprocessed_date
+      elsif d.unprocessed_date.nil?
+        dates << d.english_date
+      end
+    end
+    dates
+  end
+
   searchable do
     text :oai_identifier
 
