@@ -10,7 +10,10 @@ namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
   task all_oai: [:from_temple, :from_tri_colleges, :from_drexel, :from_haverford]
-  task all_csv: [:collections, :from_bates, :from_bates2, :from_library_co, :from_hsp, :from_hsp2, :from_hsp3, :from_german_society, :from_udel, :from_nara]
+  task all_csv: [:collections, :from_bates, :from_bates2, :from_library_co,
+                 :from_hsp, :from_hsp2, :from_hsp3, :from_german_society, :from_udel,
+                 :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
+                 :from_union_league]
   # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
   task all: [:all_oai, :all_csv]
 
@@ -426,6 +429,38 @@ namespace :import_metadata do
     repository = Repository.find_by_name("The National Archives at Philadelphia")
     filepath = "lib/documents/csv/nara/nara.csv"
     original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_catholic: :environment do
+    repository = Repository.find_by_name("Catholic Historical Research Center")
+    filepath = "lib/documents/csv/catholic/CHRC.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_college_of_physicians: :environment do
+    repository = Repository.find_by_name("College of Physicians of Philadelphia")
+    filepath = "lib/documents/csv/college_of_physicians/CollegeOfPhysicians.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_presbyterian: :environment do
+    repository = Repository.find_by_name("Presbyterian Historical Society")
+    filepath = "lib/documents/csv/presbyterian/PHS.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv2(filepath, repository, original_entry_date)
+  end
+
+  task from_union_league: :environment do
+    repository = Repository.find_by_name("The Union League Legacy Foundation")
+    filepath = "lib/documents/csv/union_league/UnionLeague.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
     import_from_csv2(filepath, repository, original_entry_date)
   end
