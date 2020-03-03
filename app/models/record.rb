@@ -402,6 +402,16 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def self.to_csv
+    CSV.generate(headers: true) do |csv|
+      csv << ["Repository Name", "Staging URL"]
+
+      all.each do |record|
+        csv << [record.repository.name, "http://pacscl.neomindlabs.com/records/#{record.slug}"]
+      end
+    end
+  end
+
 ########################## Oai API Endpoint ################################
 
   def to_oai_dc
