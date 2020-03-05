@@ -17,14 +17,14 @@ RUN ln -s /var/www/rails /home/app/
 
 WORKDIR /var/www/rails
 
-# RUN su -c 'echo -e "#!/bin/bash\ncd /var/www/rails && bundle install && bin/delayed_job start" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
-
 RUN mkdir -p public/assets
 
 COPY Gemfile* ./
 
 # The app user is defined by the phusion passenger image
 RUN chown -R app:app /var/www
+
+RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -lc \"cd /var/www/rails && bundle install && bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
 
 USER app
 
