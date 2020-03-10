@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 class CatalogController < ApplicationController
 
+  include BlacklightRangeLimit::ControllerOverride
+
   before_filter :extend_catalog_paginiation, only: [:index]
 
   include Blacklight::Catalog
@@ -113,20 +115,30 @@ class CatalogController < ApplicationController
     # config.add_facet_field 'creator_s', label: 'Creator'
 
     config.add_facet_field 'sort_creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }, limit: 100
+
     # config.add_facet_field 'repository_id_i', label: "Repository", helper_method: :render_repository_name
-    config.add_facet_field 'date_', label: "Date Range", query: {
-      years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
-      years_1830_to_1840: { label: '1830 to 1840', fq: "pub_date_dm:[1830-01-01T00:00:00Z TO 1840-12-31T00:00:00Z]" },
-      years_1840_to_1850: { label: '1840 to 1850', fq: "pub_date_dm:[1840-01-01T00:00:00Z TO 1850-12-31T00:00:00Z]" },
-      years_1850_to_1860: { label: '1850 to 1860', fq: "pub_date_dm:[1850-01-01T00:00:00Z TO 1860-12-31T00:00:00Z]" },
-      years_1860_to_1870: { label: '1860 to 1870', fq: "pub_date_dm:[1860-01-01T00:00:00Z TO 1870-12-31T00:00:00Z]" },
-      years_1870_to_1880: { label: '1870 to 1880', fq: "pub_date_dm:[1870-01-01T00:00:00Z TO 1880-12-31T00:00:00Z]" },
-      years_1880_to_1890: { label: '1880 to 1890', fq: "pub_date_dm:[1880-01-01T00:00:00Z TO 1890-12-31T00:00:00Z]" },
-      years_1890_to_1900: { label: '1890 to 1900', fq: "pub_date_dm:[1890-01-01T00:00:00Z TO 1900-12-31T00:00:00Z]" },
-      years_1900_to_1910: { label: '1900 to 1910', fq: "pub_date_dm:[1900-01-01T00:00:00Z TO 1910-12-31T00:00:00Z]" },
-      years_1910_to_1920: { label: '1910 to 1920', fq: "pub_date_dm:[1910-01-01T00:00:00Z TO 1920-12-31T00:00:00Z]" },
-      years_1920_to_1930: { label: '1920 to 1930', fq: "pub_date_dm:[1920-01-01T00:00:00Z TO 1930-12-31T00:00:00Z]" }
-    }
+
+    #config.add_facet_field 'date_', label: "Date Range", query: {
+    #  years_1820_to_1830: { label: '1820 to 1830', fq: "pub_date_dm:[1820-01-01T00:00:00Z TO 1830-12-31T00:00:00Z]" },
+    #  years_1830_to_1840: { label: '1830 to 1840', fq: "pub_date_dm:[1830-01-01T00:00:00Z TO 1840-12-31T00:00:00Z]" },
+    #  years_1840_to_1850: { label: '1840 to 1850', fq: "pub_date_dm:[1840-01-01T00:00:00Z TO 1850-12-31T00:00:00Z]" },
+    #  years_1850_to_1860: { label: '1850 to 1860', fq: "pub_date_dm:[1850-01-01T00:00:00Z TO 1860-12-31T00:00:00Z]" },
+    #  years_1860_to_1870: { label: '1860 to 1870', fq: "pub_date_dm:[1860-01-01T00:00:00Z TO 1870-12-31T00:00:00Z]" },
+    #  years_1870_to_1880: { label: '1870 to 1880', fq: "pub_date_dm:[1870-01-01T00:00:00Z TO 1880-12-31T00:00:00Z]" },
+    #  years_1880_to_1890: { label: '1880 to 1890', fq: "pub_date_dm:[1880-01-01T00:00:00Z TO 1890-12-31T00:00:00Z]" },
+    #  years_1890_to_1900: { label: '1890 to 1900', fq: "pub_date_dm:[1890-01-01T00:00:00Z TO 1900-12-31T00:00:00Z]" },
+    #  years_1900_to_1910: { label: '1900 to 1910', fq: "pub_date_dm:[1900-01-01T00:00:00Z TO 1910-12-31T00:00:00Z]" },
+    #  years_1910_to_1920: { label: '1910 to 1920', fq: "pub_date_dm:[1910-01-01T00:00:00Z TO 1920-12-31T00:00:00Z]" },
+    #  years_1920_to_1930: { label: '1920 to 1930', fq: "pub_date_dm:[1920-01-01T00:00:00Z TO 1930-12-31T00:00:00Z]" }
+    #}
+
+    # config.add_facet_field 'date_', label: 'Publish Date', :query => {
+    #    :years_5 => { label: 'within 5 Years', fq: "pub_date:[#{Time.zone.now.year - 5 } TO *]" },
+    #    :years_10 => { label: 'within 10 Years', fq: "pub_date:[#{Time.zone.now.year - 10 } TO *]" },
+    #    :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
+    # }
+
+    config.add_facet_field 'pub_date_year_im', label: 'Date Range', range: true
 
     config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }, limit: 200
 
@@ -139,6 +151,7 @@ class CatalogController < ApplicationController
     config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
       is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
     }, show: false
+
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
     # config.add_facet_field 'lc_1letter_facet', label: 'Call Number'
@@ -146,12 +159,6 @@ class CatalogController < ApplicationController
     # config.add_facet_field 'subject_era_facet', label: 'Era'
 
     # config.add_facet_field 'example_pivot_field', label: 'Pivot Field', :pivot => ['rights_text', 'creator_text']
-
-    # config.add_facet_field 'date_', label: 'Publish Date', :query => {
-    #    :years_5 => { label: 'within 5 Years', fq: "pub_date:[#{Time.zone.now.year - 5 } TO *]" },
-    #    :years_10 => { label: 'within 10 Years', fq: "pub_date:[#{Time.zone.now.year - 10 } TO *]" },
-    #    :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
-    # }
 
     # # Have BL send all facet field names to Solr, which has been the default
     # # previously. Simply remove these lines if you'd rather use Solr request
