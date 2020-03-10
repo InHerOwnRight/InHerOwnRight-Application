@@ -143,6 +143,10 @@ class Record < ActiveRecord::Base
       dc_dates.original_creation_date.map(&:date)
     end
 
+    integer :pub_date_year, multiple: true do
+      dc_dates.original_creation_date.pluck(:date).map { |d| d.try(:year) }
+    end
+
     text :description do
       dc_descriptions.map(&:description)
     end
