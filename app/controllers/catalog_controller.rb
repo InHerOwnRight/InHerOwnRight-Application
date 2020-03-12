@@ -138,7 +138,7 @@ class CatalogController < ApplicationController
     #    :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
     # }
 
-    config.add_facet_field 'pub_date_year_im', label: 'Date Range', range: true
+    config.add_facet_field 'pub_date_year_im', label: 'Date Range', range: true, solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }, limit: 200
 

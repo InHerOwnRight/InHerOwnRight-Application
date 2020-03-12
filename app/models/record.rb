@@ -144,7 +144,7 @@ class Record < ActiveRecord::Base
     end
 
     integer :pub_date_year, multiple: true do
-      dc_dates.original_creation_date.pluck(:date).map { |d| d.try(:year) }
+      dc_dates.original_creation_date.pluck(:date).map { |d| d.year }
     end
 
     text :description do
