@@ -107,6 +107,10 @@ class Record < ActiveRecord::Base
       full_texts.map(&:transcription)
     end
 
+    text :collection do
+      dc_terms_is_part_ofs.map(&:is_part_of)
+    end
+
     text :repository do
       repository.name
     end
@@ -344,8 +348,12 @@ class Record < ActiveRecord::Base
 
   def create_dc_terms_is_part_of(node, record)
     if !node.text.empty?
-      dc_terms_ipo = DcTermsIsPartOf.find_or_initialize_by(record_id: record.id, is_part_of: node.text)
-      dc_terms_ipo.save
+      node.text.split(';').reject do |collection|
+        collection.blank? || collection =~ /in her own right/i
+      end.each do |collection|
+        dc_terms_ipo = DcTermsIsPartOf.find_or_initialize_by(record_id: record.id, is_part_of: collection)
+        dc_terms_ipo.save
+      end
     end
   end
 

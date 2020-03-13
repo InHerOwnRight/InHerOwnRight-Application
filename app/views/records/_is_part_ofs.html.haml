@@ -1,6 +1,8 @@
-- @record.dc_terms_is_part_ofs.each do |dc_terms_is_part_of|
-  %tr
-    %th{ scope: "row" }
-      Archival collection (physical)
-    %td
-      = dc_terms_is_part_of.is_part_of
+%tr
+  %th{ scope: "row" }
+    Collection
+  %td
+    - @record.dc_terms_is_part_ofs.each do |dc_terms_is_part_of|
+      %p
+        = dc_terms_is_part_of.is_part_of
+        = link_to '(explore contents)', search_catalog_path(q: dc_terms_is_part_of.is_part_of, search_field: :collection)
