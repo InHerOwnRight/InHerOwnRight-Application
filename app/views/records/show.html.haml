@@ -49,7 +49,7 @@
       - if @record.dc_identifiers.any?
         = render 'dc_identifiers'
 
-      - if @record.is_collection? && @record.dc_terms_is_part_ofs.any?
+      - if @record.dc_terms_is_part_ofs.any?
         = render 'is_part_ofs'
 
       - if !@record.repository_id.blank?

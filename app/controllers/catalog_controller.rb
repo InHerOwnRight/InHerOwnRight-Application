@@ -138,7 +138,7 @@ class CatalogController < ApplicationController
     #    :years_25 => { label: 'within 25 Years', fq: "pub_date:[#{Time.zone.now.year - 25 } TO *]" }
     # }
 
-    config.add_facet_field 'pub_date_year_im', label: 'Date Range', range: true
+    config.add_facet_field 'pub_date_year_im', label: 'Date Range', range: true, solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }, limit: 200
 
@@ -257,7 +257,7 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text full_text_text spatial_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text spatial_text collection_text'
         }
     end
 
@@ -280,6 +280,10 @@ class CatalogController < ApplicationController
 
     config.add_search_field('contributing_institution') do |field|
       field.solr_parameters = { qf: 'repository_text'}
+    end
+
+    config.add_search_field('collection') do |field|
+      field.solr_parameters = { qf: 'collection_text'}
     end
 
     config.add_search_field('transcription') do |field|
