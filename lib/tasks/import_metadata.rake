@@ -10,7 +10,7 @@ namespace :import_metadata do
   desc "Import metadata raw_records from repositories"
 
   task all_oai: [:from_temple, :from_tri_colleges, :from_drexel, :from_haverford]
-  task all_csv: [:collections, :from_bates, :from_bates2, :from_library_co,
+  task all_csv: [:from_bates, :from_bates2, :from_library_co,
                  :from_hsp, :from_hsp2, :from_hsp3, :from_german_society, :from_udel,
                  :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
                  :from_union_league]
@@ -264,49 +264,6 @@ namespace :import_metadata do
   end
 
 ### CSV IMPORTS ########################################################################################
-
-  task collections: :environment do
-    name_spaces = {
-        "xmlns:oai_qdc" => "http://worldcat.org/xmlschemas/qdc-1.0/",
-        "xmlns:dcterms" => "http://purl.org/dc/terms/",
-        "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
-    }
-    CSV.foreach('lib/documents/csv/collections.csv', headers: true) do |row|
-      repository = Repository.find_by_name(row[0])
-      raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[7])
-      raw_record.record_type = "collection"
-      raw_record.repository_id = repository.id
-      raw_record.original_record_url = row[7]
-      builder = Nokogiri::XML::Builder.new { |xml|
-        xml.metadata {
-          xml.contributing_repository row[0]
-          xml['oai_qdc'].qualifieddc(name_spaces) do
-            xml['dc'].title row[1]
-            if !row[2].blank?
-              xml['dc'].creator row[2]
-            end
-            xml['dc'].date row[3]
-            xml['dc'].identifier row[4]
-            xml['dc'].coverage row[5]
-            xml['dc'].extent row[6]
-            if !row[7].blank?
-              xml['dc'].identifier row[7]
-            end
-            if row[8].split(":").first == "http" || row[8].split(":").first == "https"
-              xml['dc'].identifier row[8]
-            else
-              xml['dc'].hasFormat row[8]
-            end
-            xml['dc'].description row[9]
-            xml['dc'].description row[10]
-            xml['dc'].description row[11]
-          end
-        }
-      }
-      raw_record.xml_metadata = builder.to_xml
-      raw_record.save
-    end
-  end
 
   def import_from_csv(filepath, repository, original_entry_date)
     name_spaces = {

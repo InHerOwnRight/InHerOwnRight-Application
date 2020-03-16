@@ -144,8 +144,6 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'repository_s', label: "Contributing Institution", solr_params: { 'facet.mincount' => 1 }
 
-    config.add_facet_field 'collection_id_im', label: "Collection", helper_method: :render_collection_name, solr_params: { 'facet.mincount' => 1 }
-
     config.add_facet_field 'type_sm', label: "Type", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
