@@ -1,6 +1,15 @@
-- @record.dc_terms_spacials.each do |dc_terms_spacial|
+- if @record.dc_terms_spacials.size > 1
   %tr
     %th{ scope: "row" }
       Geographical location
     %td
-      = dc_terms_spacial.spacial
+      - @record.dc_terms_spacials.each_with_index do |dc_terms_spacial, index|
+        = dc_terms_spacial.spacial
+        = "|" unless index == @record.dc_terms_spacials.size - 1
+- else
+  - @record.dc_terms_spacials.each do |dc_terms_spacial|
+    %tr
+      %th{ scope: "row" }
+        Geographical location
+      %td
+        = dc_terms_spacial.spacial
