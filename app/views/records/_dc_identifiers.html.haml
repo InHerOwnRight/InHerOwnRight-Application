@@ -1,13 +1,32 @@
-- @record.dc_identifiers.each do |dc_identifier|
-  - if dc_identifier.identifier_is_url?
+- if @record.dc_identifiers.select { |i| i.identifier_is_url? }.size > 1
+  %tr
+    %th{ scope: "row" }
+      View full item
+    %td
+      - @record.dc_identifiers.select { |i| i.identifier_is_url? }.each_with_index do |dc_identifier, index|
+        = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
+        = "|" unless index == @record.dc_identifiers.select { |i| i.identifier_is_url? }.size - 1
+- else
+  - if !@record.dc_identifiers.select { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
       %th{ scope: "row" }
         View full item
       %td
-        = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
-  - else
+        = link_to @record.dc_identifiers.select { |i| i.identifier_is_url? }.first.identifier, @record.dc_identifiers.select { |i| i.identifier_is_url? }.first.identifier, target: "_blank"
+
+
+- if @record.dc_identifiers.reject { |i| i.identifier_is_url? }.size > 1
+  %tr
+    %th{ scope: "row" }
+      Local Identifier
+    %td
+      - @record.dc_identifiers.reject { |i| i.identifier_is_url? }.each_with_index do |dc_identifier, index|
+        = dc_identifier.identifier
+        = "|" unless index == @record.dc_identifiers.reject { |i| i.identifier_is_url? }.size - 1
+- else
+  - if !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
       %th{ scope: "row" }
         Local Identifier
       %td
-        = dc_identifier.identifier
+        = @record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier
