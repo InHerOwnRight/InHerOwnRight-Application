@@ -3,4 +3,4 @@ en:
     application_name: 'In Her Own Right'
     range_limit:
       submit_limit: 'Apply'
-      missing: 'Not in Range'
+      missing: 'Undated'
