@@ -70,3 +70,9 @@ THEN
     su app
     cd /home/app/rails
     RAILS_ENV=staging rake setup:project
+    
+## Reindexing data for search
+
+    cd ~/pacscl && docker-compose exec webapp bash
+    su app
+    RAILS_ENV=staging rake sunspot:reindex
