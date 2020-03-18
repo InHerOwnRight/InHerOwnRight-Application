@@ -342,7 +342,7 @@ namespace :import_metadata do
     filepath = "lib/documents/csv/catholic/CHRC.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
-    import_from_csv2(filepath, repository, original_entry_date)
+    import_from_csv(filepath, repository, original_entry_date)
   end
 
   task from_college_of_physicians: :environment do
@@ -350,7 +350,7 @@ namespace :import_metadata do
     filepath = "lib/documents/csv/college_of_physicians/CollegeOfPhysicians.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
-    import_from_csv2(filepath, repository, original_entry_date)
+    import_from_csv(filepath, repository, original_entry_date)
   end
 
   task from_presbyterian: :environment do
@@ -358,7 +358,7 @@ namespace :import_metadata do
     filepath = "lib/documents/csv/presbyterian/PHS.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
-    import_from_csv2(filepath, repository, original_entry_date)
+    import_from_csv(filepath, repository, original_entry_date)
   end
 
   task from_union_league: :environment do
@@ -366,7 +366,7 @@ namespace :import_metadata do
     filepath = "lib/documents/csv/union_league/UnionLeague.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
-    import_from_csv2(filepath, repository, original_entry_date)
+    import_from_csv(filepath, repository, original_entry_date)
   end
 end
 
