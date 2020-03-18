@@ -336,6 +336,38 @@ namespace :import_metadata do
 
     import_from_csv(filepath, repository, original_entry_date)
   end
+
+  task from_catholic: :environment do
+    repository = Repository.find_by_name("Catholic Historical Research Center")
+    filepath = "lib/documents/csv/catholic/CHRC.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv(filepath, repository, original_entry_date)
+  end
+
+  task from_college_of_physicians: :environment do
+    repository = Repository.find_by_name("College of Physicians of Philadelphia")
+    filepath = "lib/documents/csv/college_of_physicians/CollegeOfPhysicians.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv(filepath, repository, original_entry_date)
+  end
+
+  task from_presbyterian: :environment do
+    repository = Repository.find_by_name("Presbyterian Historical Society")
+    filepath = "lib/documents/csv/presbyterian/PHS.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv(filepath, repository, original_entry_date)
+  end
+
+  task from_union_league: :environment do
+    repository = Repository.find_by_name("The Union League Legacy Foundation")
+    filepath = "lib/documents/csv/union_league/UnionLeague.csv"
+    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
+
+    import_from_csv(filepath, repository, original_entry_date)
+  end
 end
 
 def import_from_csv(filepath, repository, original_entry_date)
