@@ -4,7 +4,7 @@ namespace :create_repositories do
 
   task all: :environment do
     CSV.foreach('lib/documents/csv/repositories/repository_list_MGedit.csv', headers: true) do |row|
-      repository = Repository.new
+      repository = Repository.find_or_initialize_by(name: row[1])
       repository.abbreviation = row[0]
       repository.name = row[1]
       repository.address = row[2]

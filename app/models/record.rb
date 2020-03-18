@@ -208,26 +208,9 @@ class Record < ActiveRecord::Base
 
   def create_dc_creator(node, record)
     if !node.text.blank?
-      if node.text.include?("; ")
-        node.text.split("; ").each do |creator|
-          if DcCreator.find_by_creator(creator).blank?
-            dc_creator = DcCreator.new(creator: creator)
-            dc_creator.save
-          else
-            dc_creator = DcCreator.find_by_creator(creator)
-          end
-          record_dc_creator = RecordDcCreatorTable.find_or_initialize_by(record_id: record.id, dc_creator_id: dc_creator.id)
-          record_dc_creator.save
-        end
-      else
-        if DcCreator.find_by_creator(node.text).blank?
-          dc_creator = DcCreator.new(creator: node.text)
-          dc_creator.save
-        else
-          dc_creator = DcCreator.find_by_creator(node.text)
-        end
-        record_dc_creator = RecordDcCreatorTable.find_or_initialize_by(record_id: record.id, dc_creator_id: dc_creator.id)
-        record_dc_creator.save
+      node.text.split("; ").each do |creator|
+        dc_creator = DcCreator.find_or_create_by(creator: creator)
+        record_dc_creator = RecordDcCreatorTable.find_or_create_by(record_id: record.id, dc_creator_id: dc_creator.id)
       end
     end
   end
@@ -242,27 +225,15 @@ class Record < ActiveRecord::Base
     stripped_subjects = subjects.map { |s| s.strip }
     stripped_subjects -= [""]
     stripped_subjects.each do |subject|
-      if DcSubject.find_by_subject(subject).blank?
-        dc_subject = DcSubject.new(subject: subject)
-        dc_subject.save
-      else
-        dc_subject = DcSubject.find_by_subject(subject)
-      end
-      record_dc_subject = RecordDcSubjectTable.find_or_initialize_by(record_id: record.id, dc_subject_id: dc_subject.id)
-      record_dc_subject.save
+      dc_subject = DcSubject.find_or_create_by(subject: subject)
+      record_dc_subject = RecordDcSubjectTable.find_or_create_by(record_id: record.id, dc_subject_id: dc_subject.id)
     end
   end
 
   def create_dc_type(node, record)
     if !node.text.blank?
-      if DcType.find_by_type(node.text).blank?
-        dc_type = DcType.new(type: node.text)
-        dc_type.save
-      else
-        dc_type = DcType.find_by_type(node.text)
-      end
-      record_dc_type = RecordDcTypeTable.find_or_initialize_by(record_id: record.id, dc_type_id: dc_type.id)
-      record_dc_type.save
+      dc_type = DcType.find_or_create_by(type: node.text)
+      record_dc_type = RecordDcTypeTable.find_or_create_by(record_id: record.id, dc_type_id: dc_type.id)
     end
   end
 
@@ -337,13 +308,11 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_terms_extent(node, record)
-    dc_terms_extent = DcTermsExtent.find_or_initialize_by(record_id: record.id, extent: node.text)
-    dc_terms_extent.save
+    dc_terms_extent = DcTermsExtent.find_or_create_by(record_id: record.id, extent: node.text)
   end
 
   def create_dc_terms_spacial(node, record)
-    dc_terms_spacial = DcTermsSpacial.find_or_initialize_by(record_id: record.id, spacial: node.text)
-    dc_terms_spacial.save
+    dc_terms_spacial = DcTermsSpacial.find_or_create_by(record_id: record.id, spacial: node.text)
   end
 
   def create_dc_terms_is_part_of(node, record)
@@ -351,15 +320,13 @@ class Record < ActiveRecord::Base
       node.text.split(';').reject do |collection|
         collection.blank? || collection =~ /in her own right/i
       end.each do |collection|
-        dc_terms_ipo = DcTermsIsPartOf.find_or_initialize_by(record_id: record.id, is_part_of: collection)
-        dc_terms_ipo.save
+        dc_terms_ipo = DcTermsIsPartOf.find_or_create_by(record_id: record.id, is_part_of: collection)
       end
     end
   end
 
   def create_full_text(node, record)
-    full_text = FullText.find_or_initialize_by(record_id: record.id, transcription: node.text)
-    full_text.save
+    full_text = FullText.find_or_create_by(record_id: record.id, transcription: node.text)
   end
 
   def create_dc_identifier(node, record)
@@ -370,8 +337,7 @@ class Record < ActiveRecord::Base
     else
       text = node.text
     end
-    dc_identifier = DcIdentifier.find_or_initialize_by(record_id: record.id, identifier: text)
-    dc_identifier.save
+    dc_identifier = DcIdentifier.find_or_create_by(record_id: record.id, identifier: text)
   end
 
   def actual_model_name(node_name)
