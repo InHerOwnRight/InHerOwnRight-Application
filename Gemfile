@@ -29,6 +29,7 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 
 gem 'blacklight', '~> 6.7', '>= 6.7.3'
+gem "blacklight_range_limit", '~> 6.3.3'
 gem 'progress_bar'
 gem 'rsolr', '~> 1.0'
 gem 'sunspot_rails'

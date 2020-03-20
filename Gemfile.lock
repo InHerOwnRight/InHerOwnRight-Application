@@ -68,6 +68,10 @@ GEM
       rails (>= 4.2, < 6)
       rsolr (>= 1.0.6, < 3)
       twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
+    blacklight_range_limit (6.3.3)
+      blacklight (>= 6.0.2)
+      jquery-rails
+      rails (>= 3.0)
     bootstrap-sass (3.4.0)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
@@ -280,6 +284,7 @@ DEPENDENCIES
   activejob (>= 5.0.7.1)
   aws-sdk-s3
   blacklight (~> 6.7, >= 6.7.3)
+  blacklight_range_limit (~> 6.3.3)
   byebug
   coffee-rails (~> 4.2)
   devise
