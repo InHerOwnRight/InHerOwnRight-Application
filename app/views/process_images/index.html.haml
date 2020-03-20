@@ -1,8 +1,5 @@
 .process-images.content
-  - if @image_process_tracker
-    = button_to 'Process Images', process_images_path, method: :post, disabled: true, class: "disabled-button"
-  -else
-    = button_to 'Process Images', process_images_path, method: :post
+  = button_to 'Process Images', process_images_path, method: :post, disabled: true, class: "disabled-button"
   %p= @image_process_tracker.humanized_status if @image_process_tracker
   = button_to 'Records with Missing Images', 'process_images.csv', method: :get
 %br
