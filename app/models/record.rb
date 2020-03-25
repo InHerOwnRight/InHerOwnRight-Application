@@ -124,9 +124,7 @@ class Record < ActiveRecord::Base
     end
 
     date :sort_date do
-      if !dc_dates.first.nil?
-        dc_dates.map(&:date).first
-      end
+      dc_dates.where.not(date: nil).order(:date).map(&:date).first
     end
 
     integer :repository_id, references: Repository
@@ -143,12 +141,10 @@ class Record < ActiveRecord::Base
       end
     end
 
-    date :pub_date, references: DcDate, multiple: true do
-      dc_dates.original_creation_date.map(&:date)
-    end
-
-    integer :pub_date_year, multiple: true do
-      dc_dates.original_creation_date.pluck(:date).map { |d| d.year }
+    integer :pub_date, multiple: true do
+      years = dc_dates.where.not(date: nil).pluck(:date).map { |d| d.year }.sort
+      years = (years[0]..years[-1]).to_a if years.present?
+      years
     end
 
     text :description do
@@ -253,7 +249,7 @@ class Record < ActiveRecord::Base
     split_dates.each do |d|
       if d =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/ || d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
         full_dates = d.split(" - ") if d =~ /^\d{4}\-\d{2}\-\d{2}\ - \d{4}\-\d{2}\-\d{2}$/
-        full_dates = d.split("-") if d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
+        full_dates = [d[0..9], d[11..-1]] if d =~ /^\d{4}\-\d{2}\-\d{2}\-\d{4}\-\d{2}\-\d{2}$/
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i) if Date.valid_date?(date_components[0].to_i, date_components[1].to_i, date_components[2].to_i)
@@ -264,8 +260,7 @@ class Record < ActiveRecord::Base
         end
       elsif d =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/ || d =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
         full_dates = d.split(" - ") if d =~ /^\d{4}\-\d{2} - \d{4}\-\d{2}$/
-        full_dates = d.split("-") if d =~ /^\d{4}\-\d{2}\-\d{4}\-\d{2}$/
-        full_dates = ["#{full_dates[0]}-#{full_dates[1]}", "#{full_dates[2]}-#{full_dates[3]}"] if full_dates.count == 4
+        full_dates = [d[0..6], d[8..-1]] if d =~ /^\d{4}\-\d{2}-\d{4}\-\d{2}$/
         full_dates.each do |full_date|
           date_components = full_date.split("-")
           date = Date.new(date_components[0].to_i, date_components[1].to_i)
