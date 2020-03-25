@@ -75,4 +75,5 @@ THEN
 
     cd ~/pacscl && docker-compose exec webapp bash
     su app
+    cd /home/app/rails
     RAILS_ENV=staging rake sunspot:reindex
