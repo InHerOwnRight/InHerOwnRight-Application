@@ -6,7 +6,6 @@ Rails.application.routes.draw do
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :searchable
     concerns :range_searchable
-
   end
 
   devise_for :users
@@ -33,6 +32,6 @@ Rails.application.routes.draw do
   resources :oai, only: [:index], controller: 'pacscl_oai'
 
   get '/process_images', to: 'process_images#index'
-  # post '/process_images', to: 'process_images#create'
+  post '/process_images', to: 'process_images#create'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

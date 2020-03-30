@@ -51,10 +51,10 @@ namespace :import_metadata do
         nil_metadata_identifiers << response_record.header.identifier
       end
 
-      friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-      peace = Repository.find_by_name("Swarthmore College Peace Collection")
-      haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
-      brynmawr = Repository.find_by_name("Bryn Mawr College")
+      friends = Repository.find_by_short_name("Swarthmore - Friends")
+      peace = Repository.find_by_short_name("Swarthmore - Peace")
+      haverford = Repository.find_by_short_name("Haverford College")
+      brynmawr = Repository.find_by_short_name("Bryn Mawr College")
 
       raw_record.repository_id = repository.id
       if !raw_record.xml_metadata.nil?
@@ -76,7 +76,7 @@ namespace :import_metadata do
   task from_temple: :environment do
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14']
-    repository = Repository.find_by_name("Temple University Libraries")
+    repository = Repository.find_by_short_name("Temple University")
 
     relation_text = ["Octavia Hill Association (Philadelphia, Pa.) Records", "Young Women's Christian Association - Metropolitan Branch, Acc. URB 23", "YWCA of Philadelphia - Kensington Branch, Acc. 520, 531, 552", "YWCA of Germantown, Acc. 280", "In Her Own Right"]
 
@@ -141,7 +141,7 @@ namespace :import_metadata do
     identifiers_relations_hash = {}
     repo_path = "https://idea.library.drexel.edu/oai/request"
     set_specs = ['lca_3']
-    repository = Repository.find_by_name("Drexel University College of Medicine Legacy Center")
+    repository = Repository.find_by_short_name("Drexel University")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
@@ -177,7 +177,7 @@ namespace :import_metadata do
       end
     end
 
-    repository = Repository.find_by_name("Drexel University College of Medicine Legacy Center")
+    repository = Repository.find_by_short_name("Drexel University")
     base_response_record_path = "http://hdl.handle.net/1860/"
     metadata_prefix = "oai_dc"
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
@@ -188,10 +188,10 @@ namespace :import_metadata do
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
 
-    friends = Repository.find_by_name("Friends Historical Library of Swarthmore College")
-    peace = Repository.find_by_name("Swarthmore College Peace Collection")
-    haverford = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
-    brynmawr = Repository.find_by_name("Bryn Mawr College")
+    friends = Repository.find_by_short_name("Swarthmore - Friends")
+    peace = Repository.find_by_short_name("Swarthmore - Peace")
+    haverford = Repository.find_by_short_name("Haverford College")
+    brynmawr = Repository.find_by_short_name("Bryn Mawr College")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
@@ -248,7 +248,7 @@ namespace :import_metadata do
   end
 
   task from_haverford: :environment do
-    repository = Repository.find_by_name("Haverford College Library, Quaker & Special Collections")
+    repository = Repository.find_by_short_name("Haverford College")
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     identifiers_relations_hash = {}
@@ -261,28 +261,28 @@ namespace :import_metadata do
 ### CSV IMPORTS ########################################################################################
 
   task from_bates: :environment do
-    repository = Repository.find_by_name("Barbara Bates Center for the Study of the History of Nursing | University of Pennsylvania School of Nursing")
+    repository = Repository.find_by_short_name("Barbara Bates Center")
     filepath = "lib/documents/csv/bates_center/BatesCenter.csv"
     original_entry_date = "2017-3-13" # hardcoded until we get a filenaming scheme
     import_from_csv(filepath, repository, original_entry_date)
   end
 
   task from_library_co: :environment do
-    repository = Repository.find_by_name("The Library Company of Philadelphia")
+    repository = Repository.find_by_short_name("Library Company")
     filepath = "lib/documents/csv/library_company/LibraryCompany.csv"
     original_entry_date = "2017-4-26" # hardcoded until we get a filenaming scheme
     import_from_csv(filepath, repository, original_entry_date)
   end
 
   task from_hsp: :environment do
-    repository = Repository.find_by_name("Historical Society of Pennsylvania")
+    repository = Repository.find_by_short_name("Historical Society of PA")
     filepath = "lib/documents/csv/hsp/HSP.csv"
     original_entry_date = "2017-4-26" # hardcoded until we get a filenaming scheme
     import_from_csv(filepath, repository, original_entry_date)
   end
 
   task from_german_society: :environment do
-    repository = Repository.find_by_name("The German Society of Pennsylvania")
+    repository = Repository.find_by_short_name("The German Society")
     filepath = "lib/documents/csv/german_society/german_society.csv"
     original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
 
@@ -290,7 +290,7 @@ namespace :import_metadata do
   end
 
   task from_udel: :environment do
-    repository = Repository.find_by_name("University of Delaware")
+    repository = Repository.find_by_short_name("University of Delaware")
     filepath = "lib/documents/csv/udel/udel.csv"
     original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
 
@@ -298,7 +298,7 @@ namespace :import_metadata do
   end
 
   task from_nara: :environment do
-    repository = Repository.find_by_name("The National Archives at Philadelphia")
+    repository = Repository.find_by_short_name("National Archives")
     filepath = "lib/documents/csv/nara/nara.csv"
     original_entry_date = "2019-10-23" # hardcoded until we get a filenaming scheme
 
@@ -306,7 +306,7 @@ namespace :import_metadata do
   end
 
   task from_catholic: :environment do
-    repository = Repository.find_by_name("Catholic Historical Research Center")
+    repository = Repository.find_by_short_name("Catholic Historical Research Center")
     filepath = "lib/documents/csv/catholic/CHRC.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
@@ -314,7 +314,7 @@ namespace :import_metadata do
   end
 
   task from_college_of_physicians: :environment do
-    repository = Repository.find_by_name("College of Physicians of Philadelphia")
+    repository = Repository.find_by_short_name("College of Physicians")
     filepath = "lib/documents/csv/college_of_physicians/CollegeOfPhysicians.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
@@ -322,7 +322,7 @@ namespace :import_metadata do
   end
 
   task from_presbyterian: :environment do
-    repository = Repository.find_by_name("Presbyterian Historical Society")
+    repository = Repository.find_by_short_name("Presbyterian Historical Society")
     filepath = "lib/documents/csv/presbyterian/PHS.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
@@ -330,39 +330,7 @@ namespace :import_metadata do
   end
 
   task from_union_league: :environment do
-    repository = Repository.find_by_name("The Union League Legacy Foundation")
-    filepath = "lib/documents/csv/union_league/UnionLeague.csv"
-    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
-
-    import_from_csv(filepath, repository, original_entry_date)
-  end
-
-  task from_catholic: :environment do
-    repository = Repository.find_by_name("Catholic Historical Research Center")
-    filepath = "lib/documents/csv/catholic/CHRC.csv"
-    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
-
-    import_from_csv(filepath, repository, original_entry_date)
-  end
-
-  task from_college_of_physicians: :environment do
-    repository = Repository.find_by_name("College of Physicians of Philadelphia")
-    filepath = "lib/documents/csv/college_of_physicians/CollegeOfPhysicians.csv"
-    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
-
-    import_from_csv(filepath, repository, original_entry_date)
-  end
-
-  task from_presbyterian: :environment do
-    repository = Repository.find_by_name("Presbyterian Historical Society")
-    filepath = "lib/documents/csv/presbyterian/PHS.csv"
-    original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
-
-    import_from_csv(filepath, repository, original_entry_date)
-  end
-
-  task from_union_league: :environment do
-    repository = Repository.find_by_name("The Union League Legacy Foundation")
+    repository = Repository.find_by_short_name("Legacy Foundation")
     filepath = "lib/documents/csv/union_league/UnionLeague.csv"
     original_entry_date = "2020-03-03" # hardcoded until we get a filenaming scheme
 
