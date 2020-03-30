@@ -112,7 +112,7 @@ class Record < ActiveRecord::Base
     end
 
     string :repository do
-      repository.name
+      repository.short_name
     end
 
     string :sort_creator do
@@ -407,7 +407,7 @@ class Record < ActiveRecord::Base
       csv << ["Repository Name", "Staging URL"]
 
       all.each do |record|
-        csv << [record.repository.name, "http://pacscl.neomindlabs.com/records/#{record.slug}"]
+        csv << [record.repository.short_name, "http://pacscl.neomindlabs.com/records/#{record.slug}"]
       end
     end
   end
