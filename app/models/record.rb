@@ -325,14 +325,16 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_identifier(node, record)
-    if node.text =~ /;$/
-      text = node.text.split(";").first
-    elsif node.text =~ /^\s/
-      text = node.text.split(" ").last
-    else
-      text = node.text
+    if !node.text.blank?
+      if node.text =~ /;$/
+        text = node.text.split(";").first
+      elsif node.text =~ /^\s/
+        text = node.text.split(" ").last
+      else
+        text = node.text
+      end
+      dc_identifier = DcIdentifier.find_or_create_by(record_id: record.id, identifier: text)
     end
-    dc_identifier = DcIdentifier.find_or_create_by(record_id: record.id, identifier: text)
   end
 
   def actual_model_name(node_name)

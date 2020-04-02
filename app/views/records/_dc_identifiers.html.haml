@@ -7,7 +7,7 @@
         = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
         = "|" unless index == @record.dc_identifiers.select { |i| i.identifier_is_url? }.size - 1
 - else
-  - if !@record.dc_identifiers.select { |i| i.identifier_is_url? }.first.identifier.blank?
+  - if !@record.dc_identifiers.select { |i| i.identifier_is_url? }.empty? && !@record.dc_identifiers.select { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
       %th{ scope: "row" }
         View full item
@@ -24,7 +24,7 @@
         = dc_identifier.identifier
         = "|" unless index == @record.dc_identifiers.reject { |i| i.identifier_is_url? }.size - 1
 - else
-  - if !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier.blank?
+  - if !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.empty? && !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
       %th{ scope: "row" }
         Local Identifier
