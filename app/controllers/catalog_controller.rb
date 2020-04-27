@@ -3,7 +3,7 @@ class CatalogController < ApplicationController
 
   include BlacklightRangeLimit::ControllerOverride
 
-  before_filter :extend_catalog_paginiation, only: [:index]
+  before_action :extend_catalog_paginiation, only: [:index]
 
   include Blacklight::Catalog
 
@@ -27,8 +27,24 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
+
     ## Class for sending and receiving requests from a search index
     # config.repository_class = Blacklight::Solr::Repository
+    
+    # configurations added during upgrade to Blacklight v7.0.0
+    config.add_results_document_tool(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
+
+    config.add_results_collection_tool(:sort_widget)
+    config.add_results_collection_tool(:per_page_widget)
+    config.add_results_collection_tool(:view_type_group)
+
+    config.add_show_tools_partial(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
+    config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
+    config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
+    config.add_show_tools_partial(:citation)
+
+    config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: :render_bookmarks_control?)
+    config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history')
     #
     ## Class for converting Blacklight's url parameters to into request parameters for the search index
     # config.search_builder_class = ::SearchBuilder

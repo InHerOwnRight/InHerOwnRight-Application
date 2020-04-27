@@ -3,7 +3,7 @@ module ActionView
   module Template::Handlers
     class Markdown
       class_attribute :default_format
-      self.default_format = Mime::HTML
+      self.default_format = Mime[:html]
 
       def call(template)
         markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML,

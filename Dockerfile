@@ -1,4 +1,4 @@
-FROM phusion/passenger-ruby23
+FROM phusion/passenger-ruby25
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     vim \
@@ -12,6 +12,8 @@ RUN rm -f /etc/service/nginx/down
 RUN rm -f /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 RUN mkdir -p /var/www/rails
+
+RUN mkdir -p /home/app/
 
 RUN ln -s /var/www/rails /home/app/
 

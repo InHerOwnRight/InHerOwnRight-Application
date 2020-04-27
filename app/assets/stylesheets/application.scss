@@ -12,16 +12,16 @@
  *
  *= require_tree .
  *= require_self
- 
- *
- * Used by blacklight_range_limit
- *= require  'blacklight_range_limit'
- *
-*/
-@import 'bootstrap-sprockets';
 
 @import 'bootstrap';
+*
+* Used by blacklight_range_limit
+*= require  'blacklight_range_limit'
+*
+*/
 
 @import 'blacklight/blacklight';
+
+@import 'bootstrap';
 
 @import 'global';

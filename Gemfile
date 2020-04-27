@@ -27,8 +27,9 @@ gem 'jquery-rails'
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
-
-gem "blacklight_range_limit", '~> 6.3.3'
+gem 'blacklight', ' ~> 7.0.1'
+gem 'blacklight_range_limit', '~> 7.0.0'
+gem 'bootstrap', '~> 4.0'
 gem 'progress_bar'
 gem 'rsolr', '~> 1.0'
 gem 'sunspot_rails'
