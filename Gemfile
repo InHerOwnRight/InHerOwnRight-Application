@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.0.1'
+gem 'rails', '~> 5.1.0'
 gem "activejob", ">= 5.0.7.1"
 gem "iso639"
 gem 'pg'
@@ -28,7 +28,6 @@ gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 
-gem 'blacklight', '~> 6.7', '>= 6.7.3'
 gem "blacklight_range_limit", '~> 6.3.3'
 gem 'progress_bar'
 gem 'rsolr', '~> 1.0'
