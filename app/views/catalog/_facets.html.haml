@@ -1,0 +1,10 @@
+- # main container for facets/limits menu
+- if has_facet_values?
+  #facets.facets.sidenav.facets-toggleable-sm
+    .navbar
+      %h5.facets-heading
+        = t('blacklight.search.facets.title')
+      %button.navbar-toggler.navbar-toggler-right{"aria-controls" => "facet-panel-collapse", "aria-expanded" => "false", "aria-label" => "Toggle facets", "data-target" => "#facet-panel-collapse", "data-toggle" => "collapse", type: "button"}
+        %span.navbar-toggler-icon
+      #facet-panel-collapse.facets-collapse.collapse
+        = render_facet_partials

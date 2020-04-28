@@ -1,0 +1,61 @@
+- classname, id = document.id.split(' ')
+- klass = classname.constantize
+- instance = klass.find(id.to_i)
+- instance = instance.record if instance.respond_to?(:record)
+
+%hr
+%header.documentHeader.row
+  .col-sm-12
+    .row
+      .col-sm-8
+        - if instance.is_collection?
+          %a{ href: "#{record_path(instance)}", style: 'float:left;'}
+            = image_tag "/static_images/collection.png"
+
+        - elsif instance.thumbnail
+          %a{ href: "#{record_path(instance.id)}", style: 'float:left;'}
+            = image_tag(instance.thumbnail)
+
+        .record-item
+          - if counter = document_counter_with_offset(document_counter)
+            %span.document-counter
+              = t('blacklight.search.documents.counter', counter: counter)
+          - if instance.is_collection?
+            = link_to "#{instance.dc_titles.first.title} (collection description)", record_path(instance)
+          - else
+            = link_to instance.dc_titles.first.title, record_path(instance)
+
+          - if !instance.dc_creators.first.blank?
+            %h6.collections_subhead
+              Creator: #{instance.dc_creators.first.creator}
+
+          - if !instance.display_dates.empty?
+            - if instance.display_dates.count > 1
+              - instance.display_dates.each_with_index do |date, index|
+                %h6.collections_subhead
+                  Dates Created:
+                  = date
+                  = ", " unless index == instance.display_dates.size - 1
+
+            - else
+              - instance.display_dates.each_with_index do |date, index|
+                %h6.collections_subhead
+                  Date Created:
+                  = date
+                  = ", " unless index == instance.display_dates.size - 1
+
+          - if instance.is_collection?
+            - if !instance.dc_creators.blank?
+              - if Record.for_same_creator(instance.dc_creators.first.id).count > 1
+                %h5.col-sm-12
+                  = link_to "View digitized items from this collection", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
+            - if Record.records_for_collection(instance.id).count > 1
+              %h5.col-sm-12
+                = link_to "View digitized items from this collection", search_catalog_path( f: {"collection_id_im" => [instance.id]} )
+
+      .col-sm-4
+        - document_actions = capture do
+          - # bookmark functions for items/docs
+          = render_index_doc_actions document, wrapping_class: "index-document-functions col-sm-3 col-lg-2"
+        %h3{class: "index_title document-title-heading #{document_actions.present? ? "col-sm-9 col-lg-10" : "col-md-12"}"}
+        = document_actions

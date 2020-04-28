@@ -1,14 +1,21 @@
-#header-navbar.navbar.navbar-inverse.navbar-static-top.row{role: "navigation"}
+#header-navbar.navbar.navbar-expand-md.navbar-dark{role: "navigation"}
   %div{class: "#{container_classes}"}
-    .row
-      #header-text-wrapper.col-md-12
+    #header-text-wrapper.col-md-8
+      .row
         %a{href: root_path}
+        .row
           .navbar-header.navbar-brand
-          %h1#main-header-text.col-md-6
-            In Her Own Right
-          %h3#main-header-subtitle.col-md-6
-            Women asserting their civil rights, 1820–1920
+            %h1#main-header-text.col-sm-6
+              In Her Own Right
+            %h3#main-header-subtitle.col-sm-6
+              Women asserting their civil rights, 1820–1920
+    %button.navbar-toggler.navbar-toggler-right{"aria-controls" => "user-util-collapse", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#user-util-collapse", "data-toggle" => "collapse", :type => "button"}
+      %span.navbar-toggler-icon
 
-#search-navbar.navbar.navbar-default.navbar-static-top.col-md-12{role: "navigation"}
-  %div.container
-    = render partial: 'shared/site_navigation'
+    .collapse.navbar-collapse.justify-content-md-end#user-util-collapse
+      = render 'shared/user_util_links'
+
+.navbar-search.navbar.navbar-light.bg-faded{role: "navigation"}
+  %div{class: "#{container_classes}"}
+    .container-fluid
+      = render_search_bar
