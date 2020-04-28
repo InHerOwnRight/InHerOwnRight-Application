@@ -100,8 +100,6 @@ GEM
       railties (>= 4.1.0, < 6.0)
       responders
       warden (~> 1.2.3)
-    devise-guests (0.6.1)
-      devise
     dotenv (2.6.0)
     dotenv-rails (2.6.0)
       dotenv (= 2.6.0)
@@ -291,7 +289,6 @@ PLATFORMS
 DEPENDENCIES
   activejob (>= 5.0.7.1)
   aws-sdk-s3
-  blacklight (~> 7.0.1)
   blacklight_range_limit (~> 7.0.0)
   bootstrap (~> 4.0)
   byebug
@@ -299,9 +296,8 @@ DEPENDENCIES
   daemons
   delayed_job_active_record
   devise
-  devise-guests (~> 0.5)
   dotenv-rails
-  friendly_id (~> 5.2.4)
+  friendly_id
   haml (~> 5.0, >= 5.0.1)
   high_voltage (~> 3.0)
   iso639
@@ -317,7 +313,6 @@ DEPENDENCIES
   puma (~> 3.0)
   rails (~> 5.1.0)
   redcarpet (~> 3.4)
-  rsolr (~> 1.0)
   sass-rails (~> 5.0)
   sentry-raven
   solr_wrapper (>= 0.3)

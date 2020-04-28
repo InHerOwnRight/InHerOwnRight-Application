@@ -27,21 +27,18 @@ gem 'jquery-rails'
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
-gem 'blacklight', ' ~> 7.0.1'
 gem 'blacklight_range_limit', '~> 7.0.0'
 gem 'bootstrap', '~> 4.0'
 gem 'progress_bar'
-gem 'rsolr', '~> 1.0'
 gem 'sunspot_rails'
 gem 'devise'
-gem 'devise-guests', '~> 0.5'
 gem 'oai'
 gem 'haml', '~> 5.0', '>= 5.0.1'
 gem 'high_voltage', '~> 3.0'
 gem 'redcarpet', '~> 3.4'
 gem 'dotenv-rails'
 gem "mini_magick"
-gem "friendly_id", '~> 5.2.4', require: "friendly_id"
+gem "friendly_id"
 
 gem 'sentry-raven'
 
