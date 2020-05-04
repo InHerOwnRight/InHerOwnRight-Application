@@ -1,11 +1,15 @@
 # frozen_string_literal: true
+
+##
+# Simplified catalog controller
 class CatalogController < ApplicationController
+  include Blacklight::Catalog
+  helper Openseadragon::OpenseadragonHelper
+  before_action :set_paper_trail_whodunnit
 
   include BlacklightRangeLimit::ControllerOverride
 
   before_action :extend_catalog_paginiation, only: [:index]
-
-  include Blacklight::Catalog
 
   def render_repository_name value
     value = Repository.find(value).name
@@ -27,60 +31,78 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
+    ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
+    config.default_solr_params = {
+      qt: 'search',
+      rows: 10,
+      qf: 'transcription^0.5',
+      fl: '*'
+    }
 
     ## Class for sending and receiving requests from a search index
-    # config.repository_class = Blacklight::Solr::Repository
-    
-    # configurations added during upgrade to Blacklight v7.0.0
-    config.add_results_document_tool(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
+   # config.repository_class = Blacklight::Solr::Repository
 
-    config.add_results_collection_tool(:sort_widget)
-    config.add_results_collection_tool(:per_page_widget)
-    config.add_results_collection_tool(:view_type_group)
+   # configurations added during upgrade to Blacklight v7.0.0
+   config.add_results_document_tool(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
 
-    config.add_show_tools_partial(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
-    config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
-    config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
-    config.add_show_tools_partial(:citation)
+   config.add_results_collection_tool(:sort_widget)
+   config.add_results_collection_tool(:per_page_widget)
+   config.add_results_collection_tool(:view_type_group)
 
-    config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: :render_bookmarks_control?)
-    config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history')
-    #
-    ## Class for converting Blacklight's url parameters to into request parameters for the search index
-    # config.search_builder_class = ::SearchBuilder
-    #
-    ## Model that maps search index responses to the blacklight response model
-    # config.response_model = Blacklight::Solr::Response
+   config.add_show_tools_partial(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
+   config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
+   config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
+   config.add_show_tools_partial(:citation)
 
-    ## Default parameters to send to solr for all search-like requests. See also SearchBuilder#processed_parameters
-    config.default_solr_params = {
-      rows: 10,
-      qf: 'transcription^0.5'
-    }
+   config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: :render_bookmarks_control?)
+   config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history')
+   #
+   ## Class for converting Blacklight's url parameters to into request parameters for the search index
+   # config.search_builder_class = ::SearchBuilder
+   #
+   ## Model that maps search index responses to the blacklight response model
+   # config.response_model = Blacklight::Solr::Response
 
-    # solr path which will be added to solr base url before the other solr params.
-    #config.solr_path = 'select'
+   ## Default parameters to send to solr for all search-like requests. See also SearchBuilder#processed_parameters
+   config.default_solr_params = {
+     rows: 10,
+     qf: 'transcription^0.5'
+   }
 
-    # items to show per page, each number in the array represent another option to choose from.
-    #config.per_page = [10,20,50,100]
+   # solr path which will be added to solr base url before the other solr params.
+   #config.solr_path = 'select'
 
-    ## Default parameters to send on single-document requests to Solr. These settings are the Blackligt defaults (see SearchHelper#solr_doc_params) or
-    ## parameters included in the Blacklight-jetty document requestHandler.
-    #
-    #config.default_document_solr_params = {
-    #  qt: 'document',
-    #  ## These are hard-coded in the blacklight 'document' requestHandler
-    #  # fl: '*',
-    #  # rows: 1,
-    #  # q: '{!term f=id v=$id}'
-    #}
+   # items to show per page, each number in the array represent another option to choose from.
+   #config.per_page = [10,20,50,100]
 
-    config.default_solr_params = {
-      :'q.alt' => "*:*",
-      :defType => 'edismax',
-      :facet   => true,
-      fq: ["type:Record"]
-    }
+   ## Default parameters to send on single-document requests to Solr. These settings are the Blackligt defaults (see SearchHelper#solr_doc_params) or
+   ## parameters included in the Blacklight-jetty document requestHandler.
+   #
+   #config.default_document_solr_params = {
+   #  qt: 'document',
+   #  ## These are hard-coded in the blacklight 'document' requestHandler
+   #  # fl: '*',
+   #  # rows: 1,
+   #  # q: '{!term f=id v=$id}'
+   #}
+
+   config.default_solr_params = {
+     :'q.alt' => "*:*",
+     :defType => 'edismax',
+     :facet   => true,
+     fq: ["type:Record"]
+   }
+
+
+    config.document_solr_path = 'get'
+    config.document_unique_id_param = 'ids'
+
+    # solr field configuration for search results/index views
+    config.index.title_field = 'full_title_tesim'
+
+    config.add_sort_field 'relevance', sort: 'score desc', label: I18n.t('spotlight.search.fields.sort.relevance')
+
+    config.add_field_configuration_to_solr_request!
 
     # solr field configuration for search results/index views
     config.index.title_field = 'title_display'
@@ -113,6 +135,7 @@ class CatalogController < ApplicationController
     # set :index_range to true if you want the facet pagination view to have facet prefix-based navigation
     #  (useful when user clicks "more" on a large facet and wants to navigate alphabetically across a large set of results)
     # :index_range can be an array or range of prefixes that will be used to create the navigation (note: It is case sensitive when searching values)
+    config.add_facet_field 'pub_date_im', label: 'Date Range', range: true, solr_params: { 'facet.mincount' => 1 }
 
     # config.add_facet_field 'format', label: 'Format'
     # config.add_facet_field 'pub_date', label: 'Publication Year', single: true
@@ -140,10 +163,14 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'repository_s', label: "Contributing Institution", solr_params: { 'facet.mincount' => 1 }
 
+    # enable facets:
+    # https://github.com/projectblacklight/spotlight/issues/1812#issuecomment-327345318
+    config.add_facet_fields_to_solr_request!
+
     config.add_facet_field 'type_sm', label: "Type", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
-      is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
+     is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
     }, show: false
 
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
@@ -157,6 +184,10 @@ class CatalogController < ApplicationController
     # # Have BL send all facet field names to Solr, which has been the default
     # # previously. Simply remove these lines if you'd rather use Solr request
     # # handler defaults, or have no facets.
+
+    # Set which views by default only have the title displayed, e.g.,
+    # config.view.gallery.title_only_by_default = true
+
     config.add_facet_fields_to_solr_request!
 
     # # solr fields to be displayed in the index (search results) view
@@ -255,25 +286,29 @@ class CatalogController < ApplicationController
         }
     end
 
+    config.add_search_field('collection') do |field|
+     field.solr_parameters = { qf: 'collection_text'}
+   end
+
 
     config.add_search_field('title') do |field|
-      field.solr_parameters = { qf: 'title_text'}
+     field.solr_parameters = { qf: 'title_text'}
     end
 
     config.add_search_field('creator') do |field|
-      field.solr_parameters = { qf: 'creator_text'}
+     field.solr_parameters = { qf: 'creator_text'}
     end
 
     config.add_search_field('subject') do |field|
-      field.solr_parameters = { qf: 'subject_text'}
+     field.solr_parameters = { qf: 'subject_text'}
     end
 
     config.add_search_field('type') do |field|
-      field.solr_parameters = { qf: 'type_text'}
+     field.solr_parameters = { qf: 'type_text'}
     end
 
     config.add_search_field('contributing_institution') do |field|
-      field.solr_parameters = { qf: 'repository_text'}
+     field.solr_parameters = { qf: 'repository_text'}
     end
 
     config.add_search_field('collection') do |field|
@@ -281,11 +316,11 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('transcription') do |field|
-      field.solr_parameters = { qf: 'full_text_text' }
+     field.solr_parameters = { qf: 'full_text_text' }
     end
 
     config.add_search_field('place') do |field|
-      field.solr_parameters = { qf: 'spatial_text' }
+     field.solr_parameters = { qf: 'spatial_text' }
     end
 
     # "sort results by" select (pulldown)

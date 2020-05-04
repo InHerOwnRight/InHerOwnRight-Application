@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 class SolrDocument
   include Blacklight::Solr::Document
+  include Spotlight::SolrDocument
+
+  include Spotlight::SolrDocument::AtomicUpdates
+
 
   # self.unique_key = 'id'
 

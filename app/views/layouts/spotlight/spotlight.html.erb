@@ -1,0 +1,17 @@
+<% content_for(:content) do %>
+  <% if content_for? :sidebar %>
+    <section id="content" class="<%= main_content_classes %> <%= content_for(:content_position) || 'order-last' %>"">
+      <%= yield %>
+    </section>
+
+    <aside id="sidebar" class="<%= sidebar_classes %> <%= content_for(:sidebar_position) || 'order-first' %>">
+      <%= content_for(:sidebar) %>
+    </aside>
+  <% else %>
+    <section id="content" class="col-md-12">
+      <%= yield %>
+    </section>
+  <% end %>
+<% end %>
+
+<%= render template: "layouts/spotlight/base" %>

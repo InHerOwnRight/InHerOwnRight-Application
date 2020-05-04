@@ -39,7 +39,6 @@ gem 'redcarpet', '~> 3.4'
 gem 'dotenv-rails'
 gem "mini_magick"
 gem "friendly_id"
-
 gem 'sentry-raven'
 
 # gem 'carpetbomb'
@@ -50,7 +49,9 @@ gem 'sentry-raven'
 gem 'delayed_job_active_record'
 gem 'daemons'
 gem 'open3'
-
+gem 'railties'
+gem 'letter_opener'
+gem 'riiif'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -64,7 +65,6 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.0.5'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -72,3 +72,19 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'blacklight', ' ~> 7.0'
+gem 'blacklight-spotlight', github: 'projectblacklight/spotlight'
+group :development, :test do
+end
+
+gem 'rsolr', '>= 1.0'
+gem 'popper_js'
+gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
+gem 'devise-guests', '~> 0.6'
+gem 'friendly_id'
+gem 'sitemap_generator'
+gem 'blacklight-gallery', '~> 1.1'
+gem 'blacklight-oembed', '~> 1.0'
+gem 'devise_invitable'
+gem 'listen', '~> 3.1.5'
