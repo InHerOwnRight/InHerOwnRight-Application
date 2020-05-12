@@ -1,6 +1,16 @@
 en:
   blacklight:
-    application_name: 'In Her Own Right'
+    application_name: ''
     range_limit:
       submit_limit: 'Apply'
       missing: 'Undated'
+    search:
+      documents:
+        aria:
+          limit_search: "Limit Search"
+  spotlight:
+    search:
+      facets:
+        title: 'BLAH'
+      fields:
+        title_display: 'Display Title'

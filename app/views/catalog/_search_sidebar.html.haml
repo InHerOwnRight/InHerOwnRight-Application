@@ -1,2 +1,3 @@
-= render 'facets'
-= render 'collections_pdf'
+- if request.path == "/catalog"
+  = render 'facets'
+  = render 'collections_pdf'

@@ -10,19 +10,19 @@ module Spotlight
 
     included do
       helper_method :current_site, :current_exhibit, :current_masthead, :exhibit_masthead?, :resource_masthead?
-      # before_action :set_exhibit_locale_scope, :set_locale
+      before_action :set_exhibit_locale_scope, :set_locale
     end
 
-    # def set_exhibit_locale_scope
-    #   Translation.current_exhibit = current_exhibit
-    # end
+    def set_exhibit_locale_scope
+      Translation.current_exhibit = current_exhibit
+    end
 
     def current_site
       @current_site ||= Spotlight::Site.instance
     end
 
     def current_exhibit
-      @exhibit || (Spotlight::Exhibit.find(params[:exhibit_id])) if params[:exhibit_id].present?
+      @exhibit || (Spotlight::Exhibit.find(params[:exhibit_id]) if params[:exhibit_id].present?)
     end
 
     def current_masthead
@@ -59,13 +59,13 @@ module Spotlight
     end
 
     # overwrites Blacklight::Controller#blacklight_config
-    def blacklight_config
-      if current_exhibit
-        exhibit_specific_blacklight_config
-      else
-        default_catalog_controller.blacklight_config
-      end
-    end
+    # def blacklight_config
+    #   if current_exhibit
+    #     exhibit_specific_blacklight_config
+    #   else
+    #     default_catalog_controller.blacklight_config
+    #   end
+    # end
 
     def search_action_url(*args)
       if current_exhibit

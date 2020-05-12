@@ -1,0 +1,60 @@
+.card-header.collapse-toggle {
+  margin-bottom: 0;
+
+  &::after {
+    content: "❯";
+    float: right;
+    transform: rotate(90deg);
+  }
+
+  &.collapsed {
+    border-bottom: 0;
+
+    &::after {
+      transform: rotate(0deg);
+      transition: transform 0.1s ease;
+    }
+  }
+}
+
+
+.page-link {
+  white-space: nowrap;
+}
+
+.navbar {
+  height: 6em;
+  background-color: #2b4562;
+  .nav-link a {
+    color: #919fae;
+  }
+  .nav-link a:hover {
+    text-decoration: none;
+    color: white;
+  }
+}
+
+.sub-nav {
+  background: rgb(204, 204, 204); /* Fallback for older browsers without RGBA-support */
+  background: rgba(204, 204, 204, 0.5);
+  height: 2.35em;
+  a {
+    color: #2b4562;
+  }
+  a:hover {
+    text-decoration: none;
+    color: #337ab7;
+  }
+}
+
+.input-group {
+  // height: 3em;
+  .search-btn {
+    background-color: #2b4562;
+    border-color: #2b4562;
+  }
+  .search-btn:hover {
+    background-color: #337ab7;
+    border-color: #337ab7;
+  }
+}

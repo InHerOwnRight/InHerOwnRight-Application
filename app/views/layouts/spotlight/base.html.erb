@@ -23,7 +23,6 @@
   </head>
   <body class="<%= render_body_class %>">
     <%= render partial: 'shared/header_navbar' %>
-    <%= render partial: 'shared/masthead' %>
     <%= content_for?(:header_content) ? yield(:header_content) : "" %>
 
     <main id="main-container" class="<%= container_classes %>" role="main">

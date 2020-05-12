@@ -6,7 +6,7 @@
 
 # ==> Blacklight configuration
 # Spotlight uses this upstream configuration to populate settings for the curator
-# Spotlight::Engine.config.catalog_controller_class = '::CatalogController'
+Spotlight::Engine.config.catalog_controller_class = '::CatalogController'
 # Spotlight::Engine.config.default_blacklight_config = nil
 
 # ==> Appearance configuration
@@ -24,7 +24,7 @@
 # ==> Solr configuration
 # Spotlight::Engine.config.writable_index = true
 # Spotlight::Engine.config.solr_batch_size = 20
-# Spotlight::Engine.config.filter_resources_by_exhibit = true
+Spotlight::Engine.config.filter_resources_by_exhibit = false
 # Spotlight::Engine.config.autocomplete_search_field = 'autocomplete'
 # Spotlight::Engine.config.default_autocomplete_params = { qf: 'id^1000 full_title_tesim^100 id_ng full_title_ng' }
 
@@ -53,8 +53,8 @@
 #     label: -> { I18n.t(:'spotlight.search.fields.spotlight_upload_date_tesim') }
 #   )
 # ]
-# Spotlight::Engine.config.upload_title_field = nil # UploadFieldConfig.new(...)
 # Spotlight::Engine.config.uploader_storage = :file
+# Spotlight::Engine.config.uploader_storage = :aws if ENV['AWS_ACCESS_KEY_ID'].present?
 # Spotlight::Engine.config.allowed_upload_extensions = %w(jpg jpeg png)
 
 # Spotlight::Engine.config.featured_image_thumb_size = [400, 300]

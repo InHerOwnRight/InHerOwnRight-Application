@@ -1,6 +1,8 @@
 class ProcessImagesController < ApplicationController
   include ImageProcessorHelper
 
+  before_action :authorize_current_user
+
   def index
     @image_process_tracker = ImageProcessTracker.last
     @failed_inbox_images = FailedInboxImage.order(:school)
@@ -19,6 +21,13 @@ class ProcessImagesController < ApplicationController
     ImageProcessorHelper.create_image_process_tracker
     ImageProcessorHelper.delay.process_images
     redirect_to process_images_path
+  end
+
+
+  private
+
+  def authorize_current_user
+    raise ActionController::RoutingError.new('Not Found') unless current_user
   end
 
 end

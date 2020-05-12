@@ -17,7 +17,6 @@ module Spotlight
     delegate :has_key?, :key?, to: :data
 
     def to_solr
-      puts "HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       { document.class.unique_key.to_sym => document.id,
         visibility_field => public? }
         .merge(data_to_solr)

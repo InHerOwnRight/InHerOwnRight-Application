@@ -26,7 +26,8 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { address: 'mailcatcher', port: 1025 }
   config.action_mailer.perform_deliveries = true
 
   # Don't care if the mailer can't send.
@@ -58,4 +59,6 @@ Rails.application.configure do
   # Caps development log at 50Mb to avoid filling the disk
   config.logger = ActiveSupport::Logger.new(
                      config.paths['log'].first, 1, 50 * 1024 * 1024)
+
+  config.public_file_server.enabled = true
 end

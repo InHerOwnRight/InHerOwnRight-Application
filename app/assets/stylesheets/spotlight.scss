@@ -1,8 +1,9 @@
 /*
 *= require bootstrap-tagsinput
 */
-@import 'spotlight/variables_bootstrap';
 @import 'bootstrap';
+@import "bootstrap/variables";
+@import 'spotlight/variables_bootstrap';
 @import 'sir-trevor/main';
 @import 'leaflet';
 @import 'spotlight/spotlight';

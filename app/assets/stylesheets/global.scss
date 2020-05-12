@@ -1,12 +1,14 @@
 #header-navbar {
     background-color: #2b4562;
-    height: 100px;
+    height: 80px;
+    width: 600px;
+    padding-top: 0px;
 }
 
 #header-navbar {
   .navbar-brand {  /* The main logo image for the Blacklight instance */
-    height: 85px;
-    width: 115px;
+    height: 80px;
+    width: 120px;
     background:transparent image_url("sm_light_logo.png") no-repeat top 5px left 2px;
     background-size: auto 76px;
     padding-right: 0em;
@@ -14,8 +16,9 @@
   }
 
   #header-text-wrapper {
-    border-bottom: solid 2px #fff;
-    height: 87px;
+    height: 80px;
+    margin: 0.5em 0em 0em -3em;
+    width: 300px;
   }
 
   #header-text-wrapper a:hover{
@@ -26,19 +29,21 @@
     font-family: 'Helvetica Neue', sans-serif;
     letter-spacing: 0.15em;
     color: #fff;
-    line-height: 0.5em;
+    line-height: 1em;
     font-weight: lighter;
     font-size: 2em;
-    margin: 0.2em 0em 0.5em 3em;
+    margin-left: -3.5em;
+    padding-left: -3.5em;
   }
 
   #main-header-subtitle {
     font-family: "Garamond", "Times New Roman", "Times", serif;
     color: #bdbdbd;
-    line-height: 0.5em;
+    line-height: 1.5em;
     letter-spacing: 0.015em;
     font-size: 1em;
-    margin: 1.5em 0em 0.5em 6em;
+    margin-left: -7em;
+    padding-left: -7em;
   }
    #navigation-container {
     padding-top: 25px;
@@ -78,16 +83,24 @@
       background:transparent image_url("sm_light_logo.png") no-repeat top 0px left 2px;
     }
     #main-header-text {
-      letter-spacing: 0em;
-      font-size: 1.8em;
-      line-height: 0;
-      padding-top: 0.6em;
+      font-family: 'Helvetica Neue', sans-serif;
+      letter-spacing: 0.15em;
+      color: #fff;
+      line-height: 1em;
+      font-weight: lighter;
+      font-size: 2em;
+      margin-left: -3.5em;
+      padding-left: -3.5em;
     }
 
     #main-header-subtitle {
+      font-family: "Garamond", "Times New Roman", "Times", serif;
+      color: #bdbdbd;
+      line-height: 1.5em;
+      letter-spacing: 0.015em;
       font-size: 1em;
-      line-height: 1em;
-      letter-spacing: 0em;
+      margin-left: -7em;
+      padding-left: -7em;
     }
   }
 }
@@ -198,6 +211,9 @@ a {
 }
 
 .record-item {
+  a {
+    color: #337ab7;
+  }
   margin-left: 7em;
 }
 
@@ -214,4 +230,45 @@ a.page-link {
   display: inline;
   border: 1px solid transparent;
   padding: 3em 0em;
+}
+
+td a {
+  color: #337ab7;
+}
+
+.input-group-append .range-limit {
+  background-color: magenta;
+}
+
+
+.btn-primary {
+  background-color: #2b4562;
+  border-color: #2b4562;
+}
+
+.btn-primary:hover {
+  background-color: #337ab7;
+  border-color: #337ab7;
+}
+
+.facet-limit-active {
+  border-color: #e0f0d8 !important;
+  color: #588956;
+  a {
+    color: #588956;
+  }
+}
+
+.facet-limit-active .card-header {
+  background-color: #e0f0d8 !important;
+}
+
+// .panel-success>.panel-heading, .facet_limit-active>.panel-heading {
+//   color: #588956;
+//   background-color: #dff0d8;
+//   border-color: #d6e9c6;
+// }
+
+.facet-values li .selected {
+  color: #588956 !important;
 }

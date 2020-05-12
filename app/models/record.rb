@@ -89,6 +89,11 @@ class Record < ActiveRecord::Base
   end
 
   searchable do
+
+    boolean :exhibit_test_exhibit_public do
+      true
+    end
+
     text :oai_identifier
 
     text :coverage do
@@ -179,7 +184,7 @@ class Record < ActiveRecord::Base
       dc_subjects.map(&:subject)
     end
 
-    text :title do
+    text :title, stored: true do
       dc_titles.map(&:title)
     end
 

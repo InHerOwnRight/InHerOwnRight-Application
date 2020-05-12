@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
-
-  mount Riiif::Engine => '/images', as: 'riiif'
+  mount Blacklight::Engine => '/'
   root to: 'spotlight/exhibits#index'
   mount Spotlight::Engine, at: 'spotlight'
 #  root to: "catalog#index" # replaced by spotlight root path
-    concern :searchable, Blacklight::Routes::Searchable.new
+
+  mount Riiif::Engine => '/uploads/spotlight/temporary_image/image', as: 'riiif'
+  concern :searchable, Blacklight::Routes::Searchable.new
+  concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :searchable
+    concerns :range_searchable
   end
 
   concern :exportable, Blacklight::Routes::Exportable.new
@@ -23,9 +26,6 @@ Rails.application.routes.draw do
       delete 'clear'
     end
   end
-
-  concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new
-    concern :searchable, Blacklight::Routes::Searchable.new
 
   devise_for :users
   concern :exportable, Blacklight::Routes::Exportable.new
@@ -44,7 +44,6 @@ Rails.application.routes.draw do
 
   resources :records, only: [:show], param: :oai_identifier
 
-  mount Blacklight::Engine => '/'
   resource :home, only: [:index], as: 'home', path: '/', controller: 'home'
 #  root to: "home#index" # replaced by spotlight root path
 

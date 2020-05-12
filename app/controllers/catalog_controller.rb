@@ -4,12 +4,15 @@
 # Simplified catalog controller
 class CatalogController < ApplicationController
   include Blacklight::Catalog
+  include Spotlight::Catalog
   helper Openseadragon::OpenseadragonHelper
   before_action :set_paper_trail_whodunnit
 
   include BlacklightRangeLimit::ControllerOverride
 
   before_action :extend_catalog_paginiation, only: [:index]
+  # before_action :add_exhibit_filter
+  # before_action :add_exhibit_tags
 
   def render_repository_name value
     value = Repository.find(value).name
@@ -30,13 +33,35 @@ class CatalogController < ApplicationController
     end
   end
 
+  def add_exhibit_filter
+    Spotlight::Exhibit.all.each do |exhibit|
+      if request["f"] && !request["f"].include?("exhibit_#{exhibit.slug}_public_bsi")
+        request["f"] << "exhibit_#{exhibit.slug}_public_bsi"
+        self.solr_search_params_logic << request["f"]
+      end
+    end
+  end
+
+  def add_exhibit_tags
+    Spotlight::Exhibit.all.each do |exhibit|
+      if request["fq"] && !request["f"].include?("exhibit_#{exhibit.slug}_public_bsi")
+        request["fq"] << "exhibit_#{exhibit.slug}_tags_ssim"
+        self.solr_search_params_logic << request["fq"]
+      end
+    end
+  end
+
   configure_blacklight do |config|
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = {
       qt: 'search',
       rows: 10,
       qf: 'transcription^0.5',
-      fl: '*'
+      fl: '*',
+      :'q.alt' => "*:*",
+      :defType => 'edismax',
+      :facet   => true,
+      :fq => ["type:Record"]
     }
 
     ## Class for sending and receiving requests from a search index
@@ -64,10 +89,6 @@ class CatalogController < ApplicationController
    # config.response_model = Blacklight::Solr::Response
 
    ## Default parameters to send to solr for all search-like requests. See also SearchBuilder#processed_parameters
-   config.default_solr_params = {
-     rows: 10,
-     qf: 'transcription^0.5'
-   }
 
    # solr path which will be added to solr base url before the other solr params.
    #config.solr_path = 'select'
@@ -86,28 +107,23 @@ class CatalogController < ApplicationController
    #  # q: '{!term f=id v=$id}'
    #}
 
-   config.default_solr_params = {
-     :'q.alt' => "*:*",
-     :defType => 'edismax',
-     :facet   => true,
-     fq: ["type:Record"]
-   }
-
 
     config.document_solr_path = 'get'
     config.document_unique_id_param = 'ids'
 
     # solr field configuration for search results/index views
-    config.index.title_field = 'full_title_tesim'
+    config.index.title_field = :title_text
 
     config.add_sort_field 'relevance', sort: 'score desc', label: I18n.t('spotlight.search.fields.sort.relevance')
 
     config.add_field_configuration_to_solr_request!
 
     # solr field configuration for search results/index views
-    config.index.title_field = 'title_display'
+    # config.index.title_field = 'title_text'
+    config.index.creator_field = 'creator_text'
     config.index.display_type_field = 'format'
 
+    # config.index.title_field = 'title_display'
     # solr field configuration for document/show views
     #config.show.title_field = 'title_display'
     #config.show.display_type_field = 'format'
@@ -135,7 +151,6 @@ class CatalogController < ApplicationController
     # set :index_range to true if you want the facet pagination view to have facet prefix-based navigation
     #  (useful when user clicks "more" on a large facet and wants to navigate alphabetically across a large set of results)
     # :index_range can be an array or range of prefixes that will be used to create the navigation (note: It is case sensitive when searching values)
-    config.add_facet_field 'pub_date_im', label: 'Date Range', range: true, solr_params: { 'facet.mincount' => 1 }
 
     # config.add_facet_field 'format', label: 'Format'
     # config.add_facet_field 'pub_date', label: 'Publication Year', single: true
@@ -152,12 +167,12 @@ class CatalogController < ApplicationController
     #     }
     #   end
     # config.add_facet_field 'creator_s', label: 'Creator'
-
     config.add_facet_field 'sort_creator_s', label: "Creator / Author", solr_params: { 'facet.mincount' => 1 }, limit: 100
+    config.add_facet_field 'pub_date_im', label: 'Date Range', range: true, solr_params: { 'facet.mincount' => 1 }
+
 
     # config.add_facet_field 'repository_id_i', label: "Repository", helper_method: :render_repository_name
 
-    config.add_facet_field 'pub_date_im', label: 'Date Range', range: true, solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'subject_sm', label: "Subject", solr_params: { 'facet.mincount' => 1 }, limit: 200
 
@@ -165,13 +180,13 @@ class CatalogController < ApplicationController
 
     # enable facets:
     # https://github.com/projectblacklight/spotlight/issues/1812#issuecomment-327345318
-    config.add_facet_fields_to_solr_request!
 
     config.add_facet_field 'type_sm', label: "Type", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
      is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
     }, show: false
+
 
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
@@ -187,8 +202,6 @@ class CatalogController < ApplicationController
 
     # Set which views by default only have the title displayed, e.g.,
     # config.view.gallery.title_only_by_default = true
-
-    config.add_facet_fields_to_solr_request!
 
     # # solr fields to be displayed in the index (search results) view
     # #   The ordering of the field names is the order of the display
@@ -311,9 +324,6 @@ class CatalogController < ApplicationController
      field.solr_parameters = { qf: 'repository_text'}
     end
 
-    config.add_search_field('collection') do |field|
-      field.solr_parameters = { qf: 'collection_text'}
-    end
 
     config.add_search_field('transcription') do |field|
      field.solr_parameters = { qf: 'full_text_text' }
@@ -344,5 +354,9 @@ class CatalogController < ApplicationController
     # Configuration for autocomplete suggestor
     # config.autocomplete_enabled = true
     # config.autocomplete_path = 'suggest'
+
+    config.add_facet_fields_to_solr_request!
+
+    config.add_field_configuration_to_solr_request!
   end
 end
