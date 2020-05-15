@@ -22,10 +22,6 @@
           </li>
           <li class="dropdown-divider"></li>
         <% end %>
-
-        <li>
-          <%= link_to "Change Password", main_app.edit_user_registration_path, class: 'dropdown-item' %>
-        </li>
         <li>
           <%= link_to t('spotlight.header_links.logout'), main_app.destroy_user_session_path, class: 'dropdown-item' %>
         </li>
