@@ -57,8 +57,14 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Caps development log at 50Mb to avoid filling the disk
-  config.logger = ActiveSupport::Logger.new(
-                     config.paths['log'].first, 1, 50 * 1024 * 1024)
+  # config.logger = ActiveSupport::Logger.new(
+  #                    config.paths['log'].first, 1, 50 * 1024 * 1024)
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   config.public_file_server.enabled = true
 end
