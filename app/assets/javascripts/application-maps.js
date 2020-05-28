@@ -20,12 +20,9 @@
 //= require bootstrap-sprockets
 //= require_tree .
 
-// For blacklight_range_limit built-in JS, if you don't want it you don't need
-// this:
-//= require 'blacklight_range_limit'
-
+// Remove leaflet (v1.6) so that app uses blacklight-maps integrated leaflet file (modified 1.4)
+//= stub leaflet
 
 // For blacklight_range_limit built-in JS, if you don't want it you don't need
 // this:
 //= require 'blacklight_range_limit'
-

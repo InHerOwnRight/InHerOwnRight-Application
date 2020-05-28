@@ -269,4 +269,12 @@
        on into one field. For example: -->
   <copyField source="*_text"  dest="textSpell" />
   <copyField source="*_s"  dest="textSpell" />
+
+  <!-- Added for blacklight-maps -->
+  <!-- Items below were removed from _rpt fieldname attributes -->
+  <!-- validationRule="repairBuffer0" -->
+  <!-- distanceUnits="kilometers" -->
+  <!-- <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType" geo="true" distErrPct="0.025" maxDistErr="0.001" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" autoIndex="true" /> -->
+  <!-- <dynamicField name="*_rpt" type="location_rpt" stored="true" indexed="true" multiValued="true" /> -->
+  <dynamicField name="*_ssim" type="string" stored="true" indexed="true" multiValued="true" />
 </schema>
