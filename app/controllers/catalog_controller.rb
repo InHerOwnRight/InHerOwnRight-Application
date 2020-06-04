@@ -4,11 +4,12 @@
 # Simplified catalog controller
 class CatalogController < ApplicationController
   include Blacklight::Catalog
+  include BlacklightRangeLimit::ControllerOverride
+  include BlacklightMaps::Controller
   include Spotlight::Catalog
   helper Openseadragon::OpenseadragonHelper
   before_action :set_paper_trail_whodunnit
 
-  include BlacklightRangeLimit::ControllerOverride
 
   before_action :extend_catalog_paginiation, only: [:index]
   # before_action :add_exhibit_filter
@@ -23,6 +24,38 @@ class CatalogController < ApplicationController
     value = Record.find(value).dc_titles.first.title
   end
   helper_method :render_collection_name
+
+  # copied from blacklight-maps gem in order to monkeypatch specific layout to force use of blacklight-maps leaflet 1.4 js file
+  def map
+    (@response, @document_list) = search_service.search_results
+    params[:view] = 'maps'
+    respond_to do |format|
+      format.html
+    end
+
+    render layout: 'blacklight-maps/blacklight-maps'
+  end
+
+  # copied from blacklight gem in order to monkeypatch specific layout to force use of blacklight-maps leaflet 1.4 js file
+  def index
+    (@response, deprecated_document_list) = search_service.search_results
+
+    @document_list = ActiveSupport::Deprecation::DeprecatedObjectProxy.new(deprecated_document_list, 'The @document_list instance variable is deprecated; use @response.documents instead.')
+
+    respond_to do |format|
+      format.html { store_preferred_view }
+      format.rss  { render layout: false }
+      format.atom { render layout: false }
+      format.json do
+        @presenter = Blacklight::JsonPresenter.new(@response,
+                                                   blacklight_config)
+      end
+      additional_response_formats(format)
+      document_export_formats(format)
+    end
+
+    render layout: 'blacklight-maps/blacklight-maps' if request.query_parameters[:view] == 'maps'
+  end
 
   # extend results pagination if collection view
   def extend_catalog_paginiation
@@ -295,7 +328,7 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text full_text_text spatial_text collection_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text collection_text'
         }
     end
 
@@ -330,7 +363,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('place') do |field|
-     field.solr_parameters = { qf: 'spatial_text' }
+      field.solr_parameters = { qf: 'placename_search_text' }
     end
 
     # "sort results by" select (pulldown)
@@ -354,6 +387,22 @@ class CatalogController < ApplicationController
     # Configuration for autocomplete suggestor
     # config.autocomplete_enabled = true
     # config.autocomplete_path = 'suggest'
+
+        # blacklight-maps configuration default values
+    config.view.maps.geojson_field = "geojson_ssim"
+    config.view.maps.placename_property = "placename"
+    config.view.maps.coordinates_field = "location_rpt"
+    config.view.maps.search_mode = "placename" # or "coordinates"
+    config.view.maps.spatial_query_dist = 0.5
+    config.view.maps.placename_field = "placename_sm"
+    # config.view.maps.coordinates_facet_field = "location_rpt"
+    config.view.maps.facet_mode = "geojson" # or "coordinates"
+    config.view.maps.tileurl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    config.view.maps.mapattribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+    config.view.maps.maxzoom = 18
+    config.view.maps.show_initial_zoom = 5
+    config.add_facet_field 'placename_sm', :label => 'Place', solr_params: { 'facet.mincount' => 1 }, limit: 200
+    config.add_facet_field 'geojson_ssim', :limit => -2, :label => 'Coordinates', :show => false
 
     config.add_facet_fields_to_solr_request!
 

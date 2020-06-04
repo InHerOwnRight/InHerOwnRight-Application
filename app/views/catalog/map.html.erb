@@ -1,0 +1,11 @@
+<div id="content" class="col-md-12 col-sm-12">
+  <h1><%= t('blacklight.maps.title') %></h1>
+  <div id="map_leader_text">
+    <%-# t('blacklight.maps.leader_html') -%>
+    Click on a marker to search for items from that location, or use the &#128269; button to search for all items within the current map window.
+  </div>
+  <%= render 'search_results' %>
+</div>
+
+<%# have to put this at the end so it overrides 'catalog/search_results' %>
+<% @page_title = t('blacklight.maps.title', application_name: application_name) %>

@@ -20,15 +20,11 @@
 
     %nav.navbar.navbar-default.sub-nav.col-sm-6
       .container-fluid
-        #main_navigation
-          .row
-            .col-sm-2
-              = link_to "Search", page_path("catalog")
-            .col-sm-4
-              = link_to "Essays & Exhibits", "/"
-            .col-sm-3
-              = link_to "Collections", search_catalog_path( f: {"is_collection_id_i" => ['is_collection_id_i']} )
-            .col-sm-2
-              = link_to "About", "/spotlight/about"
-            .col-sm-1
-              = link_to "Data", "/spotlight/data"
+        #main_navigation.w-100
+          .row.d-flex.justify-content-around
+            = link_to "Search", page_path("catalog")
+            = link_to "Map", page_path("map")
+            = link_to "Essays & Exhibits", "/"
+            = link_to "Collections", search_catalog_path( f: {"is_collection_id_i" => ['is_collection_id_i']} )
+            = link_to "About", "/spotlight/about"
+            = link_to "Data", "/spotlight/data"

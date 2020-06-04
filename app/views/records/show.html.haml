@@ -63,3 +63,6 @@
 
       - if @record.full_texts.any?
         = render 'full_text'
+
+- if @record.dc_terms_spacials.any?
+  = render 'catalog/show_maplet_default'

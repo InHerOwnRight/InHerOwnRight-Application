@@ -26,6 +26,8 @@ class Record < ActiveRecord::Base
   has_many :dc_terms_spacials, dependent: :destroy
   has_many :full_texts, dependent: :destroy
   has_many :dc_terms_is_part_ofs, dependent: :destroy
+  has_many :spacial_map_locations, through: :dc_terms_spacials, dependent: :destroy
+  has_many :coverage_map_locations, through: :dc_coverages, dependent: :destroy
 
   scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
   scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
@@ -195,6 +197,25 @@ class Record < ActiveRecord::Base
     text :type do
       dc_types.map(&:type)
     end
+
+    location :location, multiple: true do
+      lat = map_locations.map(&:latitude)
+      lon = map_locations.map(&:longitude)
+      Sunspot::Util::Coordinates.new("#{lat}, #{lon}")
+    end
+
+    string :geojson, multiple: true, as: :geojson_ssim do
+      # remove the escape on the \n that is needed by blacklight-maps
+      map_locations.map { |ml| ml.geojson_ssim.gsub("\\n", "\n") }
+    end
+
+    text :placename_search do
+      map_locations.map(&:placename)
+    end
+
+    string :placename, multiple: true do
+      map_locations.map(&:placename)
+    end
   end
 
   searchable :if => proc { |record| !record.collection_id.nil? } do
@@ -312,6 +333,7 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_terms_spacial(node, record)
+    # hit map APIs here to get coordinates from spacial attribute
     dc_terms_spacial = DcTermsSpacial.find_or_create_by(record_id: record.id, spacial: node.text)
   end
 
@@ -418,11 +440,29 @@ class Record < ActiveRecord::Base
     end
   end
 
-########################## Oai API Endpoint ################################
-
-  def to_oai_dc
-    OaiDcConverter.new(self).to_xml
+  def map_locations
+    map_locations = spacial_map_locations + coverage_map_locations
+    placenames = []
+    map_locations.select do |map_location|
+      unless placenames.include?(map_location.placename)
+        placenames << map_location.placename
+        map_location
+      end
+    end
   end
 
+  def update_map_locations
+    dc_terms_spacials.each do |dc_terms_spacial|
+      dc_terms_spacial.update_map_locations
+    end
+    dc_coverages.each do |dc_coverage|
+      dc_coverage.update_map_locations
+    end
+  end
 
+########################## Oai API Endpoint ################################
+
+  # def to_oai_dc
+  #   OaiDcConverter.new(self).to_xml
+  # end
 end
