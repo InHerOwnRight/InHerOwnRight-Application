@@ -7,7 +7,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     s3cmd \
     imagemagick
 
-RUN su -lc "rvm install 'ruby-2.5.7'" app
+RUN su -lc "rvm install 'ruby-2.5.7'"
 RUN su -lc 'rvm --default use ruby-2.5.7' app
 
 RUN su -lc "gem install bundler:1.17.3"
