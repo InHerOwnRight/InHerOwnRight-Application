@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/boston-library/blacklight-maps.git
-  revision: a84765b1a35f5934faee7459d53f5fb097c9b2e5
+  revision: 997aa0fe1bc467e5607f349a2d38589528a26730
   branch: update-to-blacklight-7
   specs:
     blacklight-maps (0.5.2)
@@ -9,9 +9,9 @@ GIT
 
 GIT
   remote: https://github.com/projectblacklight/spotlight.git
-  revision: 1f9e0f9d27daa167824a128099410082eb48bc60
+  revision: 14b0d26b90a66df8af5a14594620a643510e6fa9
   specs:
-    blacklight-spotlight (3.0.0.alpha.9)
+    blacklight-spotlight (3.0.0.alpha.10)
       acts-as-taggable-on (>= 5.0, < 7)
       almond-rails (~> 0.1)
       autoprefixer-rails
@@ -98,20 +98,20 @@ GEM
     autoprefixer-rails (9.7.6)
       execjs
     aws-eventstream (1.1.0)
-    aws-partitions (1.314.0)
-    aws-sdk-core (3.95.0)
+    aws-partitions (1.325.0)
+    aws-sdk-core (3.97.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-kms (1.31.0)
+    aws-sdk-kms (1.33.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.64.0)
-      aws-sdk-core (~> 3, >= 3.83.0)
+    aws-sdk-s3 (1.67.1)
+      aws-sdk-core (~> 3, >= 3.96.1)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
-    aws-sigv4 (1.1.3)
+    aws-sigv4 (1.1.4)
       aws-eventstream (~> 1.0, >= 1.0.2)
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
@@ -119,7 +119,7 @@ GEM
       execjs (~> 2.0)
     bcrypt (3.1.13)
     bindex (0.8.1)
-    blacklight (7.8.0)
+    blacklight (7.8.1)
       deprecation
       globalid
       jbuilder (~> 2.7)
@@ -131,13 +131,13 @@ GEM
       bootstrap (~> 4.0)
       openseadragon (>= 0.2.0)
       rails (~> 5.1)
-    blacklight-oembed (1.0.0)
+    blacklight-oembed (1.0.1)
       blacklight (~> 7.0)
       rails
       ruby-oembed
-    blacklight_range_limit (7.8.0)
+    blacklight_range_limit (7.8.1)
       blacklight (>= 7.0)
-    bootstrap (4.4.1)
+    bootstrap (4.5.0)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.14.3, < 2)
       sassc-rails (>= 2.0.0)
@@ -159,7 +159,7 @@ GEM
       aws-sdk-s3 (~> 1.0)
       carrierwave (~> 2.0)
     clipboard-rails (1.7.1)
-    coderay (1.1.2)
+    coderay (1.1.3)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0)
@@ -197,13 +197,13 @@ GEM
       dotenv (= 2.7.5)
       railties (>= 3.2, < 6.1)
     erubi (1.9.0)
-    eventmachine (1.0.9.1)
+    eventmachine (1.2.7)
     execjs (2.7.0)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    ffi (1.12.2)
+    ffi (1.13.0)
     friendly_id (5.3.0)
       activerecord (>= 4.0.0)
     github-markup (3.0.4)
@@ -217,7 +217,7 @@ GEM
     httparty (0.18.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.8.2)
+    i18n (1.8.3)
       concurrent-ruby (~> 1.0)
     i18n-active_record (0.4.0)
       i18n (>= 0.5.0)
@@ -229,7 +229,7 @@ GEM
       json
     iiif_manifest (1.0.1)
       activesupport (>= 4)
-    image_processing (1.10.3)
+    image_processing (1.11.0)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
     iso639 (1.3.2)
@@ -331,7 +331,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.5)
-    puma (3.12.4)
+    puma (3.12.6)
     rack (2.2.2)
     rack-protection (2.0.8.1)
       rack
@@ -371,7 +371,7 @@ GEM
       uber (< 0.2.0)
     request_store (1.5.0)
       rack (>= 1.4)
-    responders (3.0.0)
+    responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
     retriable (3.1.2)
@@ -408,7 +408,7 @@ GEM
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
     rspec-support (3.9.3)
-    ruby-oembed (0.13.0)
+    ruby-oembed (0.13.1)
     ruby-progressbar (1.10.1)
     ruby-vips (2.0.17)
       ffi (~> 1.9)
@@ -426,7 +426,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    sassc (2.3.0)
+    sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
       railties (>= 4.0.0)
@@ -451,7 +451,7 @@ GEM
       rails (>= 3, < 7)
       redcarpet (>= 2.0.1, < 4)
       twitter-text (~> 1.4)
-    sitemap_generator (6.1.0)
+    sitemap_generator (6.1.2)
       builder (~> 3.0)
     skinny (0.2.2)
       eventmachine (~> 1.0)
@@ -527,7 +527,7 @@ GEM
       railties (>= 5.0)
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.4)
+    websocket-extensions (0.1.5)
 
 PLATFORMS
   ruby
