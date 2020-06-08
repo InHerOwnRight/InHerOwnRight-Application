@@ -14,7 +14,7 @@ module MapLocation
       save_coords_from_placename
     else
       coordinates = Geocoder.convert(placename)
-      update_attributes(longitude: coords_to_longitude(coordinates), latitude: coords_to_latitude(coordinates))
+      update_attributes(longitude: coords_to_longitude(coordinates), latitude: coords_to_latitude(coordinates)) if coordinates
     end
   end
 
