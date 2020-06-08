@@ -444,7 +444,7 @@ class Record < ActiveRecord::Base
     map_locations = spacial_map_locations + coverage_map_locations
     placenames = []
     map_locations.select do |map_location|
-      unless placenames.include?(map_location.placename)
+      if !placenames.include?(map_location.placename) && map_location.saved_coords?
         placenames << map_location.placename
         map_location
       end
