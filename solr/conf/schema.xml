@@ -224,6 +224,8 @@
   <copyField source="author_tsim" dest="author_spell"/>
   <copyField source="subject_ssim" dest="subject_spell"/>
   <copyField source="title_tsim" dest="title_spell"/>
+  <copyField source="coordinates_srpt" dest="coordinates_ssim" />
+
 
   <types>
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
@@ -590,4 +592,12 @@
     <dynamicField name="*spell" type="textSpell" indexed="true" stored="false" multiValued="true" />
     <dynamicField name="*suggest" type="textSuggest" indexed="true" stored="false" multiValued="true" />
 
+    <!-- Added for blacklight-maps -->
+    <!-- Items below were removed from _rpt fieldname attributes -->
+    <!-- validationRule="repairBuffer0" -->
+    <!-- distanceUnits="kilometers" -->
+    <!-- <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType" geo="true" distErrPct="0.025" maxDistErr="0.001" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" autoIndex="true" /> -->
+    <!-- <dynamicField name="*_rpt" type="location_rpt" stored="true" indexed="true" multiValued="true" /> -->
+    <dynamicField name="*_ssim" type="string" stored="true" indexed="true" multiValued="true" />
+  </fields>
 </schema>

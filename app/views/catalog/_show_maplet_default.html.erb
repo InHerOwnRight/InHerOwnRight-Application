@@ -1,0 +1,7 @@
+<% # map document show view from blacklight-maps monkeypatched to always display %>
+<div id="blacklight-show-map-container">
+  <%= blacklight_map_tag('blacklight-show-map',
+    {data:{initialzoom:blacklight_config.view.maps.show_initial_zoom,
+                                    singlemarkermode:false}}) %>
+  <%= javascript_tag "$('#blacklight-show-map').blacklight_leaflet_map(#{serialize_geojson(@document)});" %>
+</div>

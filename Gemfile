@@ -39,6 +39,9 @@ gem 'redcarpet', '~> 3.4'
 gem 'dotenv-rails'
 gem "mini_magick"
 gem "friendly_id"
+gem 'blacklight-maps', github: 'boston-library/blacklight-maps', branch: 'update-to-blacklight-7'
+gem 'httparty'
+
 gem 'sentry-raven'
 
 # gem 'carpetbomb'
@@ -68,6 +71,10 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
+group :test do
+  gem 'rspec-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
