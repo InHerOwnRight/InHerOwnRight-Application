@@ -1,14 +1,11 @@
 FROM phusion/passenger-ruby25
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo && apt-get install -y \
     vim \
     nodejs-dev \
     tzdata \
     s3cmd \
     imagemagick
-
-RUN su -lc "rvm install 'ruby-2.5.7'"
-RUN su -lc 'rvm --default use ruby-2.5.7' app
 
 RUN su -lc "gem install bundler:1.17.3"
 
@@ -29,11 +26,9 @@ COPY Gemfile* ./
 
 COPY . /var/www/rails/
 
-RUN su -lc "cd /var/www/rails && if [ ! -f ./config/database.yml ]; then cp ./config/database.yml.example ./config/database.yml; fi" app
-
 RUN chown -R app:app /var/www
 
-# RUN bash -lc 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -lc \"cd /var/www/rails && bundle install && bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
+RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -lc \"cd /var/www/rails && bundle install && bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
 
 USER app
 
@@ -41,9 +36,15 @@ RUN bundle install
 
 COPY --chown=app:app . ./
 
+RUN su -lc "cd /var/www/rails && if [ ! -f ./config/database.yml ]; then cp ./config/database.yml.example ./config/database.yml; fi" app
+
 ENV SECRET_KEY_BASE=1234
 ENV AWS_ACCESS_KEY_ID=SECRET
 ENV AWS_SECRET_ACCESS_KEY=SECRET
+
+ONBUILD EXPOSE 5432
+
+RUN RAILS_ENV=production rake assets:precompile
 
 USER root
 
