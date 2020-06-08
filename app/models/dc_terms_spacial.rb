@@ -1,8 +1,7 @@
 class DcTermsSpacial < ActiveRecord::Base
   belongs_to :record
   has_many :spacial_map_locations, dependent: :destroy
-  after_save :update_map_locations, if: :saved_change_to_spacial?#, unless: :new_record?
-  # after_create :update_map_locations
+  after_save :update_map_locations, if: :saved_change_to_spacial?
   around_destroy :reindex_record_after_destroy
 
   def update_map_locations
