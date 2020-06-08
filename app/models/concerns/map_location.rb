@@ -37,6 +37,10 @@ module MapLocation
     update_attributes(longitude: longitude, latitude: latitude)
   end
 
+  def saved_coords?
+    longitude && latitude && geojson_ssim
+  end
+
   private
     def larger_than_90?(number)
       number.abs() > 90
