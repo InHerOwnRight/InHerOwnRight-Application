@@ -44,6 +44,7 @@ COPY --chown=app:app . ./
 ENV SECRET_KEY_BASE=1234
 ENV AWS_ACCESS_KEY_ID=SECRET
 ENV AWS_SECRET_ACCESS_KEY=SECRET
+RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 USER root
 
