@@ -38,7 +38,6 @@ gem 'high_voltage', '~> 3.0'
 gem 'redcarpet', '~> 3.4'
 gem 'dotenv-rails'
 gem "mini_magick"
-gem "friendly_id"
 gem 'blacklight-maps', github: 'boston-library/blacklight-maps', branch: 'update-to-blacklight-7'
 gem 'httparty'
 
