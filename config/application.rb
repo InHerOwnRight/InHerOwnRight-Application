@@ -20,3 +20,6 @@ module Pacscl
     config.action_mailer.postmark_settings = { :api_token => ENV['POSTMARK_API_KEY'] }
   end
 end
+
+ActiveSupport::Dependencies.explicitly_unloadable_constants << "Blacklight::Icon"
+

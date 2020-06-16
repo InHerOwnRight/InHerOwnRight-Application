@@ -1,6 +1,15 @@
 GIT
+  remote: https://github.com/boston-library/blacklight-maps.git
+  revision: 5f4cce2b2733ed1c617b65ea4a9e90afabfa731e
+  branch: update-to-blacklight-7
+  specs:
+    blacklight-maps (0.5.2)
+      blacklight (>= 7.8.0, < 8)
+      rails (>= 5.1, < 7)
+
+GIT
   remote: https://github.com/projectblacklight/spotlight.git
-  revision: 14b0d26b90a66df8af5a14594620a643510e6fa9
+  revision: 3daf64411a0dc13da64980253817bc6bf994822c
   specs:
     blacklight-spotlight (3.0.0.alpha.10)
       acts-as-taggable-on (>= 5.0, < 7)
@@ -89,17 +98,17 @@ GEM
     autoprefixer-rails (9.7.6)
       execjs
     aws-eventstream (1.1.0)
-    aws-partitions (1.326.0)
-    aws-sdk-core (3.98.0)
+    aws-partitions (1.329.0)
+    aws-sdk-core (3.99.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-kms (1.33.0)
-      aws-sdk-core (~> 3, >= 3.71.0)
+    aws-sdk-kms (1.34.1)
+      aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.67.1)
-      aws-sdk-core (~> 3, >= 3.96.1)
+    aws-sdk-s3 (1.68.1)
+      aws-sdk-core (~> 3, >= 3.99.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.1.4)
@@ -170,7 +179,7 @@ GEM
       delayed_job (>= 3.0, < 5)
     deprecation (1.0.0)
       activesupport
-    devise (4.7.1)
+    devise (4.7.2)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0)
@@ -193,7 +202,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    ffi (1.13.0)
+    ffi (1.13.1)
     friendly_id (5.3.0)
       activerecord (>= 4.0.0)
     github-markup (3.0.4)
@@ -204,6 +213,9 @@ GEM
       tilt
     high_voltage (3.1.2)
     highline (2.0.3)
+    httparty (0.18.1)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
     i18n-active_record (0.4.0)
@@ -269,6 +281,9 @@ GEM
       sqlite3-ruby
       thin
     method_source (1.0.0)
+    mime-types (3.3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2020.0512)
     mimemagic (0.3.5)
     mini_magick (4.10.1)
     mini_mime (1.0.2)
@@ -382,17 +397,8 @@ GEM
     ruby2_keywords (0.0.2)
     ruby_dep (1.5.0)
     rubyzip (2.3.0)
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.0.7)
-      railties (>= 4.0.0, < 6)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -432,7 +438,7 @@ GEM
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
       spring (>= 1.2, < 3.0)
-    sprockets (3.7.2)
+    sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-es6 (0.9.2)
@@ -483,7 +489,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    view_component (2.7.0)
+    view_component (2.8.0)
       activesupport (>= 5.0.0, < 7.0)
     warden (1.2.8)
       rack (>= 2.0.6)
@@ -504,6 +510,7 @@ DEPENDENCIES
   aws-sdk-s3
   blacklight (= 7.8)
   blacklight-gallery (~> 1.1)
+  blacklight-maps!
   blacklight-oembed (~> 1.0)
   blacklight-spotlight!
   blacklight_range_limit
@@ -520,6 +527,7 @@ DEPENDENCIES
   friendly_id
   haml (~> 5.0, >= 5.0.1)
   high_voltage (~> 3.0)
+  httparty
   iso639
   jbuilder (~> 2.5)
   jquery-rails
@@ -540,7 +548,7 @@ DEPENDENCIES
   redcarpet (~> 3.4)
   riiif
   rsolr (>= 1.0)
-  sass-rails (~> 5.0)
+  sass-rails
   sentry-raven
   sitemap_generator
   solr_wrapper (>= 0.3)
