@@ -7,7 +7,8 @@ class DcCoverage < ActiveRecord::Base
   def update_map_locations
     changed = false
     coverage_map_locations.update_all(verified: nil)
-    placenames = coverage.split(";").map(&:strip)
+    delimiters = [';', '|']
+    placenames = coverage.split(Regexp.union(delimiters)).map(&:strip)
     placenames.each do |placename|
       coverage_map_location = coverage_map_locations.find_by(placename: placename)
       if coverage_map_location
