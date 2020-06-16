@@ -7,7 +7,8 @@ class DcTermsSpacial < ActiveRecord::Base
   def update_map_locations
     changed = false
     spacial_map_locations.update_all(verified: nil)
-    placenames = spacial.split(";").map(&:strip)
+    delimiters = [';', '|']
+    placenames = spacial.split(Regexp.union(delimiters)).map(&:strip)
     placenames.each do |placename|
       spacial_map_location = spacial_map_locations.find_by(placename: placename)
       if spacial_map_location
