@@ -14,14 +14,16 @@
           <li>
             <%= link_to t(:'spotlight.header_links.create_exhibit'), spotlight.new_exhibit_path, class: 'dropdown-item' %>
           </li>
-          <li class="dropdown-divider"></li>
         <% end %>
         <% if current_exhibit && can?(:curate, current_exhibit) %>
           <li>
             <%= link_to t('spotlight.header_links.dashboard'), spotlight.exhibit_dashboard_path(current_exhibit), class: 'dropdown-item' %>
           </li>
-          <li class="dropdown-divider"></li>
         <% end %>
+        <li>
+          <%= link_to "Process Images", main_app.process_images_path, class: 'dropdown-item' %>
+        </li>
+        <li class="dropdown-divider"></li>
         <li>
           <%= link_to t('spotlight.header_links.logout'), main_app.destroy_user_session_path, class: 'dropdown-item' %>
         </li>
