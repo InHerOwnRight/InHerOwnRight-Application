@@ -159,7 +159,11 @@ module Spotlight
     config.thumbnail_initial_crop_selection = [120, 120]
 
     # Configure the CarrierWave file storage mechanism
-    config.uploader_storage = :file
+    if ENV['AWS_ACCESS_KEY_ID'].present?
+      config.uploader_storage = :aws
+    else
+      config.uploader_storage = :file
+    end
     config.featured_image_thumb_size = [400, 300]
     config.featured_image_square_size = [400, 400]
     config.contact_square_size = [70, 70]

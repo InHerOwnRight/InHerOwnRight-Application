@@ -41,6 +41,8 @@ RUN bash -lc "if [ ! -f ./config/database.yml ]; then cp ./config/database.yml.e
 ENV SECRET_KEY_BASE=1234
 ENV AWS_ACCESS_KEY_ID=SECRET
 ENV AWS_SECRET_ACCESS_KEY=SECRET
+ENV AWS_BUCKET=SECRET
+ENV AWS_BUCKET_REGION=SECRET
 RUN RAILS_ENV=production rake assets:precompile
 
 USER root
