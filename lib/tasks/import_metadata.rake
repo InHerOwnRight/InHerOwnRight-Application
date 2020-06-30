@@ -61,7 +61,7 @@ namespace :import_metadata do
         raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
         raw_record.repository_id = brynmawr.id if raw_record.xml_metadata.include?("Bryn Mawr College Special Collections")
         raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
-        raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("Haverford")
+        raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
 
       if raw_record.save
