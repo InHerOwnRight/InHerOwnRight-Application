@@ -2,7 +2,7 @@ class DcTermsIsPartOf < ActiveRecord::Base
   belongs_to :record
   belongs_to :pacscl_collection, optional: true
   after_create :check_pacscl_collection
-  after_save :check_pacscl_collection, if: :saved_change_to_is_part_of
+  after_save :check_pacscl_collection, if: :saved_change_to_is_part_of?
 
   private
 
