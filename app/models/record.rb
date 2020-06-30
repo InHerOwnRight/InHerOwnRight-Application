@@ -28,6 +28,7 @@ class Record < ActiveRecord::Base
   has_many :dc_terms_is_part_ofs, dependent: :destroy
   has_many :spacial_map_locations, through: :dc_terms_spacials, dependent: :destroy
   has_many :coverage_map_locations, through: :dc_coverages, dependent: :destroy
+  has_many :pacscl_collections, through: :dc_terms_is_part_ofs
 
   scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
   scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
@@ -116,10 +117,6 @@ class Record < ActiveRecord::Base
 
     text :full_text do
       full_texts.map(&:transcription)
-    end
-
-    text :collection do
-      dc_terms_is_part_ofs.map(&:is_part_of)
     end
 
     text :repository do
@@ -219,6 +216,18 @@ class Record < ActiveRecord::Base
 
     string :placename, multiple: true do
       map_locations.map(&:placename)
+    end
+
+    text :pacscl_collection_detailed_name do
+      if pacscl_collections.any?
+        pacscl_collections.map(&:detailed_name)
+      end
+    end
+
+    string :pacscl_collection_clean_name, multiple: true do
+      if pacscl_collections.any?
+        pacscl_collections.map(&:clean_name)
+      end
     end
   end
 

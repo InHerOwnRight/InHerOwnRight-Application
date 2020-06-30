@@ -1,0 +1,8 @@
+%tr
+  %th{ scope: "row" }
+    Collection
+  %td
+    - @record.pacscl_collections.each do |pacscl_collection|
+      %p
+        = pacscl_collection.detailed_name
+        = link_to '(explore contents)', search_catalog_path(q: pacscl_collection.detailed_name, search_field: :collection)
