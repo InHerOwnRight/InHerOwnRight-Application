@@ -328,7 +328,7 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text collection_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text collection_text identifier_text'
         }
     end
 
@@ -343,6 +343,10 @@ class CatalogController < ApplicationController
 
     config.add_search_field('creator') do |field|
      field.solr_parameters = { qf: 'creator_text'}
+    end
+
+    config.add_search_field('identifier') do |field|
+     field.solr_parameters = { qf: 'identifier_text'}
     end
 
     config.add_search_field('subject') do |field|

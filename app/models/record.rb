@@ -110,6 +110,10 @@ class Record < ActiveRecord::Base
       dc_creators.map(&:creator)
     end
 
+    text :identifier do
+      dc_identifiers.map(&:identifier)
+    end
+
     text :full_text do
       full_texts.map(&:transcription)
     end
