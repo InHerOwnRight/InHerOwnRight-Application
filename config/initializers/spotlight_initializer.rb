@@ -53,12 +53,15 @@ Spotlight::Engine.config.filter_resources_by_exhibit = false
 #     label: -> { I18n.t(:'spotlight.search.fields.spotlight_upload_date_tesim') }
 #   )
 # ]
-# Spotlight::Engine.config.uploader_storage = :file
-# Spotlight::Engine.config.uploader_storage = :aws if ENV['AWS_ACCESS_KEY_ID'].present?
-# Spotlight::Engine.config.allowed_upload_extensions = %w(jpg jpeg png)
-
-# Spotlight::Engine.config.featured_image_thumb_size = [400, 300]
-# Spotlight::Engine.config.featured_image_square_size = [400, 400]
+if ENV['AWS_ACCESS_KEY_ID'].present?
+  Spotlight::Engine.config.uploader_storage = :aws
+else
+  Spotlight::Engine.config.uploader_storage = :file
+end
+Spotlight::Engine.config.allowed_upload_extensions = %w(jpg jpeg png)
+Spotlight::Engine.config.featured_image_thumb_size = [400, 300]
+Spotlight::Engine.config.featured_image_square_size = [400, 400]
+Spotlight::Engine.config.contact_square_size = [70, 70]
 
 # ==> Google Analytics integration
 # Spotlight::Engine.config.analytics_provider = Spotlight::Analytics::Ga
