@@ -220,6 +220,7 @@ class CatalogController < ApplicationController
      is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
     }, show: false
 
+    config.add_facet_field 'pacscl_collection_clean_name_sm', label: 'Collection', solr_params: { 'facet.mincount' => 1 }
 
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
@@ -328,12 +329,12 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text collection_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text pacscl_collection_detailed_name_text'
         }
     end
 
     config.add_search_field('collection') do |field|
-     field.solr_parameters = { qf: 'collection_text'}
+     field.solr_parameters = { qf: 'pacscl_collection_detailed_name_text'}
    end
 
 

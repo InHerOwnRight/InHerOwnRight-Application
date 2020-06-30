@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200520140059) do
+ActiveRecord::Schema.define(version: 20200626183659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20200520140059) do
     t.string "geojson_ssim"
     t.string "placename"
     t.datetime "geocode_attempt"
-    t.datetime "verified", default: "2020-06-08 20:53:42"
+    t.datetime "verified", default: "2020-05-20 14:08:40"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 20200520140059) do
     t.string "is_part_of"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "pacscl_collection_id"
   end
 
   create_table "dc_terms_spacials", id: :serial, force: :cascade do |t|
@@ -231,6 +232,15 @@ ActiveRecord::Schema.define(version: 20200520140059) do
     t.index ["sanitized_placename"], name: "index_osm_api_calls_on_sanitized_placename"
   end
 
+  create_table "pacscl_collections", force: :cascade do |t|
+    t.integer "repository_id"
+    t.string "import_source"
+    t.string "detailed_name"
+    t.string "clean_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "raw_records", id: :serial, force: :cascade do |t|
     t.integer "repository_id"
     t.string "original_record_url"
@@ -297,7 +307,7 @@ ActiveRecord::Schema.define(version: 20200520140059) do
     t.string "geojson_ssim"
     t.string "placename"
     t.datetime "geocode_attempt"
-    t.datetime "verified", default: "2020-06-08 20:53:42"
+    t.datetime "verified", default: "2020-05-20 14:08:39"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
