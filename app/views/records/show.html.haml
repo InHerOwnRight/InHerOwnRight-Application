@@ -58,7 +58,7 @@
       - if @record.dc_rights.any?
         = render 'dc_rights'
 
-      - if @record.is_collection? && Record.records_for_collection(@record.id)
+      - if @record.is_collection? && @record.list_records_for_collection.count > 1
         = render 'collection_records_link'
 
       - if @record.full_texts.any?

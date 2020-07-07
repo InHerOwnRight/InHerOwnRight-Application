@@ -30,15 +30,23 @@ class Record < ActiveRecord::Base
   has_many :coverage_map_locations, through: :dc_coverages, dependent: :destroy
   has_many :pacscl_collections, through: :dc_terms_is_part_ofs
 
-  scope :collection_for, -> (collection_name) { joins(:dc_titles).where('dc_titles.title = ?', collection_name) }
-  scope :collections, -> { joins(:raw_record).where(raw_records: {record_type: 'collection'}) }
-  scope :not_collections, -> { joins(:raw_record).where(raw_records: {record_type: nil}) }
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
-  scope :records_for_collection, -> (record_id) { where(collection_id: record_id) }
   scope :for_same_creator, -> (creator_id) { joins(:dc_creators).where('dc_creators.id = ?', creator_id) }
 
   def is_collection?
     raw_record.record_type == "collection"
+  end
+
+  def list_pacscl_collection
+    if is_collection?
+      PacsclCollection.find_by_detailed_name(dc_titles.first.title)
+    end
+  end
+
+  def list_records_for_collection
+    if is_collection?
+      PacsclCollection.find_by_detailed_name(dc_titles.first.title).records
+    end
   end
 
   def thumbnail
@@ -52,13 +60,13 @@ class Record < ActiveRecord::Base
     repository.id
   end
 
-  def is_collection_id
-    if is_collection?
-      id
-    else
-      nil
-    end
-  end
+  # def is_collection_id
+  #   if is_collection?
+  #     id
+  #   else
+  #     nil
+  #   end
+  # end
 
   def collection_repository_url
     if dc_identifiers.map{ |id| id.identifier_is_url? }.any?
@@ -217,23 +225,29 @@ class Record < ActiveRecord::Base
     text :pacscl_collection_detailed_name do
       if pacscl_collections.any?
         pacscl_collections.map(&:detailed_name)
+      elsif is_collection? && dc_titles.any?
+        dc_titles.first.title
       end
     end
 
     string :pacscl_collection_clean_name, multiple: true do
       if pacscl_collections.any?
         pacscl_collections.map(&:clean_name)
+      elsif is_collection? && dc_titles.any?
+        collection_name = dc_titles.first.title
+        collection = PacsclCollection.find_by(detailed_name: collection_name)
+        collection.clean_name if collection
+      end
+    end
+
+    string :is_collection do
+      if is_collection?
+        'true'
+      else
+        'false'
       end
     end
   end
-
-  searchable :if => proc { |record| !record.collection_id.nil? } do
-    integer :collection_id, references: Record, multiple: true
-  end
-
-  searchable :if => proc { |record| record.is_collection? } do
-    integer :is_collection_id, references: Record
-  end #searchable
 
 ########################## Record and record part creation ################################
 
