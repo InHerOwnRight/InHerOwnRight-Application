@@ -10,8 +10,6 @@ class CatalogController < ApplicationController
   helper Openseadragon::OpenseadragonHelper
   before_action :set_paper_trail_whodunnit
 
-
-  before_action :extend_catalog_paginiation, only: [:index]
   # before_action :add_exhibit_filter
   # before_action :add_exhibit_tags
 
@@ -41,7 +39,7 @@ class CatalogController < ApplicationController
     (@response, deprecated_document_list) = search_service.search_results
 
     @document_list = ActiveSupport::Deprecation::DeprecatedObjectProxy.new(deprecated_document_list, 'The @document_list instance variable is deprecated; use @response.documents instead.')
-
+    puts "!!! #{@document_list}"
     respond_to do |format|
       format.html { store_preferred_view }
       format.rss  { render layout: false }
@@ -55,15 +53,6 @@ class CatalogController < ApplicationController
     end
 
     render layout: 'blacklight-maps/blacklight-maps' if request.query_parameters[:view] == 'maps'
-  end
-
-  # extend results pagination if collection view
-  def extend_catalog_paginiation
-    if request.params["f"] && request.params["f"]["is_collection_id_i"]
-      if request.params["f"]["is_collection_id_i"] == ["is_collection_id_i"]
-        self.blacklight_config.per_page = [50, 100]
-      end
-    end
   end
 
   def add_exhibit_filter
@@ -147,7 +136,7 @@ class CatalogController < ApplicationController
     # solr field configuration for search results/index views
     config.index.title_field = :title_text
 
-    config.add_sort_field 'relevance', sort: 'score desc', label: I18n.t('spotlight.search.fields.sort.relevance')
+    config.add_sort_field 'relevance', sort: 'is_collection_s desc, score desc', label: I18n.t('spotlight.search.fields.sort.relevance')
 
     config.add_field_configuration_to_solr_request!
 
@@ -215,10 +204,6 @@ class CatalogController < ApplicationController
     # https://github.com/projectblacklight/spotlight/issues/1812#issuecomment-327345318
 
     config.add_facet_field 'type_sm', label: "Type", solr_params: { 'facet.mincount' => 1 }
-
-    config.add_facet_field 'is_collection_id_i', label: "Collections", query: {
-     is_collection_id_i: { label: 'All Collections', fq: "is_collection_id_i:[1 TO *]" }
-    }, show: false
 
     config.add_facet_field 'pacscl_collection_clean_name_sm', label: 'Collection', solr_params: { 'facet.mincount' => 1 }
 
@@ -329,14 +314,19 @@ class CatalogController < ApplicationController
       field.solr_parameters = { :'spellcheck.dictionary' => 'subject' }
       field.solr_parameters = { :'spellcheck.dictionary' => 'repository' }
       field.solr_parameters = {
-        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text pacscl_collection_detailed_name_text identifier_text'
+        qf: 'creator_text title_text description_text subject_text repository_text full_text_text placename_search_text pacscl_collection_detailed_name_text is_collection_s identifier_text'
         }
     end
 
     config.add_search_field('collection') do |field|
      field.solr_parameters = { qf: 'pacscl_collection_detailed_name_text'}
-   end
+    end
 
+
+    config.add_search_field('is_collection') do |field|
+      field.solr_parameters = { qf: 'is_collection_s' }
+      field.if = false
+    end
 
     config.add_search_field('title') do |field|
      field.solr_parameters = { qf: 'title_text'}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200626183659) do
+ActiveRecord::Schema.define(version: 20200702191213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -276,7 +276,6 @@ ActiveRecord::Schema.define(version: 20200626183659) do
     t.string "is_part_of"
     t.string "file_name"
     t.string "thumbnail"
-    t.integer "collection_id"
     t.string "slug"
     t.index ["slug"], name: "index_records_on_slug", unique: true
   end
