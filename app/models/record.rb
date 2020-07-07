@@ -93,10 +93,6 @@ class Record < ActiveRecord::Base
 
   searchable do
 
-    boolean :exhibit_test_exhibit_public do
-      true
-    end
-
     text :oai_identifier
 
     text :coverage do
