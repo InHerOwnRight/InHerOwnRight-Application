@@ -18,7 +18,7 @@
 - if @record.dc_identifiers.reject { |i| i.identifier_is_url? }.size > 1
   %tr
     %th{ scope: "row" }
-      Local Identifier
+      Local identifier
     %td
       - @record.dc_identifiers.reject { |i| i.identifier_is_url? }.each_with_index do |dc_identifier, index|
         = dc_identifier.identifier
@@ -27,6 +27,6 @@
   - if !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.empty? && !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
       %th{ scope: "row" }
-        Local Identifier
+        Local identifier
       %td
         = @record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier
