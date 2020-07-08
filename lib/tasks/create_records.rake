@@ -20,7 +20,6 @@ namespace :create_records do
     end
   end
 
-
   def is_part_of_repsitories
     ["Bates | PAU", "HSP | QQR", "TLC | AOX", "Haverford | HVC"]
   end
@@ -44,74 +43,37 @@ namespace :create_records do
             record.create_dc_part(node_name, xml_doc, record)
           end
 
-        record.reload
-
-          # Create collection relationship for records in CSVs
-          if is_part_of_repsitories.include?(raw_record.repository.abbreviation)
-            record.dc_terms_is_part_ofs.each do |tct_is_part_of|
-              if Record.collection_for(tct_is_part_of.is_part_of).any?
-                record.collection_id = Record.collection_for(tct_is_part_of.is_part_of).first.id
-                record.save
-              end
-            end
-          end
-
-          if relation_repositories.include?(raw_record.repository.abbreviation)
-            record.dc_relations.each do |dc_relation|
-              if Record.collection_for(dc_relation.relation).any?
-                record.collection_id = Record.collection_for(dc_relation.relation).first.id
-                record.save
-              end
-            end
-          end
-
-          # Drexel records have only one collection, but the name is inconsistent
-          if raw_record.repository.abbreviation == "DrexelMed | DXU"
-            if record.dc_relations.map{|dc_relation| dc_relation.relation =~ /Alumnae Association/}.any?
-              collection = Record.collection_for("Reports and Transactions of the Annual Meetings of the Alumnae Association of the Woman's Medical College of Pennsylvania").first
-              record.collection_id = collection.id if !collection.blank?
-              record.save
-            end
-          end
-
-          # One record from Swarthmore. The XML in the response differs from the collection XML.
-          if raw_record.repository.abbreviation == "Swarthmore Peace | QQR"
-            record.collection_id = Record.find_by_oai_identifier("http://www.swarthmore.edu/library/friends/ead/Mott.xml")
-            record.save
-          end
-        else
-          puts "Record for #{raw_record.oai_identifier} not created. Duplicate?"
+          record.reload
         end
       end
     end
   end
-end
 
-task create_enhanced_data: :environment do
-  filepath = "lib/documents/csv/enhanced_metadata.csv"
-  CSV.foreach(filepath, headers: true) do |row|
-    if DcIdentifier.find_by_identifier(row[1])
-      record = DcIdentifier.find_by_identifier(row[1]).record
+  task create_enhanced_data: :environment do
+    filepath = "lib/documents/csv/enhanced_metadata.csv"
+    CSV.foreach(filepath, headers: true) do |row|
+      if DcIdentifier.find_by_identifier(row[1])
+        record = DcIdentifier.find_by_identifier(row[1]).record
 
-      if !row[2].blank?
-        subjects = row[2].split("|")
-        stripped_subjects = subjects.map { |s| s.strip }
-        stripped_subjects -= [""]
-        stripped_subjects.each do |subj|
-          if DcSubject.find_by_subject(subj).blank?
-            dc_subject = DcSubject.new
-            dc_subject.subject = subj
-            dc_subject.save
-          else
-            dc_subject = DcSubject.find_by_subject(subj)
+        if !row[2].blank?
+          subjects = row[2].split("|")
+          stripped_subjects = subjects.map { |s| s.strip }
+          stripped_subjects -= [""]
+          stripped_subjects.each do |subj|
+            if DcSubject.find_by_subject(subj).blank?
+              dc_subject = DcSubject.new
+              dc_subject.subject = subj
+              dc_subject.save
+            else
+              dc_subject = DcSubject.find_by_subject(subj)
+            end
+            record_dc_subject = RecordDcSubjectTable.find_or_initialize_by(record_id: record.id)
+            record_dc_subject.id = dc_subject.id,
+            record_dc_subject.save
           end
-          record_dc_subject = RecordDcSubjectTable.find_or_initialize_by(record_id: record.id)
-          record_dc_subject.id = dc_subject.id,
-          record_dc_subject.save
         end
-      end
 
-      if !row[3].blank?
+        if !row[3].blank?
           dc_terms_spacial = DcTermsSpacial.find_or_initialize_by(record_id: record.id)
           dc_terms_spacial.spacial = row[3]
           dc_terms_spacial.save
@@ -128,3 +90,4 @@ task create_enhanced_data: :environment do
       end
     end
   end
+end

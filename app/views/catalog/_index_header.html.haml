@@ -44,13 +44,13 @@
                   = ", " unless index == instance.display_dates.size - 1
 
           - if instance.is_collection?
-            - if !instance.dc_creators.blank?
-              - if Record.for_same_creator(instance.dc_creators.first.id).count > 1
-                %h5.col-sm-12
-                  = link_to "View digitized items from this collection", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
-            - if Record.records_for_collection(instance.id).count > 1
+            -# - if !instance.dc_creators.blank?
+            -#   - if Record.for_same_creator(instance.dc_creators.first.id).count > 1
+            -#     %h5.col-sm-12
+            -#       = link_to "View digitized items from this collection", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
+            - if instance.list_records_for_collection.count > 1
               %h5.col-sm-12
-                = link_to "View digitized items from this collection", search_catalog_path( f: {"collection_id_im" => [instance.id]} )
+                = link_to "View digitized items from this collection", "/catalog?utf8=%E2%9C%93&search_field=collection&q=#{instance.dc_titles.first.title}"
 
       .col-sm-4
         - document_actions = capture do

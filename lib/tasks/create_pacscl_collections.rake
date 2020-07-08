@@ -5,6 +5,7 @@ namespace :create_pacscl_collections do
   end
 
   task import_pacscl_collection_data: :environment do
+    # existing_pacscl_collection_ids = PacsclCollection.pluck(:id)
     CSV.foreach('lib/documents/csv/pacscl_collections.csv', headers: true) do |row|
       institution_name = row[0]
       repository = Repository.where("name like ?", "%#{institution_name}%").first
