@@ -1,0 +1,7 @@
+- @record.dc_additional_descriptions.each_with_index do |dc_additional_description, index|
+  - if !dc_additional_description.additional_description.blank?
+    %tr
+      %th{ scope: "row" }
+        Additional Description
+      %td
+        = dc_additional_description.additional_description

@@ -28,6 +28,15 @@
       - if @record.dc_descriptions.any?
         = render 'dc_descriptions'
 
+      - if @record.dc_abstracts.any?
+        = render 'dc_abstracts'
+
+      - if @record.dc_additional_descriptions.any?
+        = render 'dc_additional_descriptions'
+
+      - if @record.dc_research_interests.any?
+        = render 'dc_research_interests'
+
       - if @record.dc_terms_extents.any?
         = render 'dc_terms_extents'
 

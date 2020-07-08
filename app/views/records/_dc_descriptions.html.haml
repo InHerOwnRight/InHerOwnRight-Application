@@ -1,20 +1,7 @@
 - @record.dc_descriptions.each_with_index do |dc_description, index|
   - if !dc_description.description.blank?
     %tr
-      - if @record.is_collection? && index == 0
-        %th{ scope: "row" }
-          Abstract
-        %td
-          = dc_description.description
-
-      - elsif @record.is_collection? && index == 2
-        %th{ scope: "row" }
-          Research interest
-        %td
-          = dc_description.description
-
-      - else
-        %th{ scope: "row" }
-          Description
-        %td
-          = dc_description.description
+      %th{ scope: "row" }
+        Description
+      %td
+        = dc_description.description

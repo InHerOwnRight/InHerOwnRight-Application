@@ -377,9 +377,9 @@ namespace :import_metadata do
                 xml['dc'].hasFormat row[8]
               end
               xml['dc'].subject row[9]
-              xml['dc'].description row[11]
-              xml['dc'].description row[12]
-              xml['dc'].description row[13]
+              xml['dc'].abstract row[11]
+              xml['dc'].additional_description row[12]
+              xml['dc'].research_interest row[13]
             end
           }
         }
