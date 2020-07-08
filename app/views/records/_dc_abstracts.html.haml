@@ -1,0 +1,7 @@
+- @record.dc_abstracts.each_with_index do |dc_abstract, index|
+  - if !dc_abstract.abstract.blank?
+    %tr
+      %th{ scope: "row" }
+        Abstract
+      %td
+        = dc_abstract.abstract

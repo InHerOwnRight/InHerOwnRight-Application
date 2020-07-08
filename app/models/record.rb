@@ -14,6 +14,9 @@ class Record < ActiveRecord::Base
   has_many :dc_subjects, through: :record_dc_subject_tables
   has_many :dc_dates, dependent: :destroy
   has_many :dc_descriptions, dependent: :destroy
+  has_many :dc_abstracts, dependent: :destroy
+  has_many :dc_additional_descriptions, dependent: :destroy
+  has_many :dc_research_interests, dependent: :destroy
   has_many :dc_formats, dependent: :destroy
   has_many :dc_identifiers, dependent: :destroy
   has_many :dc_languages, dependent: :destroy
@@ -161,6 +164,18 @@ class Record < ActiveRecord::Base
 
     text :description do
       dc_descriptions.map(&:description)
+    end
+
+    text :abstract do
+      dc_abstracts.map(&:abstract)
+    end
+
+    text :additional_description do
+      dc_additional_descriptions.map(&:additional_description)
+    end
+
+    text :research_interest do
+      dc_research_interests.map(&:research_interest)
     end
 
     text :format do

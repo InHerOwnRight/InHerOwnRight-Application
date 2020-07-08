@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200702191213) do
+ActiveRecord::Schema.define(version: 20200708204108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,20 @@ ActiveRecord::Schema.define(version: 20200702191213) do
     t.string "placename"
     t.datetime "geocode_attempt"
     t.datetime "verified", default: "2020-05-20 14:08:40"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "dc_abstracts", force: :cascade do |t|
+    t.integer "record_id"
+    t.text "abstract"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "dc_additional_descriptions", force: :cascade do |t|
+    t.integer "record_id"
+    t.text "additional_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -109,6 +123,13 @@ ActiveRecord::Schema.define(version: 20200702191213) do
   create_table "dc_relations", id: :serial, force: :cascade do |t|
     t.integer "record_id"
     t.string "relation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "dc_research_interests", force: :cascade do |t|
+    t.integer "record_id"
+    t.text "research_interest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

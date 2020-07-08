@@ -1,0 +1,7 @@
+- @record.dc_research_interests.each_with_index do |dc_research_interest, index|
+  - if !dc_research_interest.research_interest.blank?
+    %tr
+      %th{ scope: "row" }
+        Research Interest
+      %td
+        = dc_research_interest.research_interest
