@@ -1,7 +1,7 @@
 .process-images.content
-  = button_to 'Process Images', process_images_path, method: :post
+  = button_to 'Process images', process_images_path, method: :post
   %p= @image_process_tracker.humanized_status if @image_process_tracker
-  = button_to 'Records with Missing Images', 'process_images.csv', method: :get
+  = button_to 'Records with missing images', 'process_images.csv', method: :get
 %br
 %h3
   Failed Images
@@ -19,7 +19,7 @@
           %th
             Error
           %th
-            Failed On
+            Failed on
       %thead
         %tbody
           - @failed_inbox_images.each do |failed_inbox_image|

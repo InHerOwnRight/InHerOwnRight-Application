@@ -1,0 +1,27 @@
+%h3
+  Import record collections
+%br
+= form_tag import_record_collections_path, multipart: true do
+  = file_field_tag :file
+  %br
+  %br
+  = submit_tag 'Import CSV'
+%br
+%br
+.collections-import
+  %table
+    %thead
+      %tr
+        %th
+          Contributing Repository
+        %th
+          Collection Title
+    %thead
+      %tbody
+        - @record_collections.each do |record_collection|
+          %tr
+            %td
+              = record_collection.repository.name
+            %td
+              = record_collection.dc_titles.first.title
+%br

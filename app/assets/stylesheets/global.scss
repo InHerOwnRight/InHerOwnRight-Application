@@ -272,3 +272,13 @@ td a {
 .facet-values li .selected {
   color: #588956 !important;
 }
+
+.collections-import table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.collections-import table td {
+  width: 50%;
+  padding: 10px;
+}
