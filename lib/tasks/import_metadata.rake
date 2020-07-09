@@ -1,5 +1,6 @@
 require 'oai'
 require "csv"
+require "./app/helpers/import_record_collections_helper.rb"
 
 namespace :import_metadata do
 
@@ -341,52 +342,9 @@ namespace :import_metadata do
     import_from_csv(filepath, repository, original_entry_date)
   end
 
-    ### CSV Collection IMPORTS ########################################################################################
-
-    task collections: :environment do
-      name_spaces = {
-          "xmlns:oai_qdc" => "http://worldcat.org/xmlschemas/qdc-1.0/",
-          "xmlns:dcterms" => "http://purl.org/dc/terms/",
-          "xmlns:dc"      => "http://purl.org/dc/elements/1.1/"
-      }
-      CSV.foreach('lib/documents/csv/collections.csv', headers: true) do |row|
-        repository = Repository.find_by_name(row[0])
-        raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[7])
-        raw_record.record_type = "collection"
-        raw_record.repository_id = repository.id
-        raw_record.original_record_url = row[8]
-
-        # TODO ask if this looks correct
-        builder = Nokogiri::XML::Builder.new { |xml|
-          xml.metadata {
-            xml.contributing_repository row[0]
-            xml['oai_qdc'].qualifieddc(name_spaces) do
-              xml['dc'].title row[2]
-              if !row[3].blank?
-                xml['dc'].creator row[3]
-              end
-              xml['dcterms'].created row[4]
-              xml['dcterms'].created row[5]
-              xml['dcterms'].extent row[6]
-              if !row[7].blank?
-                xml['dc'].identifier row[7]
-              end
-              if row[8].split(":").first == "http" || row[8].split(":").first == "https"
-                xml['dc'].identifier row[8]
-              else
-                xml['dc'].hasFormat row[8]
-              end
-              xml['dc'].subject row[9]
-              xml['dc'].abstract row[11]
-              xml['dc'].additional_description row[12]
-              xml['dc'].research_interest row[13]
-            end
-          }
-        }
-        raw_record.xml_metadata = builder.to_xml
-        raw_record.save
-      end
-    end
+  task collections: :environment do
+    ImportRecordCollectionsHelper.create_raw_records
+  end
 end
 
 def import_from_csv(filepath, repository, original_entry_date)

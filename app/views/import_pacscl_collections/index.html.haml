@@ -1,0 +1,35 @@
+%h3
+  Import PACSCL collections
+%br
+= form_tag import_pacscl_collections_path, multipart: true do
+  = file_field_tag :file
+  %br
+  %br
+  = submit_tag 'Import CSV'
+%br
+%br
+.collections-import
+  %table
+    %thead
+      %tr
+        %th
+          Institution
+        %th
+          OAI or CSV?
+        %th
+          Colection name (detailed)
+        %th
+          Collection name (clean)
+    %thead
+      %tbody
+        - @pacscl_collections.each do |pacscl_collection|
+          %tr
+            %td
+              = pacscl_collection.repository.name
+            %td
+              = pacscl_collection.import_source
+            %td
+              = pacscl_collection.detailed_name
+            %td
+              = pacscl_collection.clean_name
+%br

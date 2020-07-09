@@ -51,5 +51,9 @@ Rails.application.routes.draw do
 
   get '/process_images', to: 'process_images#index'
   post '/process_images', to: 'process_images#create'
+  get '/import_record_collections', to: 'import_record_collections#index'
+  post '/import_record_collections', to: 'import_record_collections#create'
+  get '/import_pacscl_collections', to: 'import_pacscl_collections#index'
+  post '/import_pacscl_collections', to: 'import_pacscl_collections#create'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
