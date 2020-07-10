@@ -22,38 +22,38 @@ module ImportRecordCollectionsHelper
 
     # create new raw record collections or update existing
     CSV.foreach("#{Rails.root}/uploads/record_collections/record_collections.csv", headers: true) do |row|
-      institution_name = row[0]
+      institution_name = row[0].gsub('"', '')
       repository = Repository.find_by_name(institution_name)
       if repository
-        raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[7])
+        raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[7].gsub('"', ''))
 
         raw_record.record_type = "collection"
         raw_record.repository_id = repository.id
-        raw_record.original_record_url = row[8]
+        raw_record.original_record_url = row[8].gsub('"', '')
 
         builder = Nokogiri::XML::Builder.new { |xml|
           xml.metadata {
             xml.contributing_repository institution_name
             xml['oai_qdc'].qualifieddc(name_spaces) do
-              xml['dc'].title row[2]
+              xml['dc'].title row[2].gsub('"', '')
               if !row[3].blank?
-                xml['dc'].creator row[3]
+                xml['dc'].creator row[3].gsub('"', '')
               end
-              xml['dcterms'].created row[4]
-              xml['dcterms'].created row[5]
-              xml['dcterms'].extent row[6]
+              xml['dcterms'].created row[4].gsub('"', '')
+              xml['dcterms'].created row[5].gsub('"', '')
+              xml['dcterms'].extent row[6].gsub('"', '')
               if !row[7].blank?
-                xml['dc'].identifier row[7]
+                xml['dc'].identifier row[7].gsub('"', '')
               end
               if row[8].split(":").first == "http" || row[8].split(":").first == "https"
-                xml['dc'].identifier row[8]
+                xml['dc'].identifier row[8].gsub('"', '')
               else
-                xml['dc'].hasFormat row[8]
+                xml['dc'].hasFormat row[8].gsub('"', '')
               end
-              xml['dc'].subject row[9]
-              xml['dc'].abstract row[10]
-              xml['dc'].additional_description row[11]
-              xml['dc'].research_interest row[12]
+              xml['dc'].subject row[9].gsub('"', '')
+              xml['dc'].abstract row[10].gsub('"', '')
+              xml['dc'].additional_description row[11].gsub('"', '')
+              xml['dc'].research_interest row[12].gsub('"', '')
             end
           }
         }
@@ -63,7 +63,7 @@ module ImportRecordCollectionsHelper
           existing_raw_record_collection_ids.delete(raw_record.id)
         end
       else
-        raise "No repository found to match CSV data insitution name: #{institution_name}. Check for possible quotes around content in notepad."
+        raise "No repository found to match CSV data insitution name: #{institution_name}."
       end
     end
 

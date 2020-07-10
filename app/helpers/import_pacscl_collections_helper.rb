@@ -11,12 +11,12 @@ module ImportPacsclCollectionsHelper
 
     # create new pacscl collections or update existing
     CSV.foreach("#{Rails.root}/uploads/pacscl_collections/pacscl_collections.csv", headers: true) do |row|
-      institution_name = row[0]
+      institution_name = row[0].gsub('"', '')
       repository = Repository.find_by_name(institution_name)
       if repository
-        import_source = row[1]
-        detailed_name = row[2]
-        clean_name = row[3]
+        import_source = row[1].gsub('"', '')
+        detailed_name = row[2].gsub('"', '')
+        clean_name = row[3].gsub('"', '')
         pacscl_collection = PacsclCollection.find_or_initialize_by(repository: repository, import_source: import_source, detailed_name: detailed_name, clean_name: clean_name)
         if pacscl_collection.save
           existing_pacscl_collection_ids.delete(pacscl_collection.id)
@@ -24,7 +24,7 @@ module ImportPacsclCollectionsHelper
           puts "Pacscl collection not saved for detailed name: #{detailed_name}"
         end
       else
-        raise "No repository found to match CSV data insitution name: #{institution_name}. Check for possible quotes around content in notepad."
+        raise "No repository found to match CSV data insitution name: #{institution_name}."
       end
     end
 
