@@ -39,7 +39,6 @@ class CatalogController < ApplicationController
     (@response, deprecated_document_list) = search_service.search_results
 
     @document_list = ActiveSupport::Deprecation::DeprecatedObjectProxy.new(deprecated_document_list, 'The @document_list instance variable is deprecated; use @response.documents instead.')
-    puts "!!! #{@document_list}"
     respond_to do |format|
       format.html { store_preferred_view }
       format.rss  { render layout: false }
