@@ -66,12 +66,36 @@ module Spotlight
     def admin
       add_breadcrumb t(:'spotlight.curation.sidebar.header'), exhibit_dashboard_path(@exhibit)
       add_breadcrumb t(:'spotlight.curation.sidebar.items'), admin_exhibit_catalog_path(@exhibit)
-      (@response, @document_list) = search_service.search_results
-      @filters = params[:f] || []
+      (@response, deprecated_document_list) = search_service.search_results
 
+      @document_list = ActiveSupport::Deprecation::DeprecatedObjectProxy.new(deprecated_document_list, 'The @document_list instance variable is deprecated; use @response.documents instead.')
       respond_to do |format|
-        format.html
+        format.html { store_preferred_view }
+        format.rss  { render layout: false }
+        format.atom { render layout: false }
+        format.json do
+          @presenter = Blacklight::JsonPresenter.new(@response,
+                                                     blacklight_config)
+        end
+        additional_response_formats(format)
+        document_export_formats(format)
       end
+
+      render layout: 'blacklight-maps/blacklight-maps' if request.query_parameters[:view] == 'maps'
+    end
+
+    def search_service
+      search_service_class.new(config: blacklight_config, user_params: search_state.to_h, **search_service_context)
+    end
+
+    # @return [Hash] a hash of context information to pass through to the search service
+    def search_service_context
+      {}
+    end
+
+    # @return [Blacklight::SuggestSearch]
+    def suggestions_service
+      Blacklight::SuggestSearch.new(params, search_service.repository).suggestions
     end
 
     def update

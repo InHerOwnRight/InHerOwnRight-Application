@@ -399,7 +399,7 @@ class CatalogController < ApplicationController
     config.add_facet_field 'placename_sm', :label => 'Place', solr_params: { 'facet.mincount' => 1 }, limit: 200
     config.add_facet_field 'geojson_ssim', :limit => -2, :label => 'Coordinates', :show => false
 
-    config.add_facet_fields_to_solr_request!
+    # config.add_facet_fields_to_solr_request!
 
     config.add_field_configuration_to_solr_request!
   end

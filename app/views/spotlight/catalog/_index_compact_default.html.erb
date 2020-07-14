@@ -1,0 +1,20 @@
+<% # header bar for doc items in index view -%>
+<td>
+  <% if Record.find(document.id.scan(/\d+/).first.to_i).is_collection? %>
+    <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i)) %>" style="float:left;">
+      <%= image_tag "/static_images/collection.png" %>
+    </a>
+  <% elsif Record.find(document.id.scan(/\d+/).first.to_i).thumbnail %>
+    <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i).id) %>" style="float:left;">
+      <%= image_tag(Record.find(document.id.scan(/\d+/).first.to_i).thumbnail) %>
+    </a>
+  <% end %>
+</td>
+<td>
+  <%= render_document_partial document, 'admin_index_header', document_counter: document_counter %>
+
+</td>
+
+<td class="text-nowrap">
+  <%= l Date.parse(document[blacklight_config.index.timestamp_field]) if document[blacklight_config.index.timestamp_field] %>
+</td>

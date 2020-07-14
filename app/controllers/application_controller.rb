@@ -14,7 +14,8 @@ class ApplicationController < ActionController::Base
 
   before_action :set_raven_context
 
-  # before_action :alter_facet_config
+  before_action :alter_facet_config
+  after_action :alter_facet_config
 
   def set_raven_context
     # Include current_user_id and params with exceptions sent to Sentry
@@ -27,22 +28,19 @@ class ApplicationController < ActionController::Base
   end
 
   def alter_facet_config
+    filename = Rails.root.join('app', 'controllers', 'catalog_controller.rb')
+    content = File.read(filename)
     if request.path.include?("spotlight")
-      filename = Rails.root.join('app', 'controllers', 'catalog_controller.rb')
-      content = File.read(filename)
       if !content.include?("# config.add_facet_fields_to_solr_request!")
-        outdata = File.read(filename).gsub("config.add_facet_fields_to_solr_request!", "# config.add_facet_fields_to_solr_request!")
-        File.open(filename, 'w') do |out|
-          out << outdata
-        end
+        outdata = content.gsub("config.add_facet_fields_to_solr_request!", "# config.add_facet_fields_to_solr_request!")
+      else
+        outdata = content
       end
     else
-      filename = Rails.root.join('app', 'controllers', 'catalog_controller.rb')
-      content = File.read(filename)
-      outdata = File.read(filename).gsub("# config.add_facet_fields_to_solr_request!", "config.add_facet_fields_to_solr_request!")
-      File.open(filename, 'w') do |out|
-        out << outdata
-      end
+      outdata = content.gsub("# config.add_facet_fields_to_solr_request!", "config.add_facet_fields_to_solr_request!")
+    end
+    File.open(filename, 'w') do |out|
+      out << outdata
     end
   end
 

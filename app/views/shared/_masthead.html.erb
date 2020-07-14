@@ -7,14 +7,12 @@
 <%- masthead_navbar = capture do %>
   <% if content_for? :masthead_navbar %>
     <%= content_for :masthead_navbar %>
-  <% elsif current_exhibit %>
-    <%= render 'shared/exhibit_navbar' %>
   <% else %>
     <%= render 'shared/site_navbar' %>
   <% end %>
 <% end %>
 
-<header style="height: 200px" class="masthead <%= 'image-masthead' if current_masthead %> <%= 'resource-masthead' if resource_masthead? %>" role="banner">
+<header style="height: 200px; padding-bottom: 0px; margin-bottom: 0px;" class="masthead <%= 'image-masthead' if current_masthead %> <%= 'resource-masthead' if resource_masthead? %>" role="banner">
   <% if current_masthead %>
     <span class='background-container' style="background-image: url('<%= current_masthead.iiif_url %>')"></span>
     <span class='background-container-gradient'></span>
@@ -44,5 +42,9 @@
 
   <%= masthead_navbar unless resource_masthead? %>
 </header>
+
+<% if current_exhibit %>
+  <%= render 'shared/exhibit_navbar' %>
+<% end %>
 
 <%= render 'shared/breadcrumbs' unless resource_masthead? %>

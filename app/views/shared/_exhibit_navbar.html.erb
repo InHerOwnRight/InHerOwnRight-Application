@@ -1,0 +1,9 @@
+<nav class="navbar navbar-expand-md navbar-dark topbar" role="navigation" aria-label="<%= t('spotlight.topbar.label') %>" style="height: 50px; background-color: #2b4562; margin: 0px; padding: 0px;">
+  <div class="container flex-column flex-md-row">
+    <ul class="navbar-nav <%= resource_masthead? ? 'justify-content-md-end' : 'mr-auto' %>">
+      <% current_exhibit.main_navigations.displayable.each do |navigation| %>
+        <%= render partial: "shared/#{navigation.nav_type}_navbar", locals: { navigation: navigation } %>
+      <% end %>
+    </ul>
+  </div>
+</nav>
