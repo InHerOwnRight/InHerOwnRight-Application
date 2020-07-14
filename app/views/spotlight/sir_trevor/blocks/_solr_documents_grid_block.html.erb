@@ -5,9 +5,11 @@
         <% solr_documents_grid_block.each_document.each_with_index do |(block_options, document), index| %>
           <% doc_presenter = index_presenter(document) %>
           <div class="box item-<%= index %>" data-id="<%= document.id %>">
-            <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i).id) %>" style="float:left;">
-              <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
-            </a>
+            <% if Record.find(document.id.scan(/\d+/).first.to_i).file_name %>
+              <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i).id) %>" style="float:left;">
+                <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
+              </a>
+            <% end %>
           </div>
         <% end %>
     <% end %>

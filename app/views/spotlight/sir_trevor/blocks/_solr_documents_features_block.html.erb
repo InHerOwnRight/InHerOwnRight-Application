@@ -11,9 +11,11 @@
             <% solr_documents_features_block.each_document.each_with_index do |(block_options, document), index| %>
               <% doc_presenter = index_presenter(document) %>
               <div class="carousel-item <%= 'active' if index == 0 %>" data-id="<%= document.id %>">
-                <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i).id) %>" style="float:left;">
-                  <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
-                </a>
+                <% if Record.find(document.id.scan(/\d+/).first.to_i).file_name %>
+                  <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i)) %>" style="float:left;">
+                    <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
+                  </a>
+                <% end %>
               </div>
 
               <% indicators << capture do %>
