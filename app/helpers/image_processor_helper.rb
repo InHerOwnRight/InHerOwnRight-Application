@@ -122,7 +122,7 @@ module ImageProcessorHelper
         else
           png_file = img[0..-5] + ".png"
         end
-        _stdout, stderr, status = Open3.capture3("convert \"#{img}\" \"#{png_file}\"")
+        _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" \"#{png_file}\"")
         file_name = img.split("/").last
         FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now) unless status.success?
         File.delete(img)
@@ -133,7 +133,7 @@ module ImageProcessorHelper
       png_images = Dir["./tmp/images/#{school}/Inbox/*.png"]
       png_images.each do |img|
         lg_file = img[0..-5] + "_lg.png"
-        _stdout, stderr, status = Open3.capture3("convert \"#{img}\" -resize 500x \"#{lg_file}\"")
+        _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" -resize 500x \"#{lg_file}\"")
         file_name = img.split("/").last
         FailedInboxImage.create(image: file_name, school: school, action: 'Resize to large image', error: stderr, failed_at: DateTime.now) unless status.success?
         old_img = "#{img}"
@@ -146,7 +146,7 @@ module ImageProcessorHelper
       png_images = Dir["./tmp/images/#{school}/Inbox/*.png"]
       png_images.each do |img|
         thumb_file = img[0..-5] + "_thumb.png"
-        _stdout, stderr, status = Open3.capture3("convert \"#{img}\" -resize 92x \"#{thumb_file}\"")
+        _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" -resize 92x \"#{thumb_file}\"")
         file_name = img.split("/").last
         FailedInboxImage.create(image: file_name, school: school, action: 'Resize to thumbnail image', error: stderr, failed_at: DateTime.now) unless status.success?
         old_img = "#{img}"
