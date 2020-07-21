@@ -269,7 +269,8 @@ class Record < ActiveRecord::Base
   def create_dc_creator(node, record)
     if !node.text.blank?
       node.text.split("; ").each do |creator|
-        dc_creator = DcCreator.find_or_create_by(creator: creator)
+        stripped_creator = creator.gsub(" (Author)", "").gsub(" (Contributor)", "").gsub(" (Creator)", "")
+        dc_creator = DcCreator.find_or_create_by(creator: stripped_creator)
         record_dc_creator = RecordDcCreatorTable.find_or_create_by(record_id: record.id, dc_creator_id: dc_creator.id)
       end
     end
