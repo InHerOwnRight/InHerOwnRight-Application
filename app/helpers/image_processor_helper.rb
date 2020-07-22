@@ -16,6 +16,7 @@ module ImageProcessorHelper
     set_archive_phase
     create_failed_inbox_image_map
     reset_failed_inbox_image_table
+    copy_failed_inbox_images_to_inbox
     create_inbox_image_map
     update_image_process_tracker_total_files
     batch_process_inbox_images
@@ -50,6 +51,18 @@ module ImageProcessorHelper
       end
     end
 
+    def self.copy_failed_inbox_images_to_inbox
+      @failed_inbox_image_map.keys.each do |school|
+        # remove FailedInboxImage from this loop, go based on hash @failed_inbox_image_map
+        FailedInboxImage.where(school: school).each do |failed_inbox_image|
+          `s3cmd cp "s3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}" "s3://pacscl-production/images/#{school}/Inbox/#{failed_inbox_image.image}"`
+          `s3cmd del "s3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}"`
+          # `s3cmd cp "s3://pacscl-production/test_images/#{school}/Failed Inbox/#{failed_inbox_image.image}" "s3://pacscl-production/test_images/#{school}/Inbox/#{failed_inbox_image.image}"`
+          # `s3cmd del "s3://pacscl-production/test_images/#{school}/Failed Inbox/#{failed_inbox_image.image}"`
+        end
+      end
+    end
+
     def self.image_still_in_failed_inbox?(failed_inbox_image)
       @failed_inbox_image_map.keys.include?(failed_inbox_image.school) && @failed_inbox_image_map[failed_inbox_image.school].include?(failed_inbox_image.image)
     end
@@ -79,7 +92,6 @@ module ImageProcessorHelper
 
     def self.batch_process_inbox_images
       @inbox_image_map.keys.each do |school|
-        @error_files = []
         make_tmp_directory(school)
         while @inbox_image_map[school].count.positive?
           batched_inbox_image_file_names = @inbox_image_map[school].take(10)
