@@ -1,4 +1,4 @@
-require 'dotenv/load'
+require 'dotenv/load' if Rails.env.development?
 require "open3"
 
 module ImageProcessorHelper

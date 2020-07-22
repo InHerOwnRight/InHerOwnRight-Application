@@ -30,7 +30,7 @@ USER app
 
 RUN gem install bundler:2.1.4
 
-RUN bundle install
+RUN bundle install --deployment --without development test
 
 COPY --chown=app:app . ./
 
