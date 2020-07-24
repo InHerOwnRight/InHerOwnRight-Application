@@ -27,7 +27,7 @@ COPY Gemfile* ./
 # The app user is defined by the phusion passenger image
 RUN chown -R app:app /var/www
 
-RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -lc \"cd /var/www/rails && bundle install && RAILS_ENV=${RAILS_ENV} bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
+RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -c \"cd /var/www/rails && bundle install && RAILS_ENV=${RAILS_ENV} bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
 
 USER app
 
