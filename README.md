@@ -43,7 +43,7 @@ NOTE about database.yml: You'll need to copy the database and username parameter
 
 ## Building the Docker image
 
-    docker build -t neomindlabs/pacscl-rails:staging --no-cache .
+    docker build -t neomindlabs/pacscl-rails:staging --build-arg RAILS_ENV=staging --no-cache .
 
 ## Pushing the Docker image to DockerHub
 
