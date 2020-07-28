@@ -57,10 +57,10 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'pry'
   gem 'solr_wrapper', '>= 0.3'
+  gem 'dotenv-rails'
 end
 
 group :development do
-  gem 'dotenv-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
