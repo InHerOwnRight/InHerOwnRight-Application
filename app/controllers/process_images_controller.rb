@@ -5,7 +5,7 @@ class ProcessImagesController < ApplicationController
 
   def index
     @image_process_tracker = ImageProcessTracker.last
-    @failed_inbox_images = FailedInboxImage.order(:school)
+    @failed_inbox_images = FailedInboxImage.order(:school).where(current: true)
     @schools = @failed_inbox_images.pluck(:school).uniq
     records_missing_file_names = Record.where(file_name: nil)
     records_missing_thumbnails = Record.where(thumbnail: nil)

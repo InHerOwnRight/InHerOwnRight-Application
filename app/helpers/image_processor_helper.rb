@@ -1,4 +1,4 @@
-require 'dotenv/load'
+require 'dotenv/load' if Rails.env.development?
 require "open3"
 
 module ImageProcessorHelper
@@ -16,6 +16,7 @@ module ImageProcessorHelper
     set_archive_phase
     create_failed_inbox_image_map
     reset_failed_inbox_image_table
+    copy_failed_inbox_images_to_inbox
     create_inbox_image_map
     update_image_process_tracker_total_files
     batch_process_inbox_images
@@ -29,7 +30,7 @@ module ImageProcessorHelper
     end
 
     def self.create_failed_inbox_image_map
-      @failed_inbox_image_map ||= inbox_image_school_folders.inject({}) do |map, school_name|
+      @failed_inbox_image_map = inbox_image_school_folders.inject({}) do |map, school_name|
         map[school_name] = failed_inbox_image_file_names(school_name)
         map
       end
@@ -50,12 +51,24 @@ module ImageProcessorHelper
       end
     end
 
+    def self.copy_failed_inbox_images_to_inbox
+      @failed_inbox_image_map.keys.each do |school|
+        # remove FailedInboxImage from this loop, go based on hash @failed_inbox_image_map
+        FailedInboxImage.where(school: school).each do |failed_inbox_image|
+          `s3cmd cp "s3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}" "s3://pacscl-production/images/#{school}/Inbox/#{failed_inbox_image.image}"`
+          `s3cmd del "s3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}"`
+          # `s3cmd cp "s3://pacscl-production/test_images/#{school}/Failed Inbox/#{failed_inbox_image.image}" "s3://pacscl-production/test_images/#{school}/Inbox/#{failed_inbox_image.image}"`
+          # `s3cmd del "s3://pacscl-production/test_images/#{school}/Failed Inbox/#{failed_inbox_image.image}"`
+        end
+      end
+    end
+
     def self.image_still_in_failed_inbox?(failed_inbox_image)
       @failed_inbox_image_map.keys.include?(failed_inbox_image.school) && @failed_inbox_image_map[failed_inbox_image.school].include?(failed_inbox_image.image)
     end
 
     def self.create_inbox_image_map
-      @inbox_image_map ||= inbox_image_school_folders.inject({}) do |map, school_name|
+      @inbox_image_map = inbox_image_school_folders.inject({}) do |map, school_name|
         map[school_name] = inbox_image_file_names(school_name)
         map
       end
@@ -79,7 +92,6 @@ module ImageProcessorHelper
 
     def self.batch_process_inbox_images
       @inbox_image_map.keys.each do |school|
-        @error_files = []
         make_tmp_directory(school)
         while @inbox_image_map[school].count.positive?
           batched_inbox_image_file_names = @inbox_image_map[school].take(10)
@@ -109,7 +121,7 @@ module ImageProcessorHelper
         _stdout, stderr, status = Open3.capture3("s3cmd get \"s3://pacscl-production/images/#{school}/Inbox/#{img}\" \"./tmp/images/#{school}/Inbox/#{img}\"")
         # _stdout, stderr, status = Open3.capture3("s3cmd get \"s3://pacscl-production/test_images/#{school}/Inbox/#{img}\" \"./tmp/images/#{school}/Inbox/#{img}\"")
         file_name = img.split("/").last
-        FailedInboxImage.create(image: file_name, school: school, action: 'Import from S3', error: stderr, failed_at: DateTime.now) unless status.success?
+        FailedInboxImage.create(image: file_name, school: school, action: 'Import from S3', error: stderr, failed_at: DateTime.now, current: true) unless status.success?
       end
       @inbox_image_map[school] = @inbox_image_map[school] - imgs
     end
@@ -124,7 +136,7 @@ module ImageProcessorHelper
         end
         _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" \"#{png_file}\"")
         file_name = img.split("/").last
-        FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now) unless status.success?
+        FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now, current: true) unless status.success?
         File.delete(img)
       end
     end
@@ -135,7 +147,7 @@ module ImageProcessorHelper
         lg_file = img[0..-5] + "_lg.png"
         _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" -resize 500x \"#{lg_file}\"")
         file_name = img.split("/").last
-        FailedInboxImage.create(image: file_name, school: school, action: 'Resize to large image', error: stderr, failed_at: DateTime.now) unless status.success?
+        FailedInboxImage.create(image: file_name, school: school, action: 'Resize to large image', error: stderr, failed_at: DateTime.now, current: true) unless status.success?
         old_img = "#{img}"
         img.slice!("Inbox/")
         `mv "#{old_img[0..-5] + '_lg.png'}" "#{img[0..-5] + '_lg.png'}"`
@@ -148,7 +160,7 @@ module ImageProcessorHelper
         thumb_file = img[0..-5] + "_thumb.png"
         _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" -resize 92x \"#{thumb_file}\"")
         file_name = img.split("/").last
-        FailedInboxImage.create(image: file_name, school: school, action: 'Resize to thumbnail image', error: stderr, failed_at: DateTime.now) unless status.success?
+        FailedInboxImage.create(image: file_name, school: school, action: 'Resize to thumbnail image', error: stderr, failed_at: DateTime.now, current: true) unless status.success?
         old_img = "#{img}"
         img.slice!("Inbox/")
         `mv "#{old_img[0..-5] + '_thumb.png'}" "#{img[0..-5] + '_thumb.png'}"`

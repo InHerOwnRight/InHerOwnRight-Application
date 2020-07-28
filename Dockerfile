@@ -11,6 +11,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 RUN rm -f /etc/service/nginx/down
 RUN rm -f /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
+ARG RAILS_ENV=development
+ENV RAILS_ENV=$RAILS_ENV
+
 RUN mkdir -p /var/www/rails
 
 RUN ln -s /var/www/rails /home/app/
@@ -24,13 +27,13 @@ COPY Gemfile* ./
 # The app user is defined by the phusion passenger image
 RUN chown -R app:app /var/www
 
-RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -lc \"cd /var/www/rails && bundle install && bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
+RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -c \"cd /var/www/rails && bundle install && RAILS_ENV=${RAILS_ENV} bin/delayed_job start\" app" > /etc/my_init.d/delayed_job.sh && chmod a+x /etc/my_init.d/delayed_job.sh'
 
 USER app
 
 RUN gem install bundler:2.1.4
 
-RUN bundle install
+RUN bundle install --deployment --without development test
 
 COPY --chown=app:app . ./
 
@@ -43,7 +46,7 @@ ENV AWS_ACCESS_KEY_ID=SECRET
 ENV AWS_SECRET_ACCESS_KEY=SECRET
 ENV AWS_BUCKET=SECRET
 ENV AWS_BUCKET_REGION=SECRET
-RUN RAILS_ENV=production rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 USER root
 

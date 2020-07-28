@@ -21,7 +21,6 @@ gem 'delayed_job_active_record'
 gem 'devise'
 gem 'devise-guests', '~> 0.6'
 gem 'devise_invitable'
-gem 'dotenv-rails'
 gem 'friendly_id'
 gem 'haml', '~> 5.0', '>= 5.0.1'
 gem 'high_voltage', '~> 3.0'
@@ -61,6 +60,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'dotenv-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
