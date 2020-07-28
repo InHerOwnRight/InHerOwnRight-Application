@@ -10,8 +10,9 @@ class CatalogController < ApplicationController
   helper Openseadragon::OpenseadragonHelper
   before_action :set_paper_trail_whodunnit
 
-  # before_action :add_exhibit_filter
-  # before_action :add_exhibit_tags
+  before_action :index do
+    blacklight_config.add_facet_fields_to_solr_request! if !request.path.include?("spotlight")
+  end
 
   def render_repository_name value
     value = Repository.find(value).name
@@ -52,24 +53,6 @@ class CatalogController < ApplicationController
     end
 
     render layout: 'blacklight-maps/blacklight-maps' if request.query_parameters[:view] == 'maps'
-  end
-
-  def add_exhibit_filter
-    Spotlight::Exhibit.all.each do |exhibit|
-      if request["f"] && !request["f"].include?("exhibit_#{exhibit.slug}_public_bsi")
-        request["f"] << "exhibit_#{exhibit.slug}_public_bsi"
-        self.solr_search_params_logic << request["f"]
-      end
-    end
-  end
-
-  def add_exhibit_tags
-    Spotlight::Exhibit.all.each do |exhibit|
-      if request["fq"] && !request["f"].include?("exhibit_#{exhibit.slug}_public_bsi")
-        request["fq"] << "exhibit_#{exhibit.slug}_tags_ssim"
-        self.solr_search_params_logic << request["fq"]
-      end
-    end
   end
 
   configure_blacklight do |config|
@@ -205,6 +188,9 @@ class CatalogController < ApplicationController
     config.add_facet_field 'type_sm', label: "Type", solr_params: { 'facet.mincount' => 1 }
 
     config.add_facet_field 'pacscl_collection_clean_name_sm', label: 'Collection', solr_params: { 'facet.mincount' => 1 }
+
+    config.add_facet_field 'placename_sm', :label => 'Place', solr_params: { 'facet.mincount' => 1 }, limit: 200
+    config.add_facet_field 'geojson_ssim', :limit => -2, :label => 'Coordinates', :show => false
 
     # config.add_facet_field 'subject_topic_facet', label: 'Topic', limit: 20, index_range: 'A'..'Z'
     # config.add_facet_field 'language_facet', label: 'Language', limit: true
@@ -395,10 +381,6 @@ class CatalogController < ApplicationController
     config.view.maps.mapattribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
     config.view.maps.maxzoom = 18
     config.view.maps.show_initial_zoom = 5
-    config.add_facet_field 'placename_sm', :label => 'Place', solr_params: { 'facet.mincount' => 1 }, limit: 200
-    config.add_facet_field 'geojson_ssim', :limit => -2, :label => 'Coordinates', :show => false
-
-    # config.add_facet_fields_to_solr_request!
 
     config.add_field_configuration_to_solr_request!
   end

@@ -14,9 +14,6 @@ class ApplicationController < ActionController::Base
 
   before_action :set_raven_context
 
-  before_action :alter_facet_config
-  after_action :alter_facet_config
-
   def set_raven_context
     # Include current_user_id and params with exceptions sent to Sentry
     Raven.user_context(user_id: session[:current_user_id])
@@ -25,23 +22,6 @@ class ApplicationController < ActionController::Base
 
   def current_exhibit
     @exhibit || (Spotlight::Exhibit.find(params[:exhibit_id])) if params[:exhibit_id].present?
-  end
-
-  def alter_facet_config
-    filename = Rails.root.join('app', 'controllers', 'catalog_controller.rb')
-    content = File.read(filename)
-    if request.path.include?("spotlight")
-      if !content.include?("# config.add_facet_fields_to_solr_request!")
-        outdata = content.gsub("config.add_facet_fields_to_solr_request!", "# config.add_facet_fields_to_solr_request!")
-      else
-        outdata = content
-      end
-    else
-      outdata = content.gsub("# config.add_facet_fields_to_solr_request!", "config.add_facet_fields_to_solr_request!")
-    end
-    File.open(filename, 'w') do |out|
-      out << outdata
-    end
   end
 
 end
