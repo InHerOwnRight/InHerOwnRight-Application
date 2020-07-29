@@ -2,6 +2,8 @@ require 'dotenv/load' if Rails.env.development?
 require "open3"
 
 module ImageProcessorHelper
+  # each s3cmd has a production test folder file path command commented out below the actual production folder file path commands
+
   def self.reset_failed_inbox_image_current_status
     FailedInboxImage.update_all(current: false)
   end
@@ -18,7 +20,6 @@ module ImageProcessorHelper
     reset_failed_inbox_image_table
     copy_failed_inbox_images_to_inbox
     create_inbox_image_map
-    update_image_process_tracker_total_files
     batch_process_inbox_images
     delete_image_process_tracker
     delete_tmp_image_folder
@@ -53,7 +54,6 @@ module ImageProcessorHelper
 
     def self.copy_failed_inbox_images_to_inbox
       @failed_inbox_image_map.keys.each do |school|
-        # remove FailedInboxImage from this loop, go based on hash @failed_inbox_image_map
         FailedInboxImage.where(school: school).each do |failed_inbox_image|
           `s3cmd cp "s3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}" "s3://pacscl-production/images/#{school}/Inbox/#{failed_inbox_image.image}"`
           `s3cmd del "s3://pacscl-production/images/#{school}/Failed Inbox/#{failed_inbox_image.image}"`
@@ -87,21 +87,25 @@ module ImageProcessorHelper
       # [^\/] is used to ignore any images in sub-folders
       image_file_names = raw_image_file_names.scan(/Inbox\/.+[^\/]\n/)
       image_file_names.map! { |file_name| file_name.gsub("Inbox/", "").gsub("\n", "") }
-      # create exception if it returns 1000 TODO
     end
 
     def self.batch_process_inbox_images
+      update_image_process_tracker_total_files
       @inbox_image_map.keys.each do |school|
         make_tmp_directory(school)
         while @inbox_image_map[school].count.positive?
-          batched_inbox_image_file_names = @inbox_image_map[school].take(10)
-          import_inbox_images(school, batched_inbox_image_file_names)
-          convert_images_to_png(school)
-          resize_lg_images(school)
-          resize_thumb_images(school)
-          upload_processed_images(school)
-          delete_local_processed_images(school)
-          update_image_process_tracker_files_processed(batched_inbox_image_file_names)
+          unsized_batched_inbox_image_file_names = @inbox_image_map[school].take(10)
+          batched_inbox_image_file_names = remove_images_over_size_limit(school, unsized_batched_inbox_image_file_names)
+          update_image_process_tracker_total_files
+          if batched_inbox_image_file_names.any?
+            import_inbox_images(school, batched_inbox_image_file_names)
+            convert_images_to_png(school)
+            resize_lg_images(school)
+            resize_thumb_images(school)
+            upload_processed_images(school)
+            delete_local_processed_images(school)
+            update_image_process_tracker_files_processed(batched_inbox_image_file_names)
+          end
         end
         move_failed_inbox_images_to_failed_folder(school)
         move_inbox_images_to_archive(school)
@@ -113,6 +117,24 @@ module ImageProcessorHelper
 
     def self.make_tmp_directory(school)
       `mkdir -p "tmp/images/#{school}/Inbox"`
+    end
+
+    def self.remove_images_over_size_limit(school, imgs)
+      valid_imgs = []
+      max_img_file_size = 314572800 # 300 Megabytes in Bytes
+      imgs.each do |img|
+        img_file_size_string = `s3cmd du \"s3://pacscl-production/images/#{school}/Inbox/#{img}\"`
+        # img_file_size_string = `s3cmd du \"s3://pacscl-production/test_images/#{school}/Inbox/#{img}\"`
+        img_file_size = img_file_size_string.to_i
+        if img_file_size > max_img_file_size
+          @inbox_image_map[school].delete(img)
+          file_name = img.split("/").last
+          FailedInboxImage.create(image: file_name, school: school, action: 'Review file sizes', error: "Image file too large (above #{max_img_file_size} Bytes)", failed_at: DateTime.now, current: true)
+        else
+          valid_imgs << img
+        end
+      end
+      valid_imgs
     end
 
     def self.import_inbox_images(school, imgs)
