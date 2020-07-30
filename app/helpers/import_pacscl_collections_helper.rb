@@ -24,7 +24,7 @@ module ImportPacsclCollectionsHelper
           puts "Pacscl collection not saved for detailed name: #{detailed_name}"
         end
       else
-        raise "No repository found to match CSV data insitution name: #{institution_name}."
+        raise "No repository found to match CSV data insitution name: #{institution_name}.\nStored Insitituion names: #{Repository.pluck(:name).join(", ")}"
       end
     end
 

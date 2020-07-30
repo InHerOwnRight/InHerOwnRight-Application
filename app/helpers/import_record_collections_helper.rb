@@ -63,7 +63,7 @@ module ImportRecordCollectionsHelper
           existing_raw_record_collection_ids.delete(raw_record.id)
         end
       else
-        raise "No repository found to match CSV data insitution name: #{institution_name}."
+        raise "No repository found to match CSV data insitution name: #{institution_name}. ----- Stored Insitituion names: #{Repository.pluck(:name).join(", ")}"
       end
     end
 
