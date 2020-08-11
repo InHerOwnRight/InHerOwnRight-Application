@@ -1,0 +1,38 @@
+%br
+%h3
+  Harvest OAI Data
+%br
+= form_for @oai_harvest do |f|
+  = f.select(:repository_id, @repositories.collect {|r| [r.short_name, r.id]}, :prompt => 'Select Institution', require: true)
+  = f.submit 'Import OAI'
+%br
+%br
+.collections-import
+  %table
+    %thead
+      %tr
+        %th
+          Institution
+        %th
+          Date of Import
+        %th
+          Status
+        %th
+          Number of Records Imported
+        %th
+          Records List
+    %thead
+      %tbody
+        - @oai_harvests.each do |harvest|
+          %tr
+            %td
+              = harvest.repository.short_name
+            %td
+              = harvest.created_at.strftime("%m/%d/%Y at %H:%M")
+            %td
+              = harvest.humanized_status
+            %td
+              = harvest.records.count
+            %td
+
+%br

@@ -34,6 +34,7 @@ gem 'mailcatcher'
 gem 'mini_magick'
 gem 'oai'
 gem 'open3'
+gem "paperclip"
 gem 'pg'
 gem 'popper_js'
 gem 'postmark-rails'

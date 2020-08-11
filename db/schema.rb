@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200708204108) do
+ActiveRecord::Schema.define(version: 20200811163304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,9 +36,25 @@ ActiveRecord::Schema.define(version: 20200708204108) do
     t.string "geojson_ssim"
     t.string "placename"
     t.datetime "geocode_attempt"
-    t.datetime "verified", default: "2020-05-20 14:08:40"
+    t.datetime "verified", default: "2020-08-02 21:19:21"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "csv_harvest_records", force: :cascade do |t|
+    t.integer "csv_harvest_id"
+    t.integer "record_id"
+  end
+
+  create_table "csv_harvests", force: :cascade do |t|
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "attachment_file_name"
+    t.string "attachment_content_type"
+    t.bigint "attachment_file_size"
+    t.datetime "attachment_updated_at"
+    t.string "error"
   end
 
   create_table "dc_abstracts", force: :cascade do |t|
@@ -242,6 +258,13 @@ ActiveRecord::Schema.define(version: 20200708204108) do
     t.integer "status", default: 0
   end
 
+  create_table "oai_harvests", force: :cascade do |t|
+    t.integer "repository_id"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "osm_api_calls", id: :serial, force: :cascade do |t|
     t.string "placename"
     t.string "sanitized_placename"
@@ -308,6 +331,8 @@ ActiveRecord::Schema.define(version: 20200708204108) do
     t.string "url"
     t.string "abbreviation"
     t.string "short_name"
+    t.string "oai_task"
+    t.string "image_task"
   end
 
   create_table "searches", id: :serial, force: :cascade do |t|
@@ -327,7 +352,7 @@ ActiveRecord::Schema.define(version: 20200708204108) do
     t.string "geojson_ssim"
     t.string "placename"
     t.datetime "geocode_attempt"
-    t.datetime "verified", default: "2020-05-20 14:08:39"
+    t.datetime "verified", default: "2020-08-02 21:19:21"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

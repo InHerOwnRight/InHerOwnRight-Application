@@ -11,6 +11,9 @@ namespace :create_repositories do
       repository.address = row[3]
       repository.email = row[4]
       repository.url = row[5]
+      repository.oai_task = row[6]
+      repository.image_task = row[7]
+
       repository.save
     end
   end

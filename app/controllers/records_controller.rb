@@ -13,4 +13,11 @@ class RecordsController < ApplicationController
     render layout: 'blacklight-maps/blacklight-maps'
   end
 
+  def index
+    if params[:csv_harvest_id]
+      @records = CsvHarvest.find(params[:csv_harvest_id]).records
+    elsif params[:oai_harvest_id]
+      @records = CsvHarvest.find(params[:oai_harvest_id]).records
+    end
+  end
 end

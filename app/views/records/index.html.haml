@@ -1,0 +1,15 @@
+%br
+%br
+- @records.each do |record|
+  %header.row
+    .col-sm-12
+      .row
+        .col-sm-8
+          - if record.thumbnail
+            %a{ href: "#{record_path(record.id)}", style: 'float:left;'}
+              = image_tag(record.thumbnail)
+
+          .record-item
+            = link_to record.dc_titles.first.title, record_path(record)
+
+      %br

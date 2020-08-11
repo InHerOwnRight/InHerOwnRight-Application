@@ -16,7 +16,11 @@ module ImportPacsclCollectionsHelper
       if repository
         import_source = row[1].gsub('"', '')
         detailed_name = row[2].gsub('"', '')
-        clean_name = row[3].gsub('"', '')
+        if row[3].nil?
+          clean_name  = nil
+        else
+          clean_name = row[3].gsub('"', '')
+        end
         pacscl_collection = PacsclCollection.find_or_initialize_by(repository: repository, import_source: import_source, detailed_name: detailed_name, clean_name: clean_name)
         if pacscl_collection.save
           existing_pacscl_collection_ids.delete(pacscl_collection.id)

@@ -55,5 +55,14 @@ Rails.application.routes.draw do
   post '/import_record_collections', to: 'import_record_collections#create'
   get '/import_pacscl_collections', to: 'import_pacscl_collections#index'
   post '/import_pacscl_collections', to: 'import_pacscl_collections#create'
+
+  resources :csv_harvests, only: [:index, :create] do
+    resources :records, only: [:index]
+  end
+
+  resources :oai_harvests, only: [:index, :create] do
+    resources :records, only: [:index]
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
