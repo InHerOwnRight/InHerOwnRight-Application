@@ -141,6 +141,7 @@ ActiveRecord::Schema.define(version: 20200811163304) do
     t.string "relation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "pacscl_collection_id"
   end
 
   create_table "dc_research_interests", force: :cascade do |t|

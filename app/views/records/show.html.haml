@@ -58,7 +58,7 @@
       - if @record.dc_identifiers.any?
         = render 'dc_identifiers'
 
-      - if @record.pacscl_collections.any?
+      - if @record.associated_pacscl_collections.any?
         = render 'pacscl_collections'
 
       - if !@record.repository_id.blank?

@@ -34,7 +34,6 @@ class Record < ActiveRecord::Base
   has_many :dc_terms_is_part_ofs, dependent: :destroy
   has_many :spacial_map_locations, through: :dc_terms_spacials, dependent: :destroy
   has_many :coverage_map_locations, through: :dc_coverages, dependent: :destroy
-  has_many :pacscl_collections, through: :dc_terms_is_part_ofs
 
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
   scope :for_same_creator, -> (creator_id) { joins(:dc_creators).where('dc_creators.id = ?', creator_id) }
@@ -51,7 +50,7 @@ class Record < ActiveRecord::Base
 
   def list_records_for_collection
     if is_collection?
-      PacsclCollection.find_by_detailed_name(dc_titles.first.title).records
+      PacsclCollection.find_by_detailed_name(dc_titles.first.title).associated_records
     end
   end
 
@@ -241,16 +240,16 @@ class Record < ActiveRecord::Base
     end
 
     text :pacscl_collection_detailed_name do
-      if pacscl_collections.any?
-        pacscl_collections.map(&:detailed_name)
+      if associated_pacscl_collections.any?
+        associated_pacscl_collections.map(&:detailed_name)
       elsif is_collection? && dc_titles.any?
         dc_titles.first.title
       end
     end
 
     string :pacscl_collection_clean_name, multiple: true do
-      if pacscl_collections.any?
-        pacscl_collections.map(&:clean_name)
+      if associated_pacscl_collections.any?
+        associated_pacscl_collections.map(&:clean_name)
       elsif is_collection? && dc_titles.any?
         collection_name = dc_titles.first.title
         collection = PacsclCollection.find_by(detailed_name: collection_name)
@@ -500,6 +499,14 @@ class Record < ActiveRecord::Base
     dc_coverages.each do |dc_coverage|
       dc_coverage.update_map_locations
     end
+  end
+
+  def associated_pacscl_collections
+    is_part_of_pacscl_collections = dc_terms_is_part_ofs.map { |dtipo| dtipo.pacscl_collection }
+    relation_pacscl_collections = dc_relations.map{ |drc| drc.pacscl_collection }
+
+    combined_pacscl_collections = is_part_of_pacscl_collections + relation_pacscl_collections
+    combined_pacscl_collections.compact.uniq
   end
 
 ########################## Oai API Endpoint ################################
