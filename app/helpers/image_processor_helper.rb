@@ -25,6 +25,18 @@ module ImageProcessorHelper
     delete_tmp_image_folder
   end
 
+  def self.reset_from_error
+    ImageProcessTracker.destroy_all
+    `rm -rf "tmp/images"`
+    if Delayed::Job.any?
+      Delayed::Job.all.each do |delayed_job|
+        if delayed_job && delayed_job.last_error && delayed_job.last_error.include?('image_process')
+          delayed_job.destroy
+        end
+      end
+    end
+  end
+
   private
     def self.set_archive_phase
       @archive_phase = 'NEH Archive'
