@@ -108,7 +108,6 @@ module ImageProcessorHelper
         while @inbox_image_map[school].count.positive?
           unsized_batched_inbox_image_file_names = @inbox_image_map[school].take(10)
           batched_inbox_image_file_names = remove_images_over_size_limit(school, unsized_batched_inbox_image_file_names)
-          update_image_process_tracker_total_files
           if batched_inbox_image_file_names.any?
             import_inbox_images(school, batched_inbox_image_file_names)
             convert_images_to_png(school)
@@ -133,6 +132,7 @@ module ImageProcessorHelper
 
     def self.remove_images_over_size_limit(school, imgs)
       valid_imgs = []
+      invalid_img = []
       max_img_file_size = 314572800 # 300 Megabytes in Bytes
       imgs.each do |img|
         img_file_size_string = `s3cmd du \"s3://pacscl-production/images/#{school}/Inbox/#{img}\"`
@@ -142,9 +142,14 @@ module ImageProcessorHelper
           @inbox_image_map[school].delete(img)
           file_name = img.split("/").last
           FailedInboxImage.create(image: file_name, school: school, action: 'Review file sizes', error: "Image file too large (above #{max_img_file_size} Bytes)", failed_at: DateTime.now, current: true)
+          invalid_imgs << img
         else
           valid_imgs << img
         end
+      end
+      if invalid_imgs.any?
+        @inbox_image_map[school] = @inbox_image_map[school] - invalid_imgs
+        update_image_process_tracker_files_processed(invalid_imgs)
       end
       valid_imgs
     end
@@ -170,7 +175,12 @@ module ImageProcessorHelper
         end
         _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" \"#{png_file}\"")
         file_name = img.split("/").last
-        FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now, current: true) unless status.success?
+        if !status.success? && stderr.include?('width or height exceeds limit')
+          error = 'Image width or height exceeds limit. Max height or width of image for processing is 16,000.  Please reduce the size of the image.'
+          FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: error, failed_at: DateTime.now, current: true)
+        else
+          FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now, current: true)
+        end
         File.delete(img)
       end
     end
