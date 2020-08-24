@@ -2,7 +2,7 @@ class CsvHarvestsController < ApplicationController
   include CsvHarvestHelper
   before_action :authorize_current_user
 
-  def index
+  def index 
     @csv_harvests = CsvHarvest.order(created_at: :desc)
     @csv_harvest = CsvHarvest.new
   end
