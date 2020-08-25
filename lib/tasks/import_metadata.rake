@@ -1,3 +1,4 @@
+
 require 'oai'
 require "csv"
 require "./app/helpers/import_record_collections_helper.rb"
@@ -10,14 +11,14 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-  task all_oai: [:from_temple, :from_tri_colleges, :from_drexel, :from_haverford]
+  task all_oai: [:temple, :tri_colleges, :drexel, :haverford]
   task all_csv: [:from_bates, :from_library_co, :from_hsp, :from_german_society, :from_udel,
                  :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
                  :from_union_league, :collections]
   # OAI tasks must come before CSV tasks to maintain the marker date for the last OAI data pull
   task all: [:all_oai, :all_csv]
 
-  def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+  def import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, harvest_id)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
     nil_metadata_identifiers = []
     identifiers_relations_hash.each do |identifier, relations_nodes|
@@ -65,6 +66,8 @@ namespace :import_metadata do
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
 
+      raw_record.harvest_id = harvest_id
+
       if raw_record.save
         puts "Successfully imported #{raw_record.oai_identifier}"
       else
@@ -74,7 +77,7 @@ namespace :import_metadata do
     puts nil_metadata_identifiers
   end
 
-  task from_temple: :environment do
+  task :temple, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14']
     repository = Repository.find_by_short_name("Temple University")
@@ -135,10 +138,10 @@ namespace :import_metadata do
     repo_path = 'http://digital.library.temple.edu/oai/oai.php'
     base_response_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
     metadata_prefix = "oai_qdc"
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
-  task from_drexel: :environment do
+  task :drexel, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://idea.library.drexel.edu/oai/request"
     set_specs = ['lca_3']
@@ -185,10 +188,10 @@ namespace :import_metadata do
     repository = Repository.find_by_short_name("Drexel University")
     base_response_record_path = "http://hdl.handle.net/1860/"
     metadata_prefix = "oai_dc"
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
-  task from_tri_colleges: :environment do
+  task :tri_colleges, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     set_specs = ['InHOR']
@@ -217,7 +220,7 @@ namespace :import_metadata do
             puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
             base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
             metadata_prefix = "oai_qdc"
-            import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+            import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
             next
           else
             raise e
@@ -249,10 +252,10 @@ namespace :import_metadata do
 
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     metadata_prefix = "oai_qdc"
-    import_from_oai_client(friends, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    import_from_oai_client(friends, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
-  task from_haverford: :environment do
+  task :haverford, [:harvest_id] => [:environment] do |t, args|
     repository = Repository.find_by_short_name("Haverford College")
     repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
     base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'

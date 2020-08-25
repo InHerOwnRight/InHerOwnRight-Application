@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200811163304) do
+ActiveRecord::Schema.define(version: 20200825182617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -259,6 +259,11 @@ ActiveRecord::Schema.define(version: 20200811163304) do
     t.integer "status", default: 0
   end
 
+  create_table "oai_harvest_records", force: :cascade do |t|
+    t.integer "oai_harvest_id"
+    t.integer "record_id"
+  end
+
   create_table "oai_harvests", force: :cascade do |t|
     t.integer "repository_id"
     t.integer "status", default: 0
@@ -296,6 +301,7 @@ ActiveRecord::Schema.define(version: 20200811163304) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "record_type"
+    t.integer "harvest_id"
   end
 
   create_table "record_dc_creator_tables", id: :serial, force: :cascade do |t|

@@ -32,6 +32,9 @@
         <li>
           <%= link_to "Harvest CSV data", main_app.csv_harvests_path, class: 'dropdown-item' %>
         </li>
+        <li>
+          <%= link_to "Harvest OAI data", main_app.oai_harvests_path, class: 'dropdown-item' %>
+        </li>
         <li class="dropdown-divider"></li>
         <li>
           <%= link_to t('spotlight.header_links.logout'), main_app.destroy_user_session_path, class: 'dropdown-item' %>

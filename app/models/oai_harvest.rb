@@ -1,5 +1,7 @@
 class OAIHarvest < ActiveRecord::Base
-  has_many :records
+  has_many :oai_harvest_records
+  has_many :records, through: :oai_harvest_records
+  has_many :raw_records
   belongs_to :repository
   validates :repository_id, presence: true
   enum status: [:importing_metadata, :creating_records, :importing_images, :reindexing, :complete]
