@@ -294,6 +294,19 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def create_dc_language(node, record)
+    if node.text =~ /\;/
+      languages = node.text.split(";")
+    else
+      languages = node.text.split("|")
+    end
+    stripped_languages = languages.map { |s| s.strip }
+    stripped_languages -= [""]
+    stripped_languages.each do |language|
+      dc_language = DcLanguage.find_or_create_by(language: language)
+    end
+  end
+
   def create_dc_type(node, record)
     if !node.text.blank?
       dc_type = DcType.find_or_create_by(type: node.text)
@@ -435,6 +448,10 @@ class Record < ActiveRecord::Base
 
       if node_name == "subject"
         create_dc_subject(node, record)
+      end
+
+      if node_name == "language"
+        create_dc_language(node, record)
       end
 
       if node_name == "date" || node_name == "created"

@@ -1,6 +1,16 @@
-- @record.dc_languages.each do |dc_language|
+- if @record.dc_languages.count > 1
+  %tr
+    %th{ scope: "row" }
+      Languages
+    %td
+      - @record.dc_languages.each_with_index do |dc_language, index|
+        = dc_language.readable_language
+        = "|" unless index == @record.dc_languages.size - 1
+
+- else
   %tr
     %th{ scope: "row" }
       Language
     %td
-      = dc_language.readable_language
+      - @record.dc_languages.each do |dc_language|
+        = dc_language.readable_language
