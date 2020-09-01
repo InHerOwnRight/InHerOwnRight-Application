@@ -132,7 +132,7 @@ module ImageProcessorHelper
 
     def self.remove_images_over_size_limit(school, imgs)
       valid_imgs = []
-      invalid_img = []
+      invalid_imgs = []
       max_img_file_size = 314572800 # 300 Megabytes in Bytes
       imgs.each do |img|
         img_file_size_string = `s3cmd du \"s3://pacscl-production/images/#{school}/Inbox/#{img}\"`
