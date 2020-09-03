@@ -173,7 +173,7 @@ module ImageProcessorHelper
         else
           png_file = img[0..-5] + ".png"
         end
-        _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}\" \"#{png_file}\"")
+        _stdout, stderr, status = Open3.capture3("convert -quiet \"#{img}[0]\" \"#{png_file}\"")
         file_name = img.split("/").last
         if !status.success? && stderr.include?('width or height exceeds limit')
           error = 'Image width or height exceeds limit. Max height or width of image for processing is 16,000.  Please reduce the size of the image.'
