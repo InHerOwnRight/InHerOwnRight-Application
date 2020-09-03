@@ -1,0 +1,38 @@
+version: v1.0
+name: Test MyApp
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Test
+    task:
+      env_vars:
+        - name: DATABASE_URL
+          value: 'postgresql://postgres:@0.0.0.0:5432/myapp_test'
+        - name: RAILS_ENV
+          value: test
+      jobs:
+        - name: Test
+          commands:
+            - checkout
+            - sem-service start postgres 11
+            - sem-version ruby 2.5.0
+            - cache restore
+            - mkdir -p tmp/cache
+            - cp .env.example .env
+            - cp config/secrets.example.yml config/secrets.yml
+            - 'curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter'
+            - chmod +x ./cc-test-reporter
+            - gem install bundler -v 2.1.4
+            - bundle install --deployment --path vendor/bundle
+            - cache store
+            - 'bundle exec rake db:setup'
+            - 'bundle exec rake db:test:prepare'
+            - ./cc-test-reporter before-build
+        - name: 'Job #2'
+          commands:
+            - bundle exec rake test
+        - name: 'Job #3'
+          commands:
+            - 'if [ "$SEMAPHORE_THREAD_RESULT" == "passed" ]; then ./cc-test-reporter after-build; fi'
