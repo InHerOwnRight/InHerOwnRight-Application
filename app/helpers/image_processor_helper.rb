@@ -178,7 +178,7 @@ module ImageProcessorHelper
         if !status.success? && stderr.include?('width or height exceeds limit')
           error = 'Image width or height exceeds limit. Max height or width of image for processing is 16,000.  Please reduce the size of the image.'
           FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: error, failed_at: DateTime.now, current: true)
-        else
+        elsif !stderr.blank?
           FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now, current: true)
         end
         File.delete(img)
