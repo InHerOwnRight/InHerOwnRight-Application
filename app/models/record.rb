@@ -406,6 +406,12 @@ class Record < ActiveRecord::Base
     full_text = FullText.find_or_create_by(record_id: record.id, transcription: node.text)
   end
 
+  def create_dc_description(node, record)
+    if !node.text.empty?
+      DcDescription.find_or_create_by(record_id: record.id, description: node.text)
+    end
+  end
+
   def create_dc_identifier(node, record)
     if !node.text.blank?
       if node.text =~ /;$/
@@ -474,13 +480,17 @@ class Record < ActiveRecord::Base
         create_full_text(node, record)
       end
 
+      if node_name == "description"
+        create_dc_description(node, record)
+      end
+
       if node_name == "licence"
         node_name = "rights"
       end
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial', 'dc_description']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
         dc_model[node_name] = node.text

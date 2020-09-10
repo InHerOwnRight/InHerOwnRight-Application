@@ -1,9 +1,8 @@
 class CsvHarvest < ActiveRecord::Base
+  belongs_to :repository
   has_many :csv_harvest_records
   has_many :records, through: :csv_harvest_records
-  has_attached_file :attachment
-
-  validates_attachment_content_type :attachment, content_type: ['text/plain', 'text/csv', 'application/vnd.ms-excel']
+  has_one_attached :csv_file
 
   enum status: [:importing_metadata, :creating_records, :importing_images, :reindexing, :complete, :error]
 

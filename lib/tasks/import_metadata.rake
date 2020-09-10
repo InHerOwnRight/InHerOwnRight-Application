@@ -402,6 +402,7 @@ def import_from_csv(filepath, repository, original_entry_date)
           xml['dcterms'].localData row[17]
           xml['dcterms'].localData row[18]
           xml['dcterms'].localData row[19]
+          xml['dc'].description row[16]
         end
       }
     }

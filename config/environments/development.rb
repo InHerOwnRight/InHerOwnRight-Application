@@ -67,4 +67,6 @@ Rails.application.configure do
   end
 
   config.public_file_server.enabled = true
+
+  config.active_storage.service = :local
 end

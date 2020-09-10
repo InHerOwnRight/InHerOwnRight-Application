@@ -12,7 +12,7 @@
     - elsif search_fields.length == 1
       = hidden_field_tag :search_field, search_fields.first.last
     %label.sr-only{for: "q"}= t('blacklight.search.form.search.label')
-    = text_field_tag :q, params[:q], placeholder: t('blacklight.search.form.search.placeholder'), class: "search-q q form-control", id: "q", autofocus: presenter.autofocus?, data: { autocomplete_enabled: presenter.autocomplete_enabled?, autocomplete_path: search_action_path(action: :suggest) }
+    = text_field_tag :q, params[:q], placeholder: "Search the catalog...", class: "search-q q form-control", id: "q", autofocus: presenter.autofocus?, data: { autocomplete_enabled: presenter.autocomplete_enabled?, autocomplete_path: search_action_path(action: :suggest) }
     %span.input-group-append
       %button#search.btn.btn-primary.search-btn{type: "submit"}
         %span.submit-search-text= t('blacklight.search.form.submit')

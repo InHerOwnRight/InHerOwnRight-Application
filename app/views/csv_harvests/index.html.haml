@@ -3,7 +3,7 @@
   Harvest CSV Data
 %br
 = form_for @csv_harvest, multipart: true do |f|
-  = f.file_field :attachment
+  = f.file_field :csv_file
   = f.submit 'Import CSV'
 %br
 %br
@@ -29,11 +29,10 @@
         - @csv_harvests.each do |harvest|
           %tr
             %td
-              - CSV.foreach(harvest.attachment.path).drop(1).take(1).each do |row|
-                - if Repository.find_by(name: row[2])
-                  = Repository.find_by(name: row[2]).short_name
-                - else
-                  No matching repository found.
+              - if harvest.repository
+                = harvest.repository.short_name
+              - else
+                No matching repository found.
             %td
               = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
             %td
@@ -41,8 +40,8 @@
             %td
               = harvest.error
             %td
-              - if harvest.records.any?
+              - if harvest.records.any? && harvest.status == "complete"
                 = link_to "View Records", csv_harvest_records_path(harvest), target: :_blank
             %td
-              = link_to "Download CSV", harvest.attachment.url, target: "_blank"
+              = link_to "View CSV", url_for(harvest.csv_file), target: "_blank"
 %br

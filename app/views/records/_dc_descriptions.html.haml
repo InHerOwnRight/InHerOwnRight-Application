@@ -1,7 +1,24 @@
-- @record.dc_descriptions.each_with_index do |dc_description, index|
-  - if !dc_description.description.blank?
+- if @record.dc_descriptions.count > 1
+  - @record.dc_descriptions.each_with_index do |dc_description, index|
+    - if index == 0
+      %tr
+        %th{ scope: "row" }
+          Descriptions
+        - if !dc_description.description.blank?
+          %td
+            = simple_format(dc_description.description.gsub("\\n", "\n"))
+    - else
+      %tr
+        %th{ scope: "row" }
+        - if !dc_description.description.blank?
+          %td
+            = simple_format(dc_description.description.gsub("\\n", "\n"))
+
+- else
+  - if !@record.dc_descriptions.first.description.blank?
     %tr
       %th{ scope: "row" }
         Description
       %td
-        = dc_description.description
+        - @record.dc_descriptions.each do |dc_description|
+          = simple_format(dc_description.description.gsub("\\n", "\n"))
