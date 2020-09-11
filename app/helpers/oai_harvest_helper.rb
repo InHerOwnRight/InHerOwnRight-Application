@@ -27,7 +27,7 @@ module OaiHarvestHelper
       if !raw_record.xml_metadata.blank?
         record = Record.find_or_initialize_by(oai_identifier: raw_record.oai_identifier)
         record.raw_record_id = raw_record.id
-        record.oai_harvest = harvest
+        OaiHarvestRecord.create(record_id: record.id, oai_harvest_id: harvest.id)
         xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
         xml_doc.remove_namespaces!
 

@@ -17,7 +17,7 @@ class RecordsController < ApplicationController
     if params[:csv_harvest_id]
       @records = CsvHarvest.find(params[:csv_harvest_id]).records
     elsif params[:oai_harvest_id]
-      @records = CsvHarvest.find(params[:oai_harvest_id]).records
+      @records = OAIHarvest.find(params[:oai_harvest_id]).records
     end
   end
 end

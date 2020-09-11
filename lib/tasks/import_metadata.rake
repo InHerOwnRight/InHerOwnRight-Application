@@ -86,51 +86,20 @@ namespace :import_metadata do
 
     set_specs.map do |set|
       client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
-      if repository.raw_records.empty?
-        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
-        metadata_records = []
+      response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
+      metadata_records = []
+      response.each { |r| metadata_records << r }
+      until response.resumption_token.nil?
+        response = client.list_records(resumption_token: response.resumption_token)
         response.each { |r| metadata_records << r }
-        until response.resumption_token.nil?
-          response = client.list_records(resumption_token: response.resumption_token)
-          response.each { |r| metadata_records << r }
-        end
-        metadata_records.each do |record|
-          xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
-          xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
-            relation_text.each do |text|
-              if relation_node.text.include?(text)
-                identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
-              end
+      end
+      metadata_records.each do |record|
+        xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
+        xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
+          relation_text.each do |text|
+            if relation_node.text.include?(text)
+              identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
             end
-          end
-        end
-      else
-        # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
-        last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
-        begin
-          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
-          metadata_records = []
-          response.each { |r| metadata_records << r }
-          until response.resumption_token.nil?
-            response = client.list_records(resumption_token: response.resumption_token)
-            response.each { |r| metadata_records << r }
-          end
-          metadata_records.each do |record|
-            xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
-            xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
-              relation_text.each do |text|
-                if relation_node.text.include?(text)
-                  identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
-                end
-              end
-            end
-          end
-        rescue OAI::Exception => e
-          if EmptyImportErrors.include?(e.message.strip)
-            puts "All Temple OAI records for set #{set} are up to date as of #{last_update}."
-          else
-            puts "!!from_date is #{last_update}"
-            raise e
           end
         end
       end
@@ -149,39 +118,15 @@ namespace :import_metadata do
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      if repository.raw_records.empty?
-        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
-        metadata_records = []
+      response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
+      metadata_records = []
+      response.each { |r| metadata_records << r }
+      until response.resumption_token.nil?
+        response = client.list_records(resumption_token: response.resumption_token)
         response.each { |r| metadata_records << r }
-        until response.resumption_token.nil?
-          response = client.list_records(resumption_token: response.resumption_token)
-          response.each { |r| metadata_records << r }
-        end
-        metadata_records.each do |record|
-          identifiers_relations_hash[record.header.identifier] = ''
-        end
-      else
-        # Drexel will accept a date or time here, but the others require a date. So standardize
-        # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
-        last_update = repository.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
-        begin
-          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
-          metadata_records = []
-          response.each { |r| metadata_records << r }
-          until response.resumption_token.nil?
-            response = client.list_records(resumption_token: response.resumption_token)
-            response.each { |r| metadata_records << r }
-          end
-          metadata_records.each do |record|
-            identifiers_relations_hash[record.header.identifier] = ''
-          end
-        rescue OAI::Exception => e
-          if EmptyImportErrors.include?(e.message.strip)
-            puts "All Drexel OAI records for set #{set} are up to date as of #{last_update}."
-          else
-            raise e
-          end
-        end
+      end
+      metadata_records.each do |record|
+        identifiers_relations_hash[record.header.identifier] = ''
       end
     end
 
@@ -203,49 +148,26 @@ namespace :import_metadata do
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      if friends.raw_records.empty?
-        begin
-          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
-          metadata_records = []
+      begin
+        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
+        metadata_records = []
+        response.each { |r| metadata_records << r }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
           response.each { |r| metadata_records << r }
-          until response.resumption_token.nil?
-            response = client.list_records(resumption_token: response.resumption_token)
-            response.each { |r| metadata_records << r }
-          end
-          metadata_records.each do |record|
-            identifiers_relations_hash[record.header.identifier] = ''
-          end
-        rescue OAI::Exception => e
-          if EmptyImportErrors.include?(e.message.strip)
-            puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
-            base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
-            metadata_prefix = "oai_qdc"
-            import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
-            next
-          else
-            raise e
-          end
         end
-      else
-        # Subtract a day in case timezones are off. Better to update something that hasn't changed than miss an update
-        last_update = friends.raw_records.order('updated_at DESC').first.updated_at.to_date - 1.day
-        begin
-          response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}", from: last_update)
-          metadata_records = []
-          response.each { |r| metadata_records << r }
-          until response.resumption_token.nil?
-            response = client.list_records(resumption_token: response.resumption_token)
-            response.each { |r| metadata_records << r }
-          end
-          metadata_records.each do |record|
-            identifiers_relations_hash[record.header.identifier] = ''
-          end
-        rescue OAI::Exception => e
-          if EmptyImportErrors.include?(e.message.strip)
-            puts "All Tri-Colleges OAI records for set #{set} are up to date as of #{last_update}."
-          else
-            raise e
-          end
+        metadata_records.each do |record|
+          identifiers_relations_hash[record.header.identifier] = ''
+        end
+      rescue OAI::Exception => e
+        if EmptyImportErrors.include?(e.message.strip)
+          puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+          base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
+          metadata_prefix = "oai_qdc"
+          import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+          next
+        else
+          raise e
         end
       end
     end
