@@ -4,7 +4,7 @@ class OAIHarvest < ActiveRecord::Base
   has_many :raw_records
   belongs_to :repository
   validates :repository_id, presence: true
-  enum status: [:importing_metadata, :creating_records, :importing_images, :reindexing, :complete]
+  enum status: [:importing_metadata, :creating_records, :importing_images, :reindexing, :complete, :error]
 
   def humanized_status
     if status == 'importing_metadata'
@@ -17,6 +17,8 @@ class OAIHarvest < ActiveRecord::Base
       "Reindexing records"
     elsif status == 'complete'
       "Harvest complete"
+    elsif status == 'error'
+      "Error"
     end
   end
 end

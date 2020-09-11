@@ -14,25 +14,26 @@
         %th
           Institution
         %th
-          Date of Import
+          Date of Harvest
         %th
           Status
         %th
-          Number of Records Imported
+          Error Message
         %th
-          Records List
-    %thead
-      %tbody
-        - @oai_harvests.each do |harvest|
-          %tr
-            %td
-              = harvest.repository.short_name
-            %td
-              = harvest.created_at.strftime("%m/%d/%Y at %H:%M")
-            %td
-              = harvest.humanized_status
-            %td
-              = harvest.records.count
-            %td
+          Records
+    %tbody
+      - @oai_harvests.each do |harvest|
+        %tr
+          %td
+            = harvest.repository.short_name
+          %td
+            = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+          %td
+            = harvest.humanized_status
+          %td
+            = harvest.error
+          %td
+            - if harvest.records.any? && harvest.status == "complete"
+              = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
 
 %br
