@@ -185,7 +185,7 @@ namespace :import_metadata do
     identifiers = ['oai:tricontentdm.brynmawr.edu:HC_DigReq/19215', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19217', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19224', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19231', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19237', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19249', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19246', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19241', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19252', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19259', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19262', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19265', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19270', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19272', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19276']
     identifiers.map{|id| identifiers_relations_hash[id] = ''}
     metadata_prefix = "oai_qdc"
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
 ### CSV IMPORTS ########################################################################################
