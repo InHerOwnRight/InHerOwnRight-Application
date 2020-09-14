@@ -56,6 +56,9 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
+          config.show.oembed_field = :oembed_url_ssm
+          config.show.partials.insert(1, :oembed)
+
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = {
       qt: 'search',

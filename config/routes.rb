@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount Blacklight::Oembed::Engine, at: 'oembed'
   mount Blacklight::Engine => '/'
   root to: 'spotlight/exhibits#index'
   mount Spotlight::Engine, at: 'spotlight'

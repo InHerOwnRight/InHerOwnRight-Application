@@ -69,8 +69,6 @@
   global.Spotlight.BlockControls = function() { };
   global.Spotlight.BlockControls.create = function(editor) {
     // REFACTOR - should probably not know about blockManager
-    console.log(SirTrevor.Blocks);
-    console.log(editor.blockManager.blockTypes);
     var el = render(SirTrevor.Blocks, editor.blockManager.blockTypes);
 
     function hide() {
