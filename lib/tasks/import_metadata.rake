@@ -79,7 +79,7 @@ namespace :import_metadata do
 
   task :temple, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
-    set_specs = ['p15037coll19', 'p15037coll14']
+    set_specs = ['p15037coll19', 'p15037coll14', 'p15037coll15']
     repository = Repository.find_by_short_name("Temple University")
 
     relation_text = ["Octavia Hill Association (Philadelphia, Pa.) Records", "Young Women's Christian Association - Metropolitan Branch, Acc. URB 23", "YWCA of Philadelphia - Kensington Branch, Acc. 520, 531, 552", "YWCA of Germantown, Acc. 280", "In Her Own Right"]
