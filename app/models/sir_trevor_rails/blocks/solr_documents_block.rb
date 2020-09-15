@@ -17,7 +17,7 @@ module SirTrevorRails
         return to_enum(:each_document) unless block_given?
 
         items.each do |i|
-          document = documents.detect { |doc| doc.id == i[:id] }
+          document = documents.detect { |doc| doc.slug == i[:id] }
           i[:iiif_tilesource_base] = i.fetch(:iiif_tilesource, '').sub('/info.json', '')
           yield i, document if document
         end
@@ -26,7 +26,7 @@ module SirTrevorRails
       def documents
         @documents ||= begin
           doc_ids = items.map { |v| v[:id] }
-          _, documents = solr_helper.controller.send(:search_service).fetch(doc_ids)
+          documents = Record.where(slug: [doc_ids])
           documents
         end
       end

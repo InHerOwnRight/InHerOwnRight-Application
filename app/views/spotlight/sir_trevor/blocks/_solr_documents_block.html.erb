@@ -8,9 +8,9 @@
         <% doc_presenter = index_presenter(document) %>
         <div class="box" data-id="<%= document.id %>">
           <div class="contents">
-            <% if Record.find(document.id.scan(/\d+/).first.to_i).file_name %>
-              <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i).id) %>" style="float:left;">
-                <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
+            <% if Record.find(document.id).file_name %>
+              <a href="<%= record_path(Record.find(document.id)) %>" style="float:left;">
+                <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id).file_name, class: 'img-thumbnail') %>
               </a>
             <% end %>
             <% if solr_documents_block.primary_caption? %>

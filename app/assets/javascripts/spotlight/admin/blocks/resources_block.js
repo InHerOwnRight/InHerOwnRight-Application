@@ -55,7 +55,7 @@ Spotlight.Block.Resources = (function(){
                     '<div class="main">',
                       '<div class="title card-title">' + data.title + '</div>',
                     '</div>',
-                    '<div class="remove float-right" style="width: 30%">',
+                    '<div class="remove float-right" style="width: 20%">',
                       '<a data-item-grid-panel-remove="true" href="#"><%= i18n.t("blocks:resources:panel:remove") %></a>',
                     '</div>',
                   '</div>',

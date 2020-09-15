@@ -37,7 +37,7 @@ module Spotlight
       {
         id: id,
         title: record.dc_titles.first.title,
-        thumbnail: "https://s3.us-east-2.amazonaws.com/pacscl-production#{record.thumbnail}",
+        thumbnail: record.thumbnail,
         slug: record.slug,
         full_image_url: record.file_name,
         url: polymorphic_path([current_exhibit, doc]),
