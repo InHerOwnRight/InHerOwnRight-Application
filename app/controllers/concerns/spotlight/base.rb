@@ -23,19 +23,23 @@ module Spotlight
     # end
 
     def autocomplete_json_response(document_list)
-      document_list.map do |doc|
-        autocomplete_json_response_for_document doc
+      if document_list.any?
+        document_list.map do |doc|
+          autocomplete_json_response_for_document doc
+        end
       end
     end
 
     # rubocop:disable Metrics/AbcSize
     def autocomplete_json_response_for_document(doc)
+      id = doc.id.scan(/\d+/).first.to_i
+      record = Record.find(id)
       {
-        id: doc.id,
-        title: CGI.unescapeHTML(view_context.presenter(doc).heading.to_str),
-        thumbnail: doc.first(blacklight_config.index.thumbnail_field),
-        full_image_url: doc.first(Spotlight::Engine.config.full_image_field),
-        description: doc.id,
+        id: id,
+        title: record.dc_titles.first.title,
+        thumbnail: "https://s3.us-east-2.amazonaws.com/pacscl-production#{record.thumbnail}",
+        slug: record.slug,
+        full_image_url: record.file_name,
         url: polymorphic_path([current_exhibit, doc]),
         private: doc.private?(current_exhibit),
         global_id: doc.to_global_id.to_s,
