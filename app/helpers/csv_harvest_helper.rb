@@ -94,7 +94,7 @@ module CsvHarvestHelper
   def self.create_records(harvest)
     begin
       harvest.update(status: 1)
-      raw_records = RawRecord.where(record_type: nil, harvest_id: harvest.id)
+      raw_records = RawRecord.where(harvest_id: harvest.id)
       raw_records.each do |raw_record|
         if !raw_record.xml_metadata.blank?
           record = Record.find_or_initialize_by(oai_identifier: raw_record.oai_identifier)
