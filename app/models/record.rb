@@ -40,7 +40,7 @@ class Record < ActiveRecord::Base
   scope :for_same_creator, -> (creator_id) { joins(:dc_creators).where('dc_creators.id = ?', creator_id) }
 
   def is_collection?
-    raw_record.record_type == "collection"
+    raw_record.record_type == "collection" if raw_record
   end
 
   def list_pacscl_collection
