@@ -3,7 +3,7 @@
   Harvest OAI Data
 %br
 = form_for @oai_harvest do |f|
-  = f.select(:repository_id, @repositories.collect {|r| [r.short_name, r.id]}, :prompt => 'Select Institution', require: true)
+  = f.select(:repository_id, @repositories.collect {|r| [r.short_name, r.id]} + ["TriColleges"], :prompt => 'Select Institution', require: true)
   = f.submit 'Import OAI'
 %br
 %br
@@ -23,17 +23,34 @@
           Records
     %tbody
       - @oai_harvests.each do |harvest|
-        %tr
-          %td
-            = harvest.repository.short_name
-          %td
-            = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
-          %td
-            = harvest.humanized_status
-          %td
-            = harvest.error
-          %td
-            - if harvest.records.any? && harvest.status == "complete"
-              = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
+        - if harvest.repository.nil?
+          - repos = ["Haverford College", "Bryn Mawr College", "Swarthmore - Peace", "Swarthmore - Friends"]
+          - repos.each do |repo|
+            %tr
+              %td
+                = repo
+              %td
+                = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+              %td
+                = harvest.humanized_status
+              %td
+                = harvest.error
+              %td
+                - if harvest.records.all.map(&:raw_record).map(&:repository_id).include?(Repository.find_by_short_name(repo).id) && harvest.status == "complete"
+                  = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
+        - else
+          %tr
+            %td
+              = harvest.repository.short_name
+            %td
+              = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+            %td
+              = harvest.humanized_status
+            %td
+              = harvest.error
+            %td
+              - if harvest.records.any? && harvest.status == "complete"
+                = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
+
 
 %br

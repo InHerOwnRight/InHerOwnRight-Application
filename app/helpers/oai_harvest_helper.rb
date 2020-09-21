@@ -4,20 +4,36 @@ require 'delayed_rake.rb'
 module OaiHarvestHelper
 
   def self.initiate(harvest)
-    repo = harvest.repository
-    Delayed::Job.enqueue(DelayedRake.new("db:migrate"), queue: "oai_#{repo.oai_task}")
-    begin
-      self.create_raw_records(harvest, repo)
-      self.delay(queue: "oai_#{repo.oai_task}").create_records(harvest)
-      self.import_images(harvest, repo)
-      self.delay(queue: "oai_#{repo.oai_task}").index_records(harvest)
-    rescue => e
-      harvest.update(status: 5, error: e.message )
+    repo = harvest.repository || "TriColleges"
+    if repo == "TriColleges"
+      Delayed::Job.enqueue(DelayedRake.new("db:migrate"), queue: "oai_tricolleges")
+      begin
+        self.create_raw_records(harvest, repo)
+        self.delay(queue: "oai_tricolleges").create_records(harvest)
+        self.import_images(harvest, repo)
+        self.delay(queue: "oai_tricolleges").index_records(harvest)
+      rescue => e
+        harvest.update(status: 5, error: e.message )
+      end
+    else
+      Delayed::Job.enqueue(DelayedRake.new("db:migrate"), queue: "oai_#{repo.oai_task}")
+      begin
+        self.create_raw_records(harvest, repo)
+        self.delay(queue: "oai_#{repo.oai_task}").create_records(harvest)
+        self.import_images(harvest, repo)
+        self.delay(queue: "oai_#{repo.oai_task}").index_records(harvest)
+      rescue => e
+        harvest.update(status: 5, error: e.message )
+      end
     end
   end
 
   def self.create_raw_records(harvest, repo)
-    Delayed::Job.enqueue(DelayedRake.new("import_metadata:#{repo.oai_task}[#{harvest.id}]"), queue: "oai_#{repo.oai_task}")
+    if repo == "TriColleges"
+      Delayed::Job.enqueue(DelayedRake.new("import_metadata:tri_colleges[#{harvest.id}]"), queue: "oai_tricolleges")
+    else
+      Delayed::Job.enqueue(DelayedRake.new("import_metadata:#{repo.oai_task}[#{harvest.id}]"), queue: "oai_#{repo.oai_task}")
+    end
   end
 
   def self.create_records(harvest)
@@ -45,8 +61,15 @@ module OaiHarvestHelper
   end
 
   def self.import_images(harvest, repo)
-    Delayed::Job.enqueue(DelayedRake.new("import_images:#{repo.image_task}['#{harvest}']"), queue: "csv_#{repo.oai_task}")
-    Delayed::Job.enqueue(DelayedRake.new("import_images:clean_up_collection_imgs"), queue: "csv_#{repo.oai_task}")
+    if repo == "TriColleges"
+      Delayed::Job.enqueue(DelayedRake.new("import_images:swarthmore['#{harvest}']"), queue: "csv_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:haverford['#{harvest}']"), queue: "csv_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:brynmawr['#{harvest}']"), queue: "csv_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:clean_up_collection_imgs"), queue: "csv_tricolleges")
+    else
+      Delayed::Job.enqueue(DelayedRake.new("import_images:#{repo.image_task}['#{harvest}']"), queue: "csv_#{repo.oai_task}")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:clean_up_collection_imgs"), queue: "csv_#{repo.oai_task}")
+    end
   end
 
 
