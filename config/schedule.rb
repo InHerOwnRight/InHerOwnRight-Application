@@ -8,6 +8,8 @@
 # set :output, "/path/to/my/cron_log.log"
 #
 
+set :output, "log/cron_log.log"
+
 every 1.day, at: '2:30 am'  do
   rake "clear:guest_users"
   rake "clear:searches"
