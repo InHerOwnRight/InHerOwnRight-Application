@@ -19,7 +19,6 @@ gem 'coffee-rails', '~> 4.2'
 gem 'daemons'
 gem 'delayed_job_active_record'
 gem 'devise'
-gem 'devise-guests', '~> 0.6'
 gem 'devise_invitable'
 gem 'friendly_id'
 gem 'haml', '~> 5.0', '>= 5.0.1'
@@ -52,6 +51,7 @@ gem 'turbolinks', '~> 5'
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'uglifier', '>= 1.3.0'
+gem 'whenever', require: false
 
 group :development, :test do
   gem 'byebug', platform: :mri
