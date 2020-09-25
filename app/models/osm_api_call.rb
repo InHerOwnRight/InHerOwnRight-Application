@@ -1,5 +1,4 @@
 class OsmApiCall < ActiveRecord::Base
-  validates :placename, uniqueness: true
   validates :sanitized_placename, uniqueness: true
 
   def longitude_latitude

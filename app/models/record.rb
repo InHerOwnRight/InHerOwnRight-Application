@@ -529,6 +529,15 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def force_update_map_locations
+    dc_terms_spacials.each do |dc_terms_spacial|
+      dc_terms_spacial.force_update_map_locations
+    end
+    dc_coverages.each do |dc_coverage|
+      dc_coverage.force_update_map_locations
+    end
+  end
+
   def associated_pacscl_collections
     is_part_of_pacscl_collections = dc_terms_is_part_ofs.map { |dtipo| dtipo.pacscl_collection }
     relation_pacscl_collections = dc_relations.map{ |drc| drc.pacscl_collection }

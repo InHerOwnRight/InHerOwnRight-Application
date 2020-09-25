@@ -26,6 +26,28 @@ class DcCoverage < ActiveRecord::Base
     reindex_record if changed
   end
 
+  def force_update_map_locations
+    changed = false
+    coverage_map_locations.update_all(verified: nil)
+    delimiters = [';', '|']
+    placenames = coverage.split(Regexp.union(delimiters)).map(&:strip)
+    placenames.each do |placename|
+      coverage_map_location = coverage_map_locations.find_by(placename: placename)
+      if coverage_map_location
+        coverage_map_location.update_attributes(verified: DateTime.now)
+      else
+        changed = true
+        coverage_map_location = coverage_map_locations.create(placename: placename)
+      end
+      coverage_map_location.geocode_from_placename_to_location
+    end
+    if coverage_map_locations.not_verified.any?
+      changed = true
+      coverage_map_locations.not_verified.destroy_all
+    end
+    reindex_record
+  end
+
   private
 
   def reindex_record
