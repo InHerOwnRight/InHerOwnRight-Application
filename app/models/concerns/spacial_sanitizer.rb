@@ -406,7 +406,7 @@ class SpacialSanitizer
     sanitizing_spacial = sanitizing_spacial.gsub('(', '')
     sanitizing_spacial = sanitizing_spacial.gsub(')', '')
     sanitizing_spacial = sanitizing_spacial.gsub('.', '')
-    sanitizing_spacial = sanitizing_spacial.gsub(' : Town', '')
+    sanitizing_spacial = sanitizing_spacial.gsub(' : town', '')
     sanitized_spacial = sanitizing_spacial.gsub(';', '')
     sanitized_spacial
   end
