@@ -66,6 +66,7 @@ Rails.application.routes.draw do
   end
 
   get 'website_search', to: 'website_search#index'
+  get 'visualization', to: 'visualization#index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
