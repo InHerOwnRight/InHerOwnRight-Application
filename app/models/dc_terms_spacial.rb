@@ -51,12 +51,14 @@ class DcTermsSpacial < ActiveRecord::Base
   private
 
   def reindex_record
-    Sunspot.index!(record)
+    Sunspot.index!(record) if record.repository
   end
 
   def reindex_record_after_destroy
-    parent_record = record
-    yield
-    Sunspot.index!(parent_record)
+    if record.repository
+      parent_record = record
+      yield
+      Sunspot.index!(parent_record)
+    end
   end
 end
