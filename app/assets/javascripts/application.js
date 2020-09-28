@@ -18,6 +18,7 @@
 //= require blacklight/blacklight
 //= require blacklight-maps
 //= require bootstrap-sprockets
+//= require navbar
 //= require_tree .
 
 // For blacklight_range_limit built-in JS, if you don't want it you don't need

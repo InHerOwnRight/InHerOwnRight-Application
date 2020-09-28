@@ -1,0 +1,17 @@
+nav#explore {
+  .dropdown-submenu {
+    position: relative;
+  }
+
+  .dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  .dropdown-menu span {
+    overflow: hidden;
+    white-space: normal;
+  }
+}

@@ -18,13 +18,71 @@
         %span.submit-search-text= t('blacklight.search.form.submit')
         = blacklight_icon :search
 
-    %nav.navbar.navbar-default.sub-nav.col-sm-6
-      .container-fluid
-        #main_navigation.w-100
-          .row.d-flex.justify-content-around
-            = link_to "Map", page_path("map")
-            = link_to "Essays & Exhibits", "/"
-            = link_to "Collections", "/catalog?utf8=%E2%9C%93&search_field=is_collection&q=true"
-            = link_to "About", "/spotlight/about"
-            = link_to "Data", "/spotlight/data"
-            = link_to "Website Search", "/website_search"
+    %nav.navbar.navbar-expand-lg.navbar-default.sub-nav.col-sm-6#explore
+      %ul.navbar-nav.flex-row.justify-content-around.container-fluid
+        %li.nav-item.dropdown
+          %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "exploreDropdown"}
+            Explore
+          %ul.dropdown-menu{"aria-labelledby" => "exploreDropdown"}
+            %li.dropdown-submenu
+              %a.dropdown-item.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "dataSubMenuDropdown"}
+                Data
+              %ul.dropdown-menu{"aria-labelledby" => "dataSubmenuDropdown"}
+                %li
+                  = link_to "/map", class: "dropdown-item" do
+                    %span Map
+                %li
+                  = link_to "/visualization", class: "dropdown-item" do
+                    %span Visualization
+                %li
+                  = link_to "/spotlight/data/feature/api-access-and-data-sets", class: "dropdown-item" do
+                    %span API and Data Sets
+                %li
+                  = link_to "/spotlight/data/feature/tools-for-data-exploration", class: "dropdown-item" do
+                    %span Tools
+            %li.dropdown-submenu
+              %a.dropdown-item.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "guidesSubMenuDropdown"}
+                Guides
+              %ul.dropdown-menu{"aria-labelledby" => "guidesSubmenuDropdown"}
+                %li
+                  = link_to "/spotlight/guides/feature/subject-guides", class: "dropdown-item" do
+                    %span Subject Guides
+                %li
+                  = link_to "/spotlight/guides/feature/collections-guide", class: "dropdown-item" do
+                    %span Collections Guide
+                %li
+                  = link_to "/spotlight/guides/feature/institution-based-guide", class: "dropdown-item" do
+                    %span Institutions Guide
+            %li
+              = link_to "Import collection level records", main_app.import_record_collections_path, class: "dropdown-item"
+            %li
+              = link_to "Import collection titles", main_app.import_pacscl_collections_path, class: "dropdown-item"
+        %li.nav-item.dropdown
+          %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "learnDropdown"}
+            Learn
+          %ul.dropdown-menu{"aria-labelledby" => "learnDropdown"}
+            %li.dropdown-submenu
+              %a.dropdown-item.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "SubMenuDropdown"}
+                Essays and Exhibits
+              %ul.dropdown-menu{"aria-labelledby" => "SubmenuDropdown"}
+                %li
+                  = link_to "/spotlight/introducing-women-s-activism", class: "dropdown-item" do
+                    %span Introducing Women's Activism
+                %li
+                  = link_to "/spotlight/featured-exhibits", class: "dropdown-item" do
+                    %span Featured Exhibits
+                %li
+                  = link_to "/spotlight/biographical-profiles", class: "dropdown-item" do
+                    %span Biographical Profiles
+                %li
+                  = link_to "/spotlight/collections-and-context", class: "dropdown-item" do
+                    %span Collections and Context
+            %li.nav-item
+              = link_to "Teachers and Students", "/spotlight/teachers-and-students", class: "dropdown-item"
+            %li.nav-item
+              = link_to "Search Tips", "/spotlight/teachers-and-students/feature/search-tips", class: "dropdown-item"
+        %li.nav-item
+          = link_to "About", "/spotlight/about"
+        %li.nav-item
+          = link_to "Website Search", "/website_search"
+

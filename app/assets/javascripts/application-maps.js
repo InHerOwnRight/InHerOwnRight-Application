@@ -18,6 +18,7 @@
 //= require blacklight/blacklight
 //= require blacklight-maps
 //= require bootstrap-sprockets
+//= require navbar
 //= require_tree .
 
 // Remove leaflet (v1.6) so that app uses blacklight-maps integrated leaflet file (modified 1.4)
