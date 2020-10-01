@@ -181,7 +181,7 @@ module ImageProcessorHelper
         elsif !stderr.blank?
           FailedInboxImage.create(image: file_name, school: school, action: 'Convert to PNG', error: stderr, failed_at: DateTime.now, current: true)
         end
-        File.delete(img)
+        File.delete(img) unless file_name.include?(".png") # skip if file was already a png
       end
     end
 
