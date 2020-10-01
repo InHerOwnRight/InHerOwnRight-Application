@@ -13,12 +13,12 @@
 //= require jquery
 //= require jquery_ujs
 //= require popper
+//= require navbar
 //= require turbolinks//
 // Required by Blacklight
 //= require blacklight/blacklight
 //= require blacklight-maps
 //= require bootstrap-sprockets
-//= require navbar
 //= require_tree .
 
 // Remove leaflet (v1.6) so that app uses blacklight-maps integrated leaflet file (modified 1.4)
