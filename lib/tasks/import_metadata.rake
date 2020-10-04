@@ -96,10 +96,8 @@ namespace :import_metadata do
       metadata_records.each do |record|
         xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
         xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
-          relation_text.each do |text|
-            if relation_node.text.include?(text)
-              identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
-            end
+          if relation_node.text.include?("In Her Own Right")
+            identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
           end
         end
       end

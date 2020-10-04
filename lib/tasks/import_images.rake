@@ -17,7 +17,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/Bates/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Bates/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -40,7 +40,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/Drexel/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Drexel/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         if dc_identifier.identifier[0..5] == "local:"
           image_paths.each do |image_path|
@@ -65,7 +65,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/Haverford/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Haverford/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
           if !record.oai_identifier.blank? && image_path.include?(record.oai_identifier[40..-1])
@@ -98,7 +98,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/HSP/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/HSP/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? && image_path.include?(record.oai_identifier)
           if image_path[-9..-1] == "thumb.png"
@@ -119,7 +119,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/LibraryCompany/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/LibraryCompany/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? &&  image_path.include?(record.oai_identifier)
           if image_path[-9..-1] == "thumb.png"
@@ -140,7 +140,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/Swarthmore/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Swarthmore/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
@@ -163,7 +163,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/Temple/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Temple/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
@@ -186,7 +186,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/NARA/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/NARA/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && (image_path[/NARA\/([^"]+)_lg.png/, 1] == dc_identifier.identifier || image_path[/NARA\/([^"]+)_thumb.png/, 1] == dc_identifier.identifier)
@@ -209,7 +209,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/UDel/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/UDel/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -232,7 +232,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/GermanSociety/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/GermanSociety/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
@@ -255,7 +255,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/BrynMawr/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/BrynMawr/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -278,7 +278,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/CHRC/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/CHRC/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -301,7 +301,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -324,7 +324,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/PHS/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/PHS/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -347,7 +347,7 @@ namespace :import_images do
     archive_paths = bucket.objects(prefix: 'images/UnionLeague/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/UnionLeague/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    Record.where(updated_at: args[:harvest].created_at..DateTime.now).each do |record|
+    args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)

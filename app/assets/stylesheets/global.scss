@@ -6,13 +6,24 @@
 }
 
 #header-navbar {
-  .navbar-brand {  /* The main logo image for the Blacklight instance */
-    height: 80px;
-    width: 120px;
-    background:transparent image_url("sm_light_logo.png") no-repeat top 5px left 2px;
+  width: 120px;
+  .navbar-brand {  /* The main logo image for InHOR */
+    height: 100px;
+    width: 580px;
+    background:transparent image_url("pacscl-own-right-horizontal.png") no-repeat top 5px left 2px;
     background-size: auto 76px;
     padding-right: 0em;
-    margin: 0 0 0 1em;
+    margin: 0px;
+  }
+
+  .pacscl-brand {  /* The main logo image for PACSCL */
+    height: 100px;
+    width: 110px;
+    float: right;
+    background:transparent image_url("PACSCL_logo_notypePMS187.png") no-repeat top 5px left 2px;
+    background-size: auto 76px;
+    padding-right: 0em;
+    margin-right: 0px;
   }
 
   #header-text-wrapper {
@@ -79,8 +90,13 @@
 
 @media (max-width: 992px) {
   #header-navbar {
-    .navbar-brand {  /* The main logo image for the Blacklight instance */
-      background:transparent image_url("sm_light_logo.png") no-repeat top 0px left 2px;
+    .navbar-brand {  /* The main logo image for InHOR */
+      height: 100px;
+      width: 580px;
+      background:transparent image_url("pacscl-own-right-horizontal.png") no-repeat top 5px left 2px;
+      background-size: auto 76px;
+      padding-right: 0em;
+      margin: 0px;
     }
     #main-header-text {
       font-family: 'Helvetica Neue', sans-serif;

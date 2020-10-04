@@ -5,22 +5,26 @@ module CsvHarvestHelper
   def self.initiate(harvest)
     begin
       CSV.parse(harvest.csv_file.download, headers: true) do |row|
-        @repository = Repository.find_by_name(row[2])
-        if @repository.nil?
-          harvest.update(error: "Contributing repository (column 3) must match long repository name exactly.")
-          harvest.update(status: 5)
-          return
-        else
-          harvest.update(repository_id: @repository.id)
+        unless row[0].nil?
+          @repository = Repository.find_by_name(row[2])
+          if @repository.nil?
+            harvest.update(error: "Contributing repository (column 3) must match long repository name exactly.")
+            harvest.update(status: 5)
+            return
+          else
+            harvest.update(repository_id: @repository.id)
+          end
         end
       end
     rescue => e
       harvest.update(status: 5, error: "Failed to parse CSV: #{e.message}")
     end
-    self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").create_raw_records(harvest) if harvest.error.nil?
-    self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").create_records(harvest) if harvest.error.nil?
-    self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").import_images(harvest) if harvest.error.nil?
-    self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").index_records(harvest) if harvest.error.nil?
+     if @repository
+      self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").create_raw_records(harvest) if harvest.error.nil?
+      self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").create_records(harvest) if harvest.error.nil?
+      self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").import_images(harvest) if harvest.error.nil?
+      self.delay(:queue => "csv_#{@repository.short_name.downcase.gsub(" ","_")}").index_records(harvest) if harvest.error.nil?
+    end
   end
 
   def self.create_raw_records(harvest)
@@ -33,58 +37,60 @@ module CsvHarvestHelper
       }
 
       CSV.parse(harvest.csv_file.download, headers: true) do |row|
-        raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[0])
-        @repository = Repository.find_by_name(row[2])
-        raw_record.repository_id = @repository.id
-        raw_record.original_record_url = row[1]
-        raw_record.oai_identifier = row[0]
-        raw_record.original_entry_date = harvest_date
-        raw_record.harvest_id = harvest.id
+        unless row[0].nil?
+          raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[0])
+          @repository = Repository.find_by_name(row[2])
+          raw_record.repository_id = @repository.id
+          raw_record.original_record_url = row[1]
+          raw_record.oai_identifier = row[0]
+          raw_record.original_entry_date = harvest_date
+          raw_record.harvest_id = harvest.id
 
-        builder = Nokogiri::XML::Builder.new { |xml|
-          xml.metadata {
-            xml.contributing_repository row[2]
-            xml['oai_qdc'].qualifieddc(name_spaces) do
-              xml['dc'].identifier row[0]
-              if row[1]
+          builder = Nokogiri::XML::Builder.new { |xml|
+            xml.metadata {
+              xml.contributing_repository row[2]
+              xml['oai_qdc'].qualifieddc(name_spaces) do
+                xml['dc'].identifier row[0]
+                if row[1]
+                  xml['dc'].identifier row[1]
+                end
+                xml['dc'].title row[3]
+                xml['dcterms'].created row[4]
+                xml['dcterms'].created row[5]
+                xml['dc'].creator row[6]
+                xml['dcterms'].licence row[7]
                 xml['dc'].identifier row[1]
-              end
-              xml['dc'].title row[3]
-              xml['dcterms'].created row[4]
-              xml['dcterms'].created row[5]
-              xml['dc'].creator row[6]
-              xml['dcterms'].licence row[7]
-              xml['dc'].identifier row[1]
-              xml['dc'].type row[10]
-              xml['dc'].language row[8]
-              xml['dcterms'].extent row[11]
-              if row[9] =~ /\;/
-                subjects = row[9].split("; ")
-                subjects.each do |subj|
-                  xml['dc'].subject subj
+                xml['dc'].type row[10]
+                xml['dc'].language row[8]
+                xml['dcterms'].extent row[11]
+                if row[9] =~ /\;/
+                  subjects = row[9].split("; ")
+                  subjects.each do |subj|
+                    xml['dc'].subject subj
+                  end
+                elsif row[9] =~ /\\|/
+                  subjects = row[9].split("|")
+                  subjects.each do |subj|
+                    xml['dc'].subject subj
+                  end
+                else
+                  xml['dc'].subject row[9]
                 end
-              elsif row[9] =~ /\\|/
-                subjects = row[9].split("|")
-                subjects.each do |subj|
-                  xml['dc'].subject subj
-                end
-              else
-                xml['dc'].subject row[9]
+                xml['dcterms'].spacial row[12]
+                xml['dc'].description row[13]
+                xml['dc'].publisher row[14]
+                xml['dcterms'].isPartOf row[15]
+                xml['dcterms'].text_ @full_text
+                xml['dcterms'].localData row[17]
+                xml['dcterms'].localData row[18]
+                xml['dcterms'].localData row[19]
+                xml['dc'].description row[16]
               end
-              xml['dcterms'].spacial row[12]
-              xml['dc'].description row[13]
-              xml['dc'].publisher row[14]
-              xml['dcterms'].isPartOf row[15]
-              xml['dcterms'].text_ @full_text
-              xml['dcterms'].localData row[17]
-              xml['dcterms'].localData row[18]
-              xml['dcterms'].localData row[19]
-              xml['dc'].description row[16]
-            end
+            }
           }
-        }
-        raw_record.xml_metadata = builder.to_xml
-        raw_record.save
+          raw_record.xml_metadata = builder.to_xml
+          raw_record.save
+        end
       end
     rescue => e
       harvest.update(status: 5, error: e.message )
@@ -169,39 +175,43 @@ module CsvHarvestHelper
 
   def self.import_repo_images(harvest, region, s3, bucket)
     CSV.parse(harvest.csv_file.download, headers: true) do |row|
-      @repository = Repository.find_by_name(row[2])
+      unless row[0].nil?
+        @repository = Repository.find_by_name(row[2])
+      end
     end
-    case @repository.short_name
-    when "Barbara Bates Center"
-      import_from_bates(harvest, region, s3, bucket)
-    when "Drexel University"
-      import_from_drexel(harvest, region, s3, bucket)
-    when "Haverford College"
-      import_from_haverford(harvest, region, s3, bucket)
-    when "Library Company"
-      import_from_libraryco(harvest, region, s3, bucket)
-    when "Swarthmore - Friends" || "Swarthmore - Peace"
-      import_from_swarthmore(harvest, region, s3, bucket)
-    when "Temple University"
-      import_from_temple(harvest, region, s3, bucket)
-    when "National Archives"
-      import_from_nara(harvest, region, s3, bucket)
-    when "University of Delaware"
-      import_from_udel(harvest, region, s3, bucket)
-    when "The German Society"
-      import_from_german(harvest, region, s3, bucket)
-    when "Bryn Mawr College"
-      import_from_brynmawr(harvest, region, s3, bucket)
-    when "College of Physicians"
-      import_from_physicians(harvest, region, s3, bucket)
-    when "Catholic Historical Research Center"
-      import_from_chrc(harvest, region, s3, bucket)
-    when "Presbyterian Historical Society"
-      import_from_phs(harvest, region, s3, bucket)
-    when "Historical Society of PA"
-      import_from_hsp(harvest, region, s3, bucket)
-    when "Legacy Foundation"
-      import_from_union(harvest, region, s3, bucket)
+    if @repository
+      case @repository.short_name
+      when "Barbara Bates Center"
+        import_from_bates(harvest, region, s3, bucket)
+      when "Drexel University"
+        import_from_drexel(harvest, region, s3, bucket)
+      when "Haverford College"
+        import_from_haverford(harvest, region, s3, bucket)
+      when "Library Company"
+        import_from_libraryco(harvest, region, s3, bucket)
+      when "Swarthmore - Friends" || "Swarthmore - Peace"
+        import_from_swarthmore(harvest, region, s3, bucket)
+      when "Temple University"
+        import_from_temple(harvest, region, s3, bucket)
+      when "National Archives"
+        import_from_nara(harvest, region, s3, bucket)
+      when "University of Delaware"
+        import_from_udel(harvest, region, s3, bucket)
+      when "The German Society"
+        import_from_german(harvest, region, s3, bucket)
+      when "Bryn Mawr College"
+        import_from_brynmawr(harvest, region, s3, bucket)
+      when "College of Physicians"
+        import_from_physicians(harvest, region, s3, bucket)
+      when "Catholic Historical Research Center"
+        import_from_chrc(harvest, region, s3, bucket)
+      when "Presbyterian Historical Society"
+        import_from_phs(harvest, region, s3, bucket)
+      when "Historical Society of PA"
+        import_from_hsp(harvest, region, s3, bucket)
+      when "Legacy Foundation"
+        import_from_union(harvest, region, s3, bucket)
+      end
     end
   end
 
