@@ -218,10 +218,11 @@ module Spotlight
     config.i18n.available_locales = config.i18n_locales.keys
 
     # Query parameters for autocomplete requests
-    config.autocomplete_search_field = 'autocomplete'
-    config.default_autocomplete_params = { qf: 'id^1000 full_title_tesim^100 id_ng full_title_ng',
-                                           facet: false,
-                                           'facet.field' => [] }
+    config.autocomplete_search_field = 'creator'
+    config.default_autocomplete_params = { qf: 'creator_text',
+                                         facet: false,
+                                         'facet.field' => [] }
+
 
     config.default_browse_index_view_type = :gallery
 

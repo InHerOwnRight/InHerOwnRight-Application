@@ -13,10 +13,15 @@
       <div class="spotlight-flexbox">
         <% solr_documents_embed_block.each_document do |block_options, document| %>
           <div class="box" data-id="<%= document.id %>">
-            <% if Record.find(document.id.scan(/\d+/).first.to_i).file_name %>
-              <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i).id) %>" style="float:left;">
-                <% if Record.find(document.id.scan(/\d+/).first.to_i).file_name %>
-                  <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
+            <% if document.id.is_a? Integer %>
+              <% record = Record.find(document.id) %>
+            <% else %>
+              <% record = Record.find(document.id.scan(/\d+/).first.to_i) %>
+            <% end %>
+            <% if record.file_name %>
+              <a href="<%= record_path(record.id) %>" style="float:left;">
+                <% if record.file_name %>
+                  <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + record.file_name, class: 'img-thumbnail') %>
                 <% end %>
               </a>
             <% end %>

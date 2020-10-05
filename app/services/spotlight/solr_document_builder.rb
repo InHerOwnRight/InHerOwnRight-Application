@@ -13,16 +13,16 @@ module Spotlight
     ##
     # @return an enumerator of all the indexable documents for this resource
     def documents_to_index
-      data = Record.all
-      # return [] if data.blank?
-      # 
-      # data &&= [data] if data.is_a? Hash
-      #
-      # return to_enum(:documents_to_index) { data.size } unless block_given?
-      #
-      # data.lazy.reject(&:blank?).each do |doc|
-      #   yield doc.reverse_merge(exhibit_solr_doc(doc[unique_key]).to_solr)
-      # end
+      # data = Record.all
+      return [] if data.blank?
+
+      data &&= [data] if data.is_a? Hash
+
+      return to_enum(:documents_to_index) { data.size } unless block_given?
+
+      data.lazy.reject(&:blank?).each do |doc|
+        yield doc.reverse_merge(exhibit_solr_doc(doc[unique_key]).to_solr)
+      end
     end
 
     protected

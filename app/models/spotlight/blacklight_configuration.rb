@@ -329,7 +329,7 @@ module Spotlight
       config.add_search_field(Spotlight::Engine.config.autocomplete_search_field) do |field|
         field.include_in_simple_select = false
         field.solr_parameters = Spotlight::Engine.config.default_autocomplete_params.deep_dup
-        field.solr_parameters[:fl] ||= default_autocomplete_field_list(config)
+        # field.solr_parameters[:fl] ||= default_autocomplete_field_list(config)
       end
     end
 

@@ -11,20 +11,25 @@
             <% solr_documents_features_block.each_document.each_with_index do |(block_options, document), index| %>
               <% doc_presenter = index_presenter(document) %>
               <div class="carousel-item <%= 'active' if index == 0 %>" data-id="<%= document.id %>">
-                <% if Record.find(document.id.scan(/\d+/).first.to_i).file_name %>
-                  <a href="<%= record_path(Record.find(document.id.scan(/\d+/).first.to_i)) %>" style="float:left;">
-                    <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + Record.find(document.id.scan(/\d+/).first.to_i).file_name, class: 'img-thumbnail') %>
+                <% if document.id.is_a? Integer %>
+                  <% record = Record.find(document.id) %>
+                <% else %>
+                  <% record = Record.find(document.id.scan(/\d+/).first.to_i) %>
+                <% end %>
+                <% if record.file_name %>
+                  <a href="<%= record_path(record) %>" style="float:left;">
+                    <%= image_tag("https://s3.us-east-2.amazonaws.com/pacscl-production" + record.file_name, class: 'img-thumbnail') %>
                   </a>
                 <% end %>
               </div>
 
               <% indicators << capture do %>
                 <li data-target="#<%= html_id %>" data-slide-to="<%= index %>" class="list-group-item <%= 'active' if index == 0 %>">
-                  <a href="#" title="<%= Record.find(document.id.scan(/\d+/).first.to_i).dc_titles.first.title %>">
-                    <%= truncate(Record.find(document.id.scan(/\d+/).first.to_i).dc_titles.first.title, length: 95) %>
+                  <a href="#" title="<%= record.dc_titles.first.title %>">
+                    <%= truncate(record.dc_titles.first.title, length: 95) %>
                   </a>
                   <% if solr_documents_features_block.secondary_caption? %>
-                    <p><%= Record.find(document.id.scan(/\d+/).first.to_i).dc_creators.first.creator %></p>
+                    <p><%= record.dc_creators.first.creator %></p>
                   <% end %>
                 </li>
               <% end %>
