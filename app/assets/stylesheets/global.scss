@@ -1,6 +1,6 @@
 #header-navbar {
     background-color: #2b4562;
-    height: 80px;
+    height: 150px;
     width: 600px;
     padding-top: 0px;
 }
@@ -11,9 +11,9 @@
     height: 100px;
     width: 580px;
     background:transparent image_url("pacscl-own-right-horizontal.png") no-repeat top 5px left 2px;
-    background-size: auto 76px;
+    background-size: auto 120px;
     padding-right: 0em;
-    margin: 0px;
+    margin-left: -40px;
   }
 
   .pacscl-brand {  /* The main logo image for PACSCL */
@@ -21,9 +21,11 @@
     width: 110px;
     float: right;
     background:transparent image_url("PACSCL_logo_notypePMS187.png") no-repeat top 5px left 2px;
-    background-size: auto 76px;
+    background-size: auto 60px;
     padding-right: 0em;
     margin-right: 0px;
+    margin-top: 40px;
+    top: 50%;
   }
 
   #header-text-wrapper {
