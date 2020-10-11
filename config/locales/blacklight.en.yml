@@ -8,6 +8,8 @@ en:
       documents:
         aria:
           limit_search: "Limit Search"
+    header_links:
+      search_history: 'Search History'
   spotlight:
     search:
       facets:
