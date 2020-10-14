@@ -1,16 +1,13 @@
 = form_tag search_catalog_path, method: :get, class: 'search-query-form', role: 'search' do
   = render_hash_as_hidden_fields(search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8, :exhibit_id))
-  - if search_fields.length > 1
-    %label.sr-only{for: "search_field"}= t('blacklight.search.form.search_field.label')
+  %label.sr-only{for: "search_field"}= t('blacklight.search.form.search_field.label')
   .input-group
-    - if search_fields.length > 1
-      = select_tag(:search_field,                                    |
-        options_for_select(search_fields, h(params[:search_field])), |
-        title: t('blacklight.search.form.search_field.title'),       |
-        id: "search_field",                                          |
-        class: "custom-select search-field")                         |
-    - elsif search_fields.length == 1
-      = hidden_field_tag :search_field, search_fields.first.last
+    - search_fields = [["All Fields", "all_fields"],["Collection", "collection"],["Title", "title"],["Creator", "creator"],["Identifier", "identifier"],["Subject", "subject"],["Type", "type"],["Contributing Institution", "contributing_institution"],["Transcription", "transcription"],["Place", "place"]]
+    = select_tag(:search_field,                                    |
+      options_for_select(search_fields, h(params[:search_field])), |
+      title: t('blacklight.search.form.search_field.title'),       |
+      id: "search_field",                                          |
+      class: "custom-select search-field")                         |
     %label.sr-only{for: "q"}= t('blacklight.search.form.search.label')
     = text_field_tag :q, params[:q], placeholder: "Search the catalog...", class: "search-q q form-control", id: "q", autofocus: presenter.autofocus?, data: { autocomplete_enabled: presenter.autocomplete_enabled?, autocomplete_path: search_action_path(action: :suggest) }
     %span.input-group-append
