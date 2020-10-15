@@ -209,7 +209,7 @@ class Record < ActiveRecord::Base
       dc_subjects.map(&:subject)
     end
 
-    text :title, stored: true do
+    text :title do
       dc_titles.map(&:title)
     end
 
