@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'images/manifest'
   mount Blacklight::Oembed::Engine, at: 'oembed'
   mount Blacklight::Engine => '/'
   root to: 'spotlight/exhibits#index'
@@ -67,6 +68,29 @@ Rails.application.routes.draw do
 
   get 'website_search', to: 'website_search#index'
   get 'visualization', to: 'visualization#index'
+
+  ALLOW_ANYTHING_BUT_SLASHES = /[^\/]+/
+  constraints id: ALLOW_ANYTHING_BUT_SLASHES, rotation: Riiif::Routes::ALLOW_DOTS, size: Riiif::Routes::SIZES do
+    # Route to the IIIF Image API
+    get "/iiif/2/:id/:region/:size/:rotation/:quality.:format" => 'riiif/images#show',
+      defaults: { format: 'jpg', rotation: '0', region: 'full', size: 'full', quality: 'default', model: 'riiif/image' },
+      as: 'riiif_image'
+
+    # Route to IIIF Image API info.json
+    get "/iiif/2/:id/info.json" => 'riiif/images#info',
+      defaults: { format: 'json', model: 'riiif/image' },
+      as: 'riiif_info'
+
+    # Redirect the base route to info.json
+    get "/iiif/2/:id", to: redirect("/iiif/2/%{id}/info.json"), as: 'riiif_base'
+
+    # Route to the IIIF manifest.json for a particular image.
+    get "iiif/2/:id/manifest.json" => "images#manifest",
+      defaults: { format: 'json' },
+      as: 'riiif_manifest'
+  end
+
+  mount MiradorRails::Engine, at: MiradorRails::Engine.locales_mount_path
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
