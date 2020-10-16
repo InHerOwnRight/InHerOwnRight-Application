@@ -35,25 +35,21 @@ module ImportRecordCollectionsHelper
           xml.metadata {
             xml.contributing_repository institution_name
             xml['oai_qdc'].qualifieddc(name_spaces) do
-              xml['dc'].title row[2].gsub('"', '')
-              if !row[3].blank?
-                xml['dc'].creator row[3].gsub('"', '')
-              end
-              xml['dcterms'].created row[4].gsub('"', '')
-              xml['dcterms'].created row[5].gsub('"', '')
-              xml['dcterms'].extent row[6].gsub('"', '')
-              if !row[7].blank?
-                xml['dc'].identifier row[7].gsub('"', '')
-              end
+              xml['dc'].title row[2].gsub('"', '') if !row[2].blank?
+              xml['dc'].creator row[3].gsub('"', '') if !row[3].blank?
+              xml['dcterms'].created row[4].gsub('"', '') if !row[4].blank?
+              xml['dcterms'].created row[5].gsub('"', '') if !row[5].blank?
+              xml['dcterms'].extent row[6].gsub('"', '') if !row[6].blank?
+              xml['dc'].identifier row[7].gsub('"', '') if !row[7].blank?
               if !row[8].nil? && (row[8].split(":").first == "http" || row[8].split(":").first == "https")
                 xml['dc'].identifier row[8].gsub('"', '')
               elsif !row[8].nil?
                 xml['dc'].hasFormat row[8].gsub('"', '')
               end
-              xml['dc'].subject row[9].gsub('"', '')
-              xml['dc'].abstract row[10].gsub('"', '')
-              xml['dc'].additional_description row[11].gsub('"', '')
-              xml['dc'].research_interest row[12].gsub('"', '')
+              xml['dc'].subject row[9].gsub('"', '') if !row[9].blank?
+              xml['dc'].abstract row[10].gsub('"', '') if !row[10].blank?
+              xml['dc'].additional_description row[11].gsub('"', '') if !row[11].blank?
+              xml['dc'].research_interest row[12].gsub('"', '') if !row[12].blank?
             end
           }
         }
