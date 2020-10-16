@@ -29,7 +29,7 @@ module ImportRecordCollectionsHelper
 
         raw_record.record_type = "collection"
         raw_record.repository_id = repository.id
-        raw_record.original_record_url = row[8].gsub('"', '')
+        raw_record.original_record_url = row[8].gsub('"', '') if !row[8].nil?
 
         builder = Nokogiri::XML::Builder.new { |xml|
           xml.metadata {
@@ -45,9 +45,9 @@ module ImportRecordCollectionsHelper
               if !row[7].blank?
                 xml['dc'].identifier row[7].gsub('"', '')
               end
-              if row[8].split(":").first == "http" || row[8].split(":").first == "https"
+              if !row[8].nil? && (row[8].split(":").first == "http" || row[8].split(":").first == "https")
                 xml['dc'].identifier row[8].gsub('"', '')
-              else
+              elsif !row[8].nil?
                 xml['dc'].hasFormat row[8].gsub('"', '')
               end
               xml['dc'].subject row[9].gsub('"', '')
