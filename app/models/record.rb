@@ -43,14 +43,18 @@ class Record < ActiveRecord::Base
     raw_record.record_type == "collection" if raw_record
   end
 
+  def pacscl_collection_exists?
+    !!PacsclCollection.find_by_detailed_name(dc_titles.first.title)
+  end
+
   def list_pacscl_collection
-    if is_collection?
+    if is_collection? && pacscl_collection_exists?
       PacsclCollection.find_by_detailed_name(dc_titles.first.title)
     end
   end
 
   def list_records_for_collection
-    if is_collection?
+    if is_collection? && pacscl_collection_exists?
       PacsclCollection.find_by_detailed_name(dc_titles.first.title).associated_records
     end
   end
