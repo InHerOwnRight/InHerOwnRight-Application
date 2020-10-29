@@ -66,8 +66,15 @@
                   = link_to "/spotlight/biographical-profiles", class: "dropdown-item" do
                     %span Biographical Profiles
             %li.nav-item
-              = link_to "/spotlight/teachers-and-students", class: "dropdown-item" do
-                %span Teachers and Students
+              %a.dropdown-item.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "SubMenuDropdown"}
+                Teachers and Students
+              %ul.dropdown-menu{"aria-labelledby" => "SubmenuDropdown"}
+                %li
+                  = link_to "/spotlight/teachers-and-students", class: "dropdown-item" do
+                    %span Overview
+                %li
+                  = link_to "https://google.com", class: "dropdown-item" do
+                    %span Google
             %li.nav-item
               = link_to "/spotlight/teachers-and-students/feature/search-tips", class: "dropdown-item" do
                 %span Search Tips
