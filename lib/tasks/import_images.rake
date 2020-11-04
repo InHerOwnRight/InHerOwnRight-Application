@@ -7,7 +7,7 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :brynmawr, :chrc, :physicians, :phs, :union]
+  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :brynmawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchs, :unitedlutheran]
   task all: [:all_repos, :clean_up_collection_imgs]
 
   desc "Import images from Bates"
@@ -346,6 +346,98 @@ namespace :import_images do
     all_repo_paths = bucket.objects(prefix: 'images/UnionLeague').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/UnionLeague/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/UnionLeague/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    args[:harvest].records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  desc "Import images from Alice Paul"
+  task :alicepaul, [:harvest] => :environment do |t, args|
+    args[:harvest].update(status: 2)
+    all_repo_paths = bucket.objects(prefix: 'images/AlicePaul').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/AlicePaul/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/AlicePaul/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    args[:harvest].records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  desc "Import images from Athenaeum"
+  task :athenaeum, [:harvest] => :environment do |t, args|
+    args[:harvest].update(status: 2)
+    all_repo_paths = bucket.objects(prefix: 'images/Athenaeum').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Athenaeum/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/Athenaeum/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    args[:harvest].records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  desc "Import images from CCHS"
+  task :cchs, [:harvest] => :environment do |t, args|
+    args[:harvest].update(status: 2)
+    all_repo_paths = bucket.objects(prefix: 'images/CCHS').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/CCHS/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/CCHS/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    args[:harvest].records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  desc "Import images from United Lutheran"
+  task :unitedlutheran, [:harvest] => :environment do |t, args|
+    args[:harvest].update(status: 2)
+    all_repo_paths = bucket.objects(prefix: 'images/UnitedLutheran').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/UnitedLutheran/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/UnitedLutheran/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
     args[:harvest].records.each do |record|
       record.dc_identifiers.each do |dc_identifier|

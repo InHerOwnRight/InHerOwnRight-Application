@@ -211,6 +211,14 @@ module CsvHarvestHelper
         import_from_hsp(harvest, region, s3, bucket)
       when "Legacy Foundation"
         import_from_union(harvest, region, s3, bucket)
+      when "Alice Paul Institute"
+        import_from_alicepaul(harvest, region, s3, bucket)
+      when "Athenaeum"
+        import_from_athenaeum(harvest, region, s3, bucket)
+      when "Chester County Historical Society"
+        import_from_cchs(harvest, region, s3, bucket)
+      when "United Lutheran Seminary"
+        import_from_unitedlutheran(harvest, region, s3, bucket)
       end
     end
   end
@@ -540,6 +548,89 @@ module CsvHarvestHelper
     end
   end
 
+  def self.import_from_alicepaul(harvest, region, s3, bucket)
+    all_repo_paths = bucket.objects(prefix: 'images/AlicePaul').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/AlicePaul/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/AlicePaul/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    harvest.records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  def self.import_from_athenaeum(harvest, region, s3, bucket)
+    all_repo_paths = bucket.objects(prefix: 'images/Athenaeum').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/Athenaeum/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/Athenaeum/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    harvest.records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  def self.import_from_cchs(harvest, region, s3, bucket)
+    all_repo_paths = bucket.objects(prefix: 'images/CCHS').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/CCHS/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/CCHS/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    harvest.records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  def self.import_from_unitedlutheran(harvest, region, s3, bucket)
+    all_repo_paths = bucket.objects(prefix: 'images/UnitedLutheran').collect(&:key)
+    archive_paths = bucket.objects(prefix: 'images/UnitedLutheran/Archive').collect(&:key)
+    failed_paths = bucket.objects(prefix: 'images/UnitedLutheran/Failed\ Inbox').collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    harvest.records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
 
   def self.clean_up_collection_imgs
     collection_records_with_images = Record.all.select { |r| r.is_collection? && (!r.file_name.nil? || !r.file_name.nil?) }
