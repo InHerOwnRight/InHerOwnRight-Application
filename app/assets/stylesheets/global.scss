@@ -250,6 +250,15 @@ a.page-link {
   padding: 3em 0em;
 }
 
+.blacklight-catalog-map .page-links {
+  padding: 0;
+}
+
+// hide list vs map view on catalog index
+.blacklight-catalog-index .view-type {
+  display: none;
+}
+
 td a {
   color: #337ab7;
 }

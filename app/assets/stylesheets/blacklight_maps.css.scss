@@ -5,3 +5,10 @@
   height: 550px;
   margin-bottom: 50px;
 }
+
+// removes Start Over button on /map page
+.blacklight-catalog-map {
+  a.catalog_startOverLink {
+    display: none;
+  }
+}
