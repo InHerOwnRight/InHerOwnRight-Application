@@ -1,4 +1,3 @@
-require 'delayed_rake.rb'
 require 'rake'
 Rails.application.load_tasks
 
@@ -57,16 +56,15 @@ module OaiHarvestHelper
 
   def self.import_images(harvest, repo)
     if repo == "TriColleges"
-      Delayed::Job.enqueue(DelayedRake.new("import_images:swarthmore['#{harvest}']"), queue: "oai_tricolleges")
-      Delayed::Job.enqueue(DelayedRake.new("import_images:haverford['#{harvest}']"), queue: "oai_tricolleges")
-      Delayed::Job.enqueue(DelayedRake.new("import_images:brynmawr['#{harvest}']"), queue: "oai_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:swarthmore[#{harvest.id}]"), queue: "oai_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:haverford[#{harvest.id}]"), queue: "oai_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:brynmawr[#{harvest.id}]"), queue: "oai_tricolleges")
       Delayed::Job.enqueue(DelayedRake.new("import_images:clean_up_collection_imgs"), queue: "oai_tricolleges")
     else
-      Delayed::Job.enqueue(DelayedRake.new("import_images:#{repo.image_task}['#{harvest}']"), queue: "oai_#{repo.oai_task}")
+      Delayed::Job.enqueue(DelayedRake.new("import_images:#{repo.image_task}[#{harvest.id}]"), queue: "oai_#{repo.oai_task}")
       Delayed::Job.enqueue(DelayedRake.new("import_images:clean_up_collection_imgs"), queue: "oai_#{repo.oai_task}")
     end
   end
-
 
   def self.index_records(harvest)
     harvest.update(status: 3)

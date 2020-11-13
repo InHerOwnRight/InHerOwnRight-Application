@@ -11,13 +11,14 @@ namespace :import_images do
   task all: [:all_repos, :clean_up_collection_imgs]
 
   desc "Import images from Bates"
-  task :bates, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :bates, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/Bates').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Bates/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Bates/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -34,13 +35,14 @@ namespace :import_images do
   end
 
   desc "Import images from Drexel"
-  task :drexel, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :drexel, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/Drexel').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Drexel/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Drexel/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         if dc_identifier.identifier[0..5] == "local:"
           image_paths.each do |image_path|
@@ -59,13 +61,14 @@ namespace :import_images do
   end
 
   desc "Import images from Haverford"
-  task :haverford, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :haverford, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/Haverford').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Haverford/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Haverford/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
           if !record.oai_identifier.blank? && image_path.include?(record.oai_identifier[40..-1])
@@ -92,13 +95,14 @@ namespace :import_images do
   end
 
   desc "Import images from HSP"
-  task :hsp, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :hsp, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/HSP').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/HSP/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/HSP/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? && image_path.include?(record.oai_identifier)
           if image_path[-9..-1] == "thumb.png"
@@ -113,13 +117,14 @@ namespace :import_images do
   end
 
   desc "Import images from Library Company"
-  task :libraryco, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :libraryco, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/LibraryCompany').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/LibraryCompany/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/LibraryCompany/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? &&  image_path.include?(record.oai_identifier)
           if image_path[-9..-1] == "thumb.png"
@@ -134,13 +139,14 @@ namespace :import_images do
   end
 
   desc "Import images from Swarthmore"
-  task :swarthmore, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :swarthmore, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/Swarthmore').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Swarthmore/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Swarthmore/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
@@ -157,13 +163,14 @@ namespace :import_images do
   end
 
   desc "Import images from Temple"
-  task :temple, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :temple, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/Temple').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Temple/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Temple/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
@@ -180,13 +187,14 @@ namespace :import_images do
   end
 
   desc "Import images from NARA"
-  task :nara, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :nara, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/NARA').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/NARA/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/NARA/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && (image_path[/NARA\/([^"]+)_lg.png/, 1] == dc_identifier.identifier || image_path[/NARA\/([^"]+)_thumb.png/, 1] == dc_identifier.identifier)
@@ -203,13 +211,14 @@ namespace :import_images do
   end
 
   desc "Import images from UDel"
-  task :udel, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :udel, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/UDel').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/UDel/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/UDel/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -226,13 +235,14 @@ namespace :import_images do
   end
 
   desc "Import images from German Society"
-  task :german, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :german, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/GermanSociety').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/GermanSociety/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/GermanSociety/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
@@ -249,13 +259,14 @@ namespace :import_images do
   end
 
   desc "Import images from Bryn Mawr"
-  task :brynmawr, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :brynmawr, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/BrynMawr').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/BrynMawr/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/BrynMawr/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -272,13 +283,14 @@ namespace :import_images do
   end
 
   desc "Import images from Catholic"
-  task :chrc, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :chrc, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/CHRC').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/CHRC/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/CHRC/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -295,13 +307,14 @@ namespace :import_images do
   end
 
   desc "Import images from College of Physicians"
-  task :physicians, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :physicians, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -318,13 +331,14 @@ namespace :import_images do
   end
 
   desc "Import images from Presbyterian"
-  task :phs, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :phs, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/PHS').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/PHS/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/PHS/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -341,13 +355,14 @@ namespace :import_images do
   end
 
   desc "Import images from Union League"
-  task :union, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :union, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/UnionLeague').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/UnionLeague/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/UnionLeague/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -364,13 +379,14 @@ namespace :import_images do
   end
 
   desc "Import images from Alice Paul"
-  task :alicepaul, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :alicepaul, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/AlicePaul').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/AlicePaul/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/AlicePaul/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -387,13 +403,14 @@ namespace :import_images do
   end
 
   desc "Import images from Athenaeum"
-  task :athenaeum, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :athenaeum, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/Athenaeum').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Athenaeum/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Athenaeum/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -410,13 +427,14 @@ namespace :import_images do
   end
 
   desc "Import images from CCHS"
-  task :cchs, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :cchs, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/CCHS').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/CCHS/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/CCHS/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
@@ -433,13 +451,14 @@ namespace :import_images do
   end
 
   desc "Import images from United Lutheran"
-  task :unitedlutheran, [:harvest] => :environment do |t, args|
-    args[:harvest].update(status: 2)
+  task :unitedlutheran, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/UnitedLutheran').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/UnitedLutheran/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/UnitedLutheran/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    args[:harvest].records.each do |record|
+    harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
