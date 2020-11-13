@@ -46,7 +46,8 @@ ENV AWS_ACCESS_KEY_ID=SECRET
 ENV AWS_SECRET_ACCESS_KEY=SECRET
 ENV AWS_BUCKET=SECRET
 ENV AWS_BUCKET_REGION=SECRET
-RUN RAILS_ENV=production  bundle exec rake assets:precompile
+RUN RAILS_ENV=production bundle exec rake assets:precompile
+RUN bundle exec whenever --update-crontab
 
 USER root
 
