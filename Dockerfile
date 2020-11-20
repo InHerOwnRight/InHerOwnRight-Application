@@ -1,8 +1,8 @@
-FROM phusion/passenger-ruby25
+FROM phusion/passenger-ruby25:1.0.11
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     vim \
-    libnode-dev \
+    nodejs-dev \
     tzdata \
     s3cmd \
     imagemagick
