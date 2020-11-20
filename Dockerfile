@@ -2,7 +2,7 @@ FROM phusion/passenger-ruby25
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     vim \
-    nodejs-dev \
+    libnode-dev \
     tzdata \
     s3cmd \
     imagemagick
