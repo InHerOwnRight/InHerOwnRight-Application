@@ -89,5 +89,3 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: "http://pacscl.neomindlabs.com", from: "admin@neomindlabs.com" }
 
 end
-
-Rails.application.routes.default_url_options[:host] = 'http://pacscl.neomindlabs.com'
