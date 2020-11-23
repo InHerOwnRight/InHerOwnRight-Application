@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 
 module Pacscl
   class Application < Rails::Application
-    config.action_mailer.default_url_options = { host: "http://inherownright.org", from: "admin@inherownright.org" }
+    config.action_mailer.default_url_options = { host: "http://inherownright.org", from: "admin@inherownright.org" } 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
