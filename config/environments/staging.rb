@@ -85,7 +85,4 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.active_storage.service = :amazon
-
-  config.action_mailer.default_url_options = { host: "http://pacscl.neomindlabs.com", from: "admin@neomindlabs.com" }
-
 end
