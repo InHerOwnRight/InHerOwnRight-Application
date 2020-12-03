@@ -4,6 +4,6 @@ class PacsclOaiController < ApplicationController
     options = params.delete_if { |k,v| %w{controller action}.include?(k) }
     provider = PacsclOaiProvider.new
     response = provider.process_request(options)
-    render text: response, content_type: "text/xml", layout: false
+    render plain: response, content_type: "text/xml", layout: false
   end
 end
