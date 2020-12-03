@@ -9,3 +9,7 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 Rails.application.config.assets.precompile += %w( application-maps.js )
+
+#Precompile for visualizations page
+Rails.application.config.assets.precompile += %w( visualizations/jit.js visualizations/InHORVisualization.js )
+Rails.application.config.assets.precompile += %w( visualizations/baseforInHOR.css visualizations/RGraph.css )
