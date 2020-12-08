@@ -552,7 +552,7 @@ class Record < ActiveRecord::Base
 
 ########################## Oai API Endpoint ################################
 
-  # def to_oai_dc
-  #   OaiDcConverter.new(self).to_xml
-  # end
+  def to_oai_dc
+    OaiDcConverter.new(self).to_xml
+  end
 end
