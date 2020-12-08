@@ -1,9 +1,13 @@
 class PacsclOaiController < ApplicationController
   def index
-    # Remove controller and action from the options. Rails adds them automatically.
-    options = params.delete_if { |k,v| %w{controller action}.include?(k) }
     provider = PacsclOaiProvider.new
-    response = provider.process_request(options)
+    response = provider.process_request(oai_params.to_h)
     render plain: response, content_type: "text/xml", layout: false
+  end
+
+  private
+
+  def oai_params
+    params.permit(:verb, :identifier, :metadataPrefix, :set, :from, :until, :resumptionToken)
   end
 end
