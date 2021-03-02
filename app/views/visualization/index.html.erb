@@ -5,18 +5,19 @@
 <title>RGraph - Tree Animation</title>
 
 <!-- CSS Files -->
-<% stylesheet_link_tag "visualizations/baseforInHOR", "visualizations/RGraph" %>
+<link type="text/css" href="../css/baseforInHOR.css" rel="stylesheet" />
+<link type="text/css" href="../css/RGraph.css" rel="stylesheet" />
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
-<%= javascript_include_tag "visualizations/jit" %>
+<script language="javascript" type="text/javascript" src="../../jit.js"></script>
 
 <!-- Example File -->
-<%= javascript_include_tag "visualizations/InHORVisualization" %>
+<script language="javascript" type="text/javascript" src="InHORVisualization-edited-final.js"></script>
 </head>
 
-<body>
+<body onload="init();">
 <div id="container">
 
 <div id="left-container">
@@ -28,18 +29,19 @@
 Subject Guide Visualization
 </h3>
 
-            Use this visualization to explore the many subjects addressed within In Her Own Right's database.<br /><br /><br />
-            How to Navigate: <br /><br />
+            Use this visualization to explore some of the subjects addressed within In Her Own Right's database.<br /><br /><br />
+            <b>How to Navigate:</b> <br /><br />
             <b>Click</b> on a topic to move the visualization and center that topic.<br /><br />
             Subjects related to that topic appear in a list in the right column. <b>Click</b> on the highlighted links to view items related to that subject in the In Her Own Right database in a new tab.<br /><br />
             <b>Use the mouse wheel</b> to zoom in and out, and <b>drag and drop the canvas</b> to move around. <br /><br /><br />
+            This visualization was created with the assistance of our Technical Committee and Data Jam and Metadata Enhancement participants using the open source <a href="http://philogb.github.io/jit/">InfoVis Toolkit</a>. Thank you!
 
 </div>
 
 <div id="id-list"></div>
 
 
-<div style="text-align:center;">This visualization was created using the open source <a href="http://philogb.github.io/jit/">InfoVis Toolkit,</a> with the assistance of our technical committee and metadata enhancement volunteers. Thank you!</div>
+<div style="text-align:center;"></div>
 </div>
 
 <div id="center-container">
