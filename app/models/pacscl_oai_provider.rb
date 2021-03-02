@@ -7,5 +7,15 @@ class PacsclOaiProvider < OAI::Provider::Base
   repository_url 'http://pacscl.neomind.com/oai'
   record_prefix 'oai:pacscl'
   admin_email 'admin@neomindlabs.com'
-  source_model OAI::Provider::ActiveRecordWrapper.new(Record)
+  source_model OAI::Provider::ActiveRecordWrapper.new(Record.includes(:dc_titles,
+                                                                      :dc_dates,
+                                                                      :dc_rights,
+                                                                      :dc_creators,
+                                                                      :dc_descriptions,
+                                                                      :dc_languages,
+                                                                      :dc_subjects,
+                                                                      :dc_types,
+                                                                      :dc_terms_extents,
+                                                                      :dc_terms_is_part_ofs,
+                                                                      :dc_terms_spacials))
 end
