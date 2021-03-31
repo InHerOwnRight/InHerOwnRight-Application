@@ -5,4 +5,7 @@ class DcIdentifier < ActiveRecord::Base
     identifier.split(":").first == "http" || identifier.split(":").first == "https"
   end
 
+  def identifier_is_islandora_url?
+    identifier.include?("https://digitalcollections.tricolib.brynmawr.edu")
+  end
 end

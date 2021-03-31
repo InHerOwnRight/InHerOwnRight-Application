@@ -7,10 +7,16 @@ class DcRelation < ActiveRecord::Base
   private
 
   def check_pacscl_collection
-    matching_pacscl_collection = PacsclCollection.find_by_detailed_name(relation)
-    if matching_pacscl_collection
-      self.pacscl_collection_id = matching_pacscl_collection.id
-      save
+    if !self.relation.nil?
+      begin
+        relation = self.relation.split(",").first.strip if self.record.repository.islandora?
+        matching_pacscl_collection = PacsclCollection.all.find { |c| c.detailed_name.downcase.include?(relation.downcase) }
+        if matching_pacscl_collection
+          self.pacscl_collection_id = matching_pacscl_collection.id
+          save
+        end
+      rescue
+      end
     end
   end
 end

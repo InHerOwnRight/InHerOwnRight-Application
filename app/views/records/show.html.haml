@@ -37,7 +37,7 @@
       - if @record.dc_research_interests.any?
         = render 'dc_research_interests'
 
-      - if @record.dc_terms_extents.any?
+      - if @record.dc_terms_extents.any? || (@record.dc_formats.any? && @record.repository.islandora?)
         = render 'dc_terms_extents'
 
       - if @record.dc_types.any?

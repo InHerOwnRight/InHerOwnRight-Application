@@ -26,7 +26,6 @@ module OaiHarvestHelper
       Delayed::Job.enqueue(DelayedRake.new("import_metadata:tri_colleges[#{harvest.id}]"), queue: "oai_tricolleges")
     else
       Delayed::Job.enqueue(DelayedRake.new("import_metadata:#{repo.oai_task}[#{harvest.id}]"), queue: "oai_#{repo.oai_task}")
-      # Rake::Task["import_metadata:#{repo.oai_task}"].invoke(harvest.id)
     end
   end
 

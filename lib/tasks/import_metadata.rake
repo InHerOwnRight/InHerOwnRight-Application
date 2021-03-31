@@ -97,7 +97,7 @@ namespace :import_metadata do
       end
 
       if !response_record.metadata.blank?
-        islandora_metadata = Net::HTTP.get(URI.parse("https://digitalcollections.tricolib.brynmawr.edu/islandora/object/#{identifier.split(":").last.gsub("_", "%3A")}/datastream/MODS/view"))
+        islandora_metadata = client.get_record(metadata_prefix: 'oai_dc', identifier: identifier).record.metadata.to_s
         if !relations_nodes.blank?
           processed_xml_document = Nokogiri::XML.parse(islandora_metadata)
           relations_nodes.each do |node|

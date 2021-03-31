@@ -1,6 +1,16 @@
-- @record.dc_terms_extents.each do |dc_term_extent|
-  %tr
-    %th{ scope: "row" }
-      Size
-    %td
-      = dc_term_extent.extent
+- if @record.repository.islandora?
+  - @record.dc_formats.each do |dc_format|
+    - if dc_format.format.count("0-9") > 0
+      %tr
+        %th{ scope: "row" }
+          Size
+        %td
+          = dc_format.format
+
+- else
+  - @record.dc_terms_extents.each do |dc_term_extent|
+    %tr
+      %th{ scope: "row" }
+        Size
+      %td
+        = dc_term_extent.extent

@@ -460,8 +460,7 @@ class Record < ActiveRecord::Base
 
   def create_dc_part(node_name, xml_doc, record)
     xml_doc.xpath("//#{node_name}").map do |node|
-
-      if node_name == "creator" || node_name == "contributor"
+      if node_name == "creator"
         create_dc_creator(node, record)
       end
 
@@ -469,7 +468,7 @@ class Record < ActiveRecord::Base
         create_dc_creator_mods(node, record)
       end
 
-      if node_name == "identifier"
+      if node_name == "identifier" || node_name == "identifier.url"
         create_dc_identifier(node, record)
       end
 
@@ -506,7 +505,7 @@ class Record < ActiveRecord::Base
       end
 
       if node_name == "description"
-        create_dc_description(node, record)
+        create_dc_description(node, record) 
       end
 
       if node_name == "licence" || node_name == "accessCondition"
@@ -527,7 +526,7 @@ class Record < ActiveRecord::Base
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_identifier.url', 'dc_subject', 'dc_spacial', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
         dc_model[node_name] = node.text
