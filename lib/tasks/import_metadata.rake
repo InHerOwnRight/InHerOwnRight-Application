@@ -77,6 +77,63 @@ namespace :import_metadata do
     puts nil_metadata_identifiers
   end
 
+
+
+
+
+
+  def import_from_islandora_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
+    nil_metadata_identifiers = []
+    identifiers_relations_hash.each do |identifier, relations_nodes|
+      response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
+      response_record = response.record
+      raw_record = RawRecord.find_or_initialize_by(oai_identifier: response_record.header.identifier)
+
+      if !response_record.header.set_spec.first.text.blank?
+        raw_record.set_spec = response_record.header.set_spec.first.text
+        raw_record.original_record_url = "#{base_response_record_path}#{identifier.split(":").last.delete("_")}"
+      end
+
+      if !response_record.header.identifier.blank?
+        raw_record.oai_identifier = response_record.header.identifier
+      end
+
+      if !response_record.header.datestamp.blank?
+        raw_record.original_entry_date = response_record.header.datestamp
+      end
+
+      if !response_record.metadata.blank?
+        if !relations_nodes.blank?
+          processed_xml_document = Nokogiri::XML.parse(response_record.metadata.to_s)
+          relations_nodes.each do |node|
+            processed_xml_document.first_element_child.first_element_child.add_child(node)
+          end
+          raw_record.xml_metadata = processed_xml_document
+        else
+          raw_record.xml_metadata = response_record.metadata
+        end
+      else
+        nil_metadata_identifiers << response_record.header.identifier
+      end
+
+      raw_record.repository_id = repository.id
+      raw_record.harvest_id = nil
+
+      if raw_record.save
+        puts "Successfully imported #{raw_record.oai_identifier}"
+      else
+        puts "Something went wrong."
+      end
+    end
+    puts nil_metadata_identifiers
+  end
+
+
+
+
+
+
   task :temple, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14', 'p15037coll15']
@@ -174,6 +231,59 @@ namespace :import_metadata do
     metadata_prefix = "oai_qdc"
     import_from_oai_client(friends, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
+
+
+
+
+
+
+
+
+
+
+  task bryn_mawr: :environment do
+    binding.pry
+    identifiers_relations_hash = {}
+    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
+    bryn_mawr = Repository.find_by_short_name("Bryn Mawr College")
+    client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
+
+    begin
+      response = client.list_records(metadata_prefix: 'oai_dc', set: 'bmc_in-her-own-right')
+      metadata_records = []
+      response.each { |r| metadata_records << r }
+      until response.resumption_token.nil?
+        response = client.list_records(resumption_token: response.resumption_token)
+        response.each { |r| metadata_records << r }
+      end
+      metadata_records.each do |record|
+        identifiers_relations_hash[record.header.identifier] = ''
+      end
+    rescue OAI::Exception => e
+      if EmptyImportErrors.include?(e.message.strip)
+        puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+        base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+        metadata_prefix = "oai_qdc"
+        import_from_islandora_oai_client(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+        next
+      else
+        raise e
+      end
+    end
+
+    base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+    metadata_prefix = "oai_qdc"
+    import_from_islandora_oai_client(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+  end
+
+
+
+
+
+
+
+
+
 
   task :haverford, [:harvest_id] => [:environment] do |t, args|
     repository = Repository.find_by_short_name("Haverford College")
