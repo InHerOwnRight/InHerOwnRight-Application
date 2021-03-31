@@ -3,9 +3,9 @@ class Record < ActiveRecord::Base
   friendly_id :oai_identifier, use: :slugged
 
   belongs_to :raw_record
-  has_many :oai_harvest_records
+  has_many :oai_harvest_records, dependent: :destroy
   has_many :oai_harvests, through: :oai_harvest_records
-  has_many :csv_harvest_records
+  has_many :csv_harvest_records, dependent: :destroy
   has_many :csv_harvests, through: :csv_harvest_records
   delegate :repository, to: :raw_record, allow_nil: true
   has_many :dc_contributors, dependent: :destroy
