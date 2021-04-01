@@ -42,7 +42,7 @@ module OaiHarvestHelper
 
         if record.save
           OaiHarvestRecord.create(record_id: record.id, oai_harvest_id: harvest.id)
-          node_names = ["title", "date", "creator", "subject", "format", "type", "language", "rights", "relation", "created", "licence", "identifier", "description", "contributor", "publisher", "extent", "source", "spatial", "text", "isPartOf", "coverage", "spacial"]
+          node_names = ["title", "mods/titleInfo", "date", "dateCreated", "creator", "name", "subject", "format", "type", "typeOfResource", "genre", "language", "language/languageTerm", "rights", "accessCondition",  "relation", "created", "licence", "identifier", "description", "abstract", "contributor", "publisher", "extent", "source", "spatial", "geographic", "text", "isPartOf", "relatedItem/titleInfo", "coverage", "spacial"]
           node_names.each do | node_name |
             record.create_dc_part(node_name, xml_doc, record)
           end
@@ -57,8 +57,6 @@ module OaiHarvestHelper
   def self.import_images(harvest, repo)
     if repo == "TriColleges"
       Delayed::Job.enqueue(DelayedRake.new("import_images:swarthmore[#{harvest.id}]"), queue: "oai_tricolleges")
-      Delayed::Job.enqueue(DelayedRake.new("import_images:haverford[#{harvest.id}]"), queue: "oai_tricolleges")
-      Delayed::Job.enqueue(DelayedRake.new("import_images:brynmawr[#{harvest.id}]"), queue: "oai_tricolleges")
       Delayed::Job.enqueue(DelayedRake.new("import_images:clean_up_collection_imgs"), queue: "oai_tricolleges")
     else
       Delayed::Job.enqueue(DelayedRake.new("import_images:#{repo.image_task}[#{harvest.id}]"), queue: "oai_#{repo.oai_task}")

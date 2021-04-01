@@ -254,24 +254,38 @@ namespace :import_metadata do
     import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
   end
 
-
-
-
-
-
-
-
-
-
   task :haverford, [:harvest_id] => [:environment] do |t, args|
-    repository = Repository.find_by_short_name("Haverford College")
-    repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
-    base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
     identifiers_relations_hash = {}
-    identifiers = ['oai:tricontentdm.brynmawr.edu:HC_DigReq/19215', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19217', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19224', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19231', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19237', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19249', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19246', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19241', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19252', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19259', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19262', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19265', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19270', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19272', 'oai:tricontentdm.brynmawr.edu:HC_DigReq/19276']
-    identifiers.map{|id| identifiers_relations_hash[id] = ''}
+    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
+    bryn_mawr = Repository.find_by_short_name("Haverford College")
+    client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
+
+    begin
+      response = client.list_records(metadata_prefix: 'oai_dc', set: 'hc_in-her-own-right')
+      metadata_records = []
+      response.each { |r| metadata_records << r }
+      until response.resumption_token.nil?
+        response = client.list_records(resumption_token: response.resumption_token)
+        response.each { |r| metadata_records << r }
+      end
+      metadata_records.each do |record|
+        identifiers_relations_hash[record.header.identifier] = ''
+      end
+    rescue OAI::Exception => e
+      if EmptyImportErrors.include?(e.message.strip)
+        puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+        base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+        metadata_prefix = "oai_qdc"
+        import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+        next
+      else
+        raise e
+      end
+    end
+
+    base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_qdc"
-    import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
 ### CSV IMPORTS ########################################################################################

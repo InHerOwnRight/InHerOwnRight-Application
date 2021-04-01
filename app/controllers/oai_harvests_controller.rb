@@ -10,7 +10,7 @@ class OaiHarvestsController < ApplicationController
 
   def create
     if oai_harvest_params[:repository_id] == "TriColleges"
-      tricollege_repos = Repository.where(short_name: ["Swarthmore - Friends", "Swarthmore - Peace", "Bryn Mawr College", "Haverford College"])
+      tricollege_repos = Repository.where(short_name: ["Swarthmore - Friends", "Swarthmore - Peace"])
       tricollege_repo_ids = tricollege_repos.all.map(&:id)
       if !OAIHarvest.where(repository_id: tricollege_repo_ids).where.not(status: "complete").empty?
         flash[:notice] = "A harvest is already in progress for TriColleges."
