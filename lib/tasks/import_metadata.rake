@@ -11,7 +11,7 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-  task all_oai: [:temple, :tri_colleges, :drexel, :haverford]
+  task all_oai: [:bryn_mawr, :temple, :tri_colleges, :drexel, :haverford]
   task all_csv: [:from_bates, :from_library_co, :from_hsp, :from_german_society, :from_udel,
                  :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
                  :from_union_league, :collections]
@@ -56,12 +56,10 @@ namespace :import_metadata do
       friends = Repository.find_by_short_name("Swarthmore - Friends")
       peace = Repository.find_by_short_name("Swarthmore - Peace")
       haverford = Repository.find_by_short_name("Haverford College")
-      brynmawr = Repository.find_by_short_name("Bryn Mawr College")
 
       raw_record.repository_id = repository.id
       if !raw_record.xml_metadata.nil?
         raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
-        raw_record.repository_id = brynmawr.id if raw_record.xml_metadata.include?("Bryn Mawr College Special Collections")
         raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
@@ -77,12 +75,7 @@ namespace :import_metadata do
     puts nil_metadata_identifiers
   end
 
-
-
-
-
-
-  def import_from_islandora_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+  def import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, harvest_id)
     client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
     nil_metadata_identifiers = []
     identifiers_relations_hash.each do |identifier, relations_nodes|
@@ -104,21 +97,22 @@ namespace :import_metadata do
       end
 
       if !response_record.metadata.blank?
+        islandora_metadata = Net::HTTP.get(URI.parse("https://digitalcollections.tricolib.brynmawr.edu/islandora/object/#{identifier.split(":").last.gsub("_", "%3A")}/datastream/MODS/view"))
         if !relations_nodes.blank?
-          processed_xml_document = Nokogiri::XML.parse(response_record.metadata.to_s)
+          processed_xml_document = Nokogiri::XML.parse(islandora_metadata)
           relations_nodes.each do |node|
             processed_xml_document.first_element_child.first_element_child.add_child(node)
           end
           raw_record.xml_metadata = processed_xml_document
         else
-          raw_record.xml_metadata = response_record.metadata
+          raw_record.xml_metadata = islandora_metadata
         end
       else
         nil_metadata_identifiers << response_record.header.identifier
       end
 
       raw_record.repository_id = repository.id
-      raw_record.harvest_id = nil
+      raw_record.harvest_id = harvest_id
 
       if raw_record.save
         puts "Successfully imported #{raw_record.oai_identifier}"
@@ -128,11 +122,6 @@ namespace :import_metadata do
     end
     puts nil_metadata_identifiers
   end
-
-
-
-
-
 
   task :temple, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
@@ -199,7 +188,6 @@ namespace :import_metadata do
     friends = Repository.find_by_short_name("Swarthmore - Friends")
     peace = Repository.find_by_short_name("Swarthmore - Peace")
     haverford = Repository.find_by_short_name("Haverford College")
-    brynmawr = Repository.find_by_short_name("Bryn Mawr College")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
@@ -232,17 +220,7 @@ namespace :import_metadata do
     import_from_oai_client(friends, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
-
-
-
-
-
-
-
-
-
-  task bryn_mawr: :environment do
-    binding.pry
+  task :bryn_mawr, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
     bryn_mawr = Repository.find_by_short_name("Bryn Mawr College")
@@ -264,7 +242,7 @@ namespace :import_metadata do
         puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
         base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
         metadata_prefix = "oai_qdc"
-        import_from_islandora_oai_client(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+        import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
         next
       else
         raise e
@@ -273,7 +251,7 @@ namespace :import_metadata do
 
     base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_qdc"
-    import_from_islandora_oai_client(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
+    import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix)
   end
 
 

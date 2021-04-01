@@ -1,6 +1,16 @@
-- @record.dc_types.each do |dc_type|
+- if @record.dc_types.count > 1
   %tr
     %th{ scope: "row" }
-      Type
+      Types
     %td
-      = link_to dc_type.type, search_catalog_path( search_field: "type", q: @record.dc_types.first.type )
+      - @record.dc_types.each_with_index do |dc_type, index|
+        = link_to dc_type.type, search_catalog_path( search_field: "type", q: dc_type.type )
+        = "|" unless index == @record.dc_types.size - 1
+
+- else
+  - if !@record.dc_types.first.type.blank?
+    %tr
+      %th{ scope: "row" }
+        Type
+      %td
+        = link_to dc_type.type, search_catalog_path( search_field: "type", q: dc_type.type )

@@ -283,6 +283,21 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def create_dc_creator_mods(node, record)
+    if !node.text.blank?
+      split_string = node.text.strip.split
+      if ["author", "addressee", "creator", "contributor"].include?(split_string.last)
+        role = split_string.last.insert(0, "(").insert(-1, ")")
+        split_string.pop
+        creator = (split_string << role).join(" ")
+      else
+        creator = split_string.join(" ")
+      end
+
+      dc_creator = DcCreator.find_or_create_by(creator: creator)
+      record_dc_creator = RecordDcCreatorTable.find_or_create_by(record_id: record.id, dc_creator_id: dc_creator.id)
+    end
+  end
 
   def create_dc_subject(node, record)
     if node.text =~ /\;/
@@ -299,7 +314,9 @@ class Record < ActiveRecord::Base
   end
 
   def create_dc_language(node, record)
-    if node.text =~ /\;/
+    if node.text.include?("\n")
+      return
+    elsif node.text =~ /\;/
       languages = node.text.split(";")
     else
       languages = node.text.split("|")
@@ -448,11 +465,15 @@ class Record < ActiveRecord::Base
         create_dc_creator(node, record)
       end
 
+      if node_name == "name"
+        create_dc_creator_mods(node, record)
+      end
+
       if node_name == "identifier"
         create_dc_identifier(node, record)
       end
 
-      if node_name == "type"
+      if node_name == "type" || node_name == "typeOfResource" || node_name == "genre"
         create_dc_type(node, record)
       end
 
@@ -460,11 +481,11 @@ class Record < ActiveRecord::Base
         create_dc_subject(node, record)
       end
 
-      if node_name == "language"
+      if node_name == "language" || node_name == "language/languageTerm"
         create_dc_language(node, record)
       end
 
-      if node_name == "date" || node_name == "created"
+      if node_name == "date" || node_name == "created" || node_name == "dateCreated"
         create_dc_date(node, record)
       end
 
@@ -472,11 +493,11 @@ class Record < ActiveRecord::Base
         create_dc_terms_extent(node, record)
       end
 
-      if node_name == "spacial" || node_name == "coverage" || node_name == "spatial"
+      if node_name == "spacial" || node_name == "coverage" || node_name == "spatial" || node_name == "geographic"
         create_dc_terms_spacial(node, record)
       end
 
-      if node_name == "isPartOf"
+      if node_name == "isPartOf" || node_name == "relatedItem/titleInfo"
         create_dc_terms_is_part_of(node, record)
       end
 
@@ -488,13 +509,25 @@ class Record < ActiveRecord::Base
         create_dc_description(node, record)
       end
 
-      if node_name == "licence"
+      if node_name == "licence" || node_name == "accessCondition"
         node_name = "rights"
+      end
+
+      if node_name == "mods/titleInfo"
+        node_name = "title"
+      end
+
+      if node_name == "relatedItem/titleInfo"
+        node_name = "isPartOf"
+      end
+
+      if node_name == "language/languageTerm"
+        node_name = "language"
       end
 
       actual_model_name(node_name)
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial', 'dc_description']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_subject', 'dc_spacial', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic']
       if !modular_creators.include?(@part_model_name)
         dc_model = "#{@part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
         dc_model[node_name] = node.text

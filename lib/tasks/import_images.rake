@@ -7,7 +7,7 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :brynmawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchs, :unitedlutheran]
+  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :bryn_mawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchs, :unitedlutheran]
   task all: [:all_repos, :clean_up_collection_imgs]
 
   desc "Import images from Bates"
@@ -259,7 +259,7 @@ namespace :import_images do
   end
 
   desc "Import images from Bryn Mawr"
-  task :brynmawr, [:harvest_id] => :environment do |t, args|
+  task :bryn_mawr, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/BrynMawr').collect(&:key)
