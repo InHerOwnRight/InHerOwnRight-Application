@@ -13,4 +13,4 @@
       %th{ scope: "row" }
         Type
       %td
-        = link_to dc_type.type, search_catalog_path( search_field: "type", q: dc_type.type )
+        = link_to @record.dc_types.first.type, search_catalog_path( search_field: "type", q: @record.dc_types.first.type )
