@@ -24,7 +24,7 @@
     %tbody
       - @oai_harvests.each do |harvest|
         - if harvest.repository.nil?
-          - repos = ["Haverford College", "Bryn Mawr College", "Swarthmore - Peace", "Swarthmore - Friends"]
+          - repos = ["Haverford College", "Swarthmore - Peace", "Swarthmore - Friends"]
           - repos.each do |repo|
             %tr
               %td

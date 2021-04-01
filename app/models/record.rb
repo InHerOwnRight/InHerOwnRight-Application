@@ -324,7 +324,7 @@ class Record < ActiveRecord::Base
     stripped_languages = languages.map { |s| s.strip }
     stripped_languages -= [""]
     stripped_languages.each do |language|
-      dc_language = DcLanguage.find_or_create_by(language: language)
+      dc_language = DcLanguage.find_or_create_by(language: language, record_id: record.id)
     end
   end
 
