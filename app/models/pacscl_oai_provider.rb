@@ -17,5 +17,6 @@ class PacsclOaiProvider < OAI::Provider::Base
                                                                       :dc_types,
                                                                       :dc_terms_extents,
                                                                       :dc_terms_is_part_ofs,
-                                                                      :dc_terms_spacials))
+                                                                      :dc_terms_spacials),
+                                                      limit: Record.count)
 end
