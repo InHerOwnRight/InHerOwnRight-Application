@@ -41,7 +41,7 @@ module OaiHarvestHelper
 
         if record.save
           OaiHarvestRecord.create(record_id: record.id, oai_harvest_id: harvest.id)
-          node_names = ["title", "mods/titleInfo", "date", "dateCreated", "creator", "name", "subject", "format", "type", "typeOfResource", "genre", "language", "language/languageTerm", "rights", "accessCondition",  "relation", "created", "licence", "identifier", "description", "abstract", "contributor", "publisher", "extent", "source", "spatial", "geographic", "text", "isPartOf", "relatedItem/titleInfo", "coverage", "spacial"]
+          node_names = ["title", "mods/titleInfo", "date", "dateCreated", "creator", "name", "subject", "format", "type", "typeOfResource", "genre", "language", "language/languageTerm", "rights", "accessCondition",  "relation", "created", "licence", "identifier", "description", "abstract", "contributor", "publisher", "extent", "source", "spatial", "geographic", "text", "isPartOf", "relatedItem/titleInfo", "coverage", "spacial", "identifier.url"]
           node_names.each do | node_name |
             record.create_dc_part(node_name, xml_doc, record)
           end

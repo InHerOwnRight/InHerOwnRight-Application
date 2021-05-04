@@ -1,4 +1,3 @@
-
 require 'oai'
 require "csv"
 require "./app/helpers/import_record_collections_helper.rb"

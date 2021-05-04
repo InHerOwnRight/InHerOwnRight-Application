@@ -81,13 +81,20 @@ namespace :import_images do
           end
         end
         record.dc_identifiers.each do |dc_identifier|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+          if !dc_identifier.identifier.blank?
+            if dc_identifier.identifier[0..4] == "local"
+              identifier = dc_identifier.identifier[7..-1]
+            else
+              identifier = dc_identifier.identifier
             end
-            record.save
+            if image_path.include?(identifier)
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
+            end
           end
         end
       end
@@ -269,13 +276,20 @@ namespace :import_images do
     harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
+          if !dc_identifier.identifier.blank?
+            if dc_identifier.identifier[0..4] == "local"
+              identifier = dc_identifier.identifier[7..-1]
+            else
+              identifier = dc_identifier.identifier
             end
-            record.save
+            if image_path.include?(identifier)
+              if image_path[-9..-1] == "thumb.png"
+                record.thumbnail = "/#{image_path}"
+              elsif image_path[-6..-1] == "lg.png"
+                record.file_name = "/#{image_path}"
+              end
+              record.save
+            end
           end
         end
       end
