@@ -41,13 +41,13 @@
                 %li
                   = link_to "/spotlight/guides/feature/institution-based-guide", class: "dropdown-item" do
                     %span Institutions Guide
+                %li
+                  -# = link_to "/spotlight/guides/feature/subject-guides", class: "dropdown-item" do
+                  = link_to "/visualization", class: "dropdown-item" do
+                    %span Subject Guide
             %li.nav-item
               %li
-                = link_to "Subject Guides", "/spotlight/guides/feature/subject-guides", class: "dropdown-item"
-              %li
                 = link_to "Map", "/map", class: "dropdown-item"
-              %li
-                = link_to "Visualization", "/visualization", class: "dropdown-item"
         %li.nav-item.dropdown
           %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "learnDropdown"}
             Learn
@@ -65,11 +65,18 @@
                 %li
                   = link_to "/spotlight/biographical-profiles", class: "dropdown-item" do
                     %span Biographical Profiles
+            %li.dropdown-submenu
+              %a.dropdown-item.dropdown-toggle{"data-toggle" => "dropdown", :role => "button", "aria-haspopup" => "true", "aria-expanded" => "false", :href => "#", :id => "SubMenuDropdown"}
+                Teachers and Students
+              %ul.dropdown-menu{"aria-labelledby" => "SubmenuDropdown"}
+                %li
+                  = link_to "/spotlight/primary-source-sets", class: "dropdown-item" do
+                    %span Primary Source Sets
             %li.nav-item
-              = link_to "/spotlight/teachers-and-students", class: "dropdown-item" do
-                %span Teachers and Students
+              = link_to "/spotlight/addressing-historical-inequities", class: "dropdown-item" do
+                %span Addressing Historical Inequities
             %li.nav-item
-              = link_to "/spotlight/teachers-and-students/feature/search-tips", class: "dropdown-item" do
+              = link_to "/spotlight/search-tips", class: "dropdown-item" do
                 %span Search Tips
         %li.nav-item
           = link_to "About", "/spotlight/about"
