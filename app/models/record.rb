@@ -505,7 +505,7 @@ class Record < ActiveRecord::Base
       end
 
       if node_name == "description"
-        create_dc_description(node, record) 
+        create_dc_description(node, record)
       end
 
       if node_name == "licence" || node_name == "accessCondition"
