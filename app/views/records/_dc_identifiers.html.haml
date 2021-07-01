@@ -3,18 +3,18 @@
     %th{ scope: "row" }
       View full item
     %td
-      - @record.dc_identifiers.select { |i| i.identifier_is_islandora_url? }.each_with_index do |dc_identifier, index|
-        = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
-        = "|" unless index == @record.dc_identifiers.select { |i| i.identifier_is_islandora_url? }.size - 1
+      = @record.dc_identifiers.select { |i| i.identifier_is_islandora_url? }.map do |dc_identifier|
+        - link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
+      - end.join(' | ').html_safe
 
 - elsif @record.dc_identifiers.select { |i| i.identifier_is_url? }.size > 1
   %tr
     %th{ scope: "row" }
       View full item
     %td
-      - @record.dc_identifiers.select { |i| i.identifier_is_url? }.each_with_index do |dc_identifier, index|
-        = link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
-        = "|" unless index == @record.dc_identifiers.select { |i| i.identifier_is_url? }.size - 1
+      = @record.dc_identifiers.select { |i| i.identifier_is_url? }.each_with_index do |dc_identifier|
+        - link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
+      - end.join(' | ').html_safe
 - else
   - if !@record.dc_identifiers.select { |i| i.identifier_is_url? }.empty? && !@record.dc_identifiers.select { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
@@ -29,9 +29,9 @@
     %th{ scope: "row" }
       Local identifier
     %td
-      - @record.dc_identifiers.reject { |i| i.identifier_is_url? }.each_with_index do |dc_identifier, index|
-        = dc_identifier.identifier
-        = "|" unless index == @record.dc_identifiers.reject { |i| i.identifier_is_url? }.size - 1
+      = @record.dc_identifiers.reject { |i| i.identifier_is_url? }.map do |dc_identifier|
+        - dc_identifier.identifier
+      - end.join(' | ')
 - else
   - if !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.empty? && !@record.dc_identifiers.reject { |i| i.identifier_is_url? }.first.identifier.blank?
     %tr
