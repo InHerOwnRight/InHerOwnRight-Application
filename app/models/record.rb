@@ -442,6 +442,7 @@ class Record < ActiveRecord::Base
       else
         text = node.text
       end
+      text = text.gsub(/^local:\s*/, '')
       dc_identifier = DcIdentifier.find_or_create_by(record_id: record.id, identifier: text)
     end
   end
