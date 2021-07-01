@@ -36,15 +36,18 @@
                 Guides
               %ul.dropdown-menu{"aria-labelledby" => "guidesSubmenuDropdown"}
                 %li
-                  = link_to "/spotlight/guides/feature/collections-guide", class: "dropdown-item" do
-                    %span Collections Guide
-                %li
-                  = link_to "/spotlight/guides/feature/institution-based-guide", class: "dropdown-item" do
-                    %span Institutions Guide
+                  = link_to "/spotlight/guides", class: "dropdown-item" do
+                    %span All Guides
                 %li
                   -# = link_to "/spotlight/guides/feature/subject-guides", class: "dropdown-item" do
                   = link_to "/visualization", class: "dropdown-item" do
                     %span Subject Guide
+                %li
+                  = link_to "/spotlight/guides/feature/collections-guide", class: "dropdown-item" do
+                    %span Collections Guide
+                %li
+                  = link_to "/spotlight/guides/feature/institution-based-guide", class: "dropdown-item" do
+                    %span Browse by Contributor
             %li.nav-item
               %li
                 = link_to "Map", "/map", class: "dropdown-item"
@@ -70,8 +73,11 @@
                 Teachers and Students
               %ul.dropdown-menu{"aria-labelledby" => "SubmenuDropdown"}
                 %li
+                  = link_to "/spotlight/teachers-and-students", class: "dropdown-item" do
+                    %span Starting Points
+                %li
                   = link_to "/spotlight/primary-source-sets", class: "dropdown-item" do
-                    %span Primary Source Sets
+                    %span Classroom Resources
             %li.nav-item
               = link_to "/spotlight/addressing-historical-inequities", class: "dropdown-item" do
                 %span Addressing Historical Inequities
