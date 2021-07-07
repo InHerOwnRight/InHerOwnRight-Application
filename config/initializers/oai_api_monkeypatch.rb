@@ -2,6 +2,30 @@ require 'oai'
 
 module OAI
   class Client
+
+    MAX_TIMEOUT_RETRIES = 5
+
+    alias get_without_retry get
+    def get(*args)
+      success = false
+      count = 0
+      result = nil
+      while success == false && count < MAX_TIMEOUT_RETRIES do
+        begin 
+          result = get_without_retry(*args)
+          success = true
+        rescue Faraday::TimeoutError, Net::ReadTimeout => error
+          sleep 5
+          if count >= MAX_TIMEOUT_RETRIES # let the next one continue. We can always collect these and go back for the failures.
+            puts "Too many timeouts (#{count}/#{MAX_TIMEOUT_RETRIES}) for #{args.inspect}"
+           #  raise "Too many timeouts (#{count}/#{MAX_TIMEOUT_RETRIES})" unless count < MAX_TIMEOUT_RETRIES
+          end
+        end # rescue
+        count += 1
+      end # while
+      return result
+    end
+
     # This was copied from /usr/local/rvm/gems/ruby-2.3.8/gems/oai-0.4.0/lib/oai/client.rb in order to customize the faraday connection timeout.
     def initialize(base_url, options={})
        @base = URI.parse base_url
