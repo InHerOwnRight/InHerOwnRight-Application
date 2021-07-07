@@ -10,7 +10,7 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-  task all_oai: [:bryn_mawr, :temple, :tri_colleges, :drexel, :haverford]
+  task all_oai: [:bryn_mawr, :temple, :drexel, :haverford, :swarthmore]
   task all_csv: [:from_bates, :from_library_co, :from_hsp, :from_german_society, :from_udel,
                  :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
                  :from_union_league, :collections]
@@ -110,7 +110,17 @@ namespace :import_metadata do
         nil_metadata_identifiers << response_record.header.identifier
       end
 
+      friends = Repository.find_by_short_name("Swarthmore - Friends")
+      peace = Repository.find_by_short_name("Swarthmore - Peace")
+      haverford = Repository.find_by_short_name("Haverford College")
+
       raw_record.repository_id = repository.id
+      if !raw_record.xml_metadata.nil?
+        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
+        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
+        raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
+      end
+
       raw_record.harvest_id = harvest_id
 
       if raw_record.save
@@ -179,50 +189,44 @@ namespace :import_metadata do
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
-  task :tri_colleges, [:harvest_id] => [:environment] do |t, args|
+  task :swarthmore, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
-    repo_path = "http://tricontentdm.brynmawr.edu/oai/oai.php"
-    set_specs = ['InHOR']
+    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
+    repository = Repository.find_by_short_name("Swarthmore College")
+    client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
-    friends = Repository.find_by_short_name("Swarthmore - Friends")
-    peace = Repository.find_by_short_name("Swarthmore - Peace")
-    haverford = Repository.find_by_short_name("Haverford College")
-
-    set_specs.map do |set|
-      client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      begin
-        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
-        metadata_records = []
+    begin
+      response = client.list_records(metadata_prefix: 'oai_dc', set: 'sc_ihor')
+      metadata_records = []
+      response.each { |r| metadata_records << r }
+      until response.resumption_token.nil?
+        response = client.list_records(resumption_token: response.resumption_token)
         response.each { |r| metadata_records << r }
-        until response.resumption_token.nil?
-          response = client.list_records(resumption_token: response.resumption_token)
-          response.each { |r| metadata_records << r }
-        end
-        metadata_records.each do |record|
-          identifiers_relations_hash[record.header.identifier] = ''
-        end
-      rescue OAI::Exception => e
-        if EmptyImportErrors.include?(e.message.strip)
-          puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
-          base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
-          metadata_prefix = "oai_qdc"
-          import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
-          next
-        else
-          raise e
-        end
+      end
+      metadata_records.each do |record|
+        identifiers_relations_hash[record.header.identifier] = ''
+      end
+    rescue OAI::Exception => e
+      if EmptyImportErrors.include?(e.message.strip)
+        puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+        base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+        metadata_prefix = "oai_qdc"
+        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+        next
+      else
+        raise e
       end
     end
 
-    base_response_record_path = 'http://tricontentdm.brynmawr.edu/cdm/ref/collection/'
+    base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_qdc"
-    import_from_oai_client(friends, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
   task :bryn_mawr, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
-    bryn_mawr = Repository.find_by_short_name("Bryn Mawr College")
+    repository = Repository.find_by_short_name("Bryn Mawr College")
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
     begin
@@ -241,7 +245,7 @@ namespace :import_metadata do
         puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
         base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
         metadata_prefix = "oai_qdc"
-        import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
         next
       else
         raise e
@@ -250,13 +254,13 @@ namespace :import_metadata do
 
     base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_qdc"
-    import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
   task :haverford, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
-    bryn_mawr = Repository.find_by_short_name("Haverford College")
+    repository = Repository.find_by_short_name("Haverford College")
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
     begin
@@ -275,7 +279,7 @@ namespace :import_metadata do
         puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
         base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
         metadata_prefix = "oai_qdc"
-        import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
         next
       else
         raise e
@@ -284,7 +288,7 @@ namespace :import_metadata do
 
     base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_qdc"
-    import_islandora_metadata(bryn_mawr, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
 ### CSV IMPORTS ########################################################################################
