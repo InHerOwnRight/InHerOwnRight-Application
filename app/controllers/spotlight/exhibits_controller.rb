@@ -27,8 +27,7 @@ module Spotlight
     end
 
     def process_import
-      @exhibit.import(JSON.parse(import_exhibit_params.read))
-      if @exhibit.save && @exhibit.reindex_later
+      if @exhibit.import(JSON.parse(import_exhibit_params.read)) && @exhibit.reindex_later(current_user)
         redirect_to spotlight.exhibit_dashboard_path(@exhibit), notice: t(:'helpers.submit.exhibit.updated', model: @exhibit.class.model_name.human.downcase)
       else
         render action: :import
@@ -50,7 +49,7 @@ module Spotlight
       respond_to do |format|
         format.json do
           authorize! :export, @exhibit
-          send_data JSON.pretty_generate(Spotlight::ExhibitExportSerializer.new(@exhibit).as_json),
+          send_data JSON.pretty_generate(Spotlight::ExhibitImportExportService.new(@exhibit).as_json),
                     type: 'application/json',
                     disposition: 'attachment',
                     filename: "#{@exhibit.friendly_id}-export.json"
