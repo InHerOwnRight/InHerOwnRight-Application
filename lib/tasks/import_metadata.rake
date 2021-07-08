@@ -114,12 +114,13 @@ namespace :import_metadata do
       peace = Repository.find_by_short_name("Swarthmore - Peace")
       haverford = Repository.find_by_short_name("Haverford College")
 
-      raw_record.repository_id = repository.id
+      # raw_record.repository_id = repository.id # there's no default.
       if !raw_record.xml_metadata.nil?
         raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
         raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
+      raise "no repository_id found for #{raw_record.inspect}" unless raw_record.repository_id
 
       raw_record.harvest_id = harvest_id
 
@@ -192,7 +193,7 @@ namespace :import_metadata do
   task :swarthmore, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
-    repository = Repository.find_by_short_name("Swarthmore College")
+    repository = nil # no default. Swarthmore repositories are identified by the metadata
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
     begin
