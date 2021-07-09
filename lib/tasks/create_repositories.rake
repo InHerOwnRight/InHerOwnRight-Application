@@ -3,7 +3,7 @@ namespace :create_repositories do
   desc "Create records and Dublin Core parts from raw records"
 
   task all: :environment do
-    CSV.foreach('lib/documents/csv/repositories/repository_list_MGedit.csv', headers: true) do |row|
+    CSV.foreach('lib/documents/csv/repositories/repository_list.csv', headers: true) do |row|
       repository = Repository.find_or_initialize_by(short_name: row[1])
       repository.abbreviation = row[0]
       repository.short_name = row[1]
