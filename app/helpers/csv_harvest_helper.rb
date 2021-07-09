@@ -215,7 +215,7 @@ module CsvHarvestHelper
         import_from_alicepaul(harvest, region, s3, bucket)
       when "Athenaeum"
         import_from_athenaeum(harvest, region, s3, bucket)
-      when "Chester County Historical Society"
+      when "Chester County History Center"
         import_from_cchs(harvest, region, s3, bucket)
       when "United Lutheran Seminary"
         import_from_unitedlutheran(harvest, region, s3, bucket)
