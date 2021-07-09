@@ -120,7 +120,11 @@ namespace :import_metadata do
         raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
-      raise "no repository_id found for #{raw_record.inspect}" unless raw_record.repository_id
+
+      if raw_record.repository_id
+        puts "Skipping #{raw_record.oai_identifier}: no repository_id found based on xml_metadata string matching."
+        next # identifiers_relations_hash.each
+      end
 
       raw_record.harvest_id = harvest_id
 
@@ -129,7 +133,7 @@ namespace :import_metadata do
       else
         puts "Something went wrong."
       end
-    end
+    end # identifiers_relations_hash.each
     puts nil_metadata_identifiers
   end
 
