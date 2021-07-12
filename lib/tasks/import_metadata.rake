@@ -121,7 +121,7 @@ namespace :import_metadata do
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
 
-      if raw_record.repository_id
+      if raw_record.repository_id.nil?
         puts "Skipping #{raw_record.oai_identifier}: no repository_id found based on xml_metadata string matching."
         next # identifiers_relations_hash.each
       end
