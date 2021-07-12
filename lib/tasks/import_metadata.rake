@@ -75,7 +75,7 @@ namespace :import_metadata do
   end
 
   def import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, harvest_id)
-    client = OAI::Client.new  repo_path, :headers => { "From" => "oai@example.com" }
+    client = OAI::Client.new  repo_path, :headers => { "From" => "http://inherownright.org" }
     nil_metadata_identifiers = []
     identifiers_relations_hash.each do |identifier, relations_nodes|
       response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
