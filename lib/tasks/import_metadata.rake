@@ -177,14 +177,10 @@ namespace :import_metadata do
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
       response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
-      metadata_records = []
-      response.each { |r| metadata_records << r }
+      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       until response.resumption_token.nil?
         response = client.list_records(resumption_token: response.resumption_token)
-        response.each { |r| metadata_records << r }
-      end
-      metadata_records.each do |record|
-        identifiers_relations_hash[record.header.identifier] = ''
+        response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       end
     end
 
@@ -233,14 +229,10 @@ namespace :import_metadata do
 
     begin
       response = client.list_records(metadata_prefix: 'oai_dc', set: 'bmc_in-her-own-right')
-      metadata_records = []
-      response.each { |r| metadata_records << r }
+      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       until response.resumption_token.nil?
         response = client.list_records(resumption_token: response.resumption_token)
-        response.each { |r| metadata_records << r }
-      end
-      metadata_records.each do |record|
-        identifiers_relations_hash[record.header.identifier] = ''
+        response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       end
     rescue OAI::Exception => e
       if EmptyImportErrors.include?(e.message.strip)
@@ -267,14 +259,10 @@ namespace :import_metadata do
 
     begin
       response = client.list_records(metadata_prefix: 'oai_dc', set: 'hc_in-her-own-right')
-      metadata_records = []
-      response.each { |r| metadata_records << r }
+      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       until response.resumption_token.nil?
         response = client.list_records(resumption_token: response.resumption_token)
-        response.each { |r| metadata_records << r }
-      end
-      metadata_records.each do |record|
-        identifiers_relations_hash[record.header.identifier] = ''
+        response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       end
     rescue OAI::Exception => e
       if EmptyImportErrors.include?(e.message.strip)
