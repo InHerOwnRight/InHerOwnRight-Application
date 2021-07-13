@@ -67,7 +67,7 @@ class Record < ActiveRecord::Base
   end
 
   def repository_id
-    repository.id
+    repository.try(:id)
   end
 
   # def is_collection_id
@@ -134,11 +134,11 @@ class Record < ActiveRecord::Base
     end
 
     text :repository do
-      repository.name
+      repository.try(:name)
     end
 
     string :repository do
-      repository.short_name
+      repository.try(:short_name)
     end
 
     string :sort_creator do
@@ -541,7 +541,7 @@ class Record < ActiveRecord::Base
       csv << ["Repository Name", "Staging URL"]
 
       all.each do |record|
-        csv << [record.repository.short_name, "http://pacscl.neomindlabs.com/records/#{record.slug}"]
+        csv << [record.repository.try(:short_name), "http://pacscl.neomindlabs.com/records/#{record.slug}"]
       end
     end
   end
