@@ -10,7 +10,7 @@ namespace :import_metadata do
 
   desc "Import metadata raw_records from repositories"
 
-  task all_oai: [:bryn_mawr, :temple, :drexel, :haverford, :swarthmore]
+  task all_oai: [:bryn_mawr, :temple, :drexel, :haverford, :tri_colleges]
   task all_csv: [:from_bates, :from_library_co, :from_hsp, :from_german_society, :from_udel,
                  :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
                  :from_union_league, :collections]
@@ -190,7 +190,7 @@ namespace :import_metadata do
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
-  task :swarthmore, [:harvest_id] => [:environment] do |t, args|
+  task :tri_colleges, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
     repository = nil # no default. Swarthmore repositories are identified by the metadata
@@ -206,7 +206,7 @@ namespace :import_metadata do
       end
     rescue OAI::Exception => e
       if EmptyImportErrors.include?(e.message.strip)
-        puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+        Rails.logger.error "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
         base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
         metadata_prefix = "oai_qdc"
         import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])

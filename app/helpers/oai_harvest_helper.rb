@@ -4,6 +4,7 @@ Rails.application.load_tasks
 module OaiHarvestHelper
 
   def self.initiate(harvest)
+    # TODO consider making a special TriColleges repository class / object to clean this up
     repo = harvest.repository || "TriColleges"
     if repo == "TriColleges"
       task_name = "tricolleges"
@@ -12,6 +13,10 @@ module OaiHarvestHelper
     end
     Delayed::Job.enqueue(DelayedRake.new("db:migrate"), queue: "oai_#{task_name}")
     begin
+      # TODO these tasks should explicitly be in the same queue
+      # Even then, it seems like they rely on there being a single worker to happen in order.
+      # e.g. it seems like it would be bad if we tried to create records before create_raw_records finished
+      # (same for importing images etc)
       self.create_raw_records(harvest, repo)
       self.delay(queue: "oai_#{task_name}").create_records(harvest)
       self.import_images(harvest, repo)
