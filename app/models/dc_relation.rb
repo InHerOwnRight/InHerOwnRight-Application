@@ -14,6 +14,10 @@ class DcRelation < ActiveRecord::Base
         if matching_pacscl_collection
           self.pacscl_collection_id = matching_pacscl_collection.id
           save
+        else if matching_pacscl_collection.nil? && record.raw_record.set_spec == 'hc_sharpless-family'
+          sharpless_collection = PacsclCollection.find_by_clean_name("Sharpless Family papers")
+          self.pacscl_collection_id = sharpless_collection.id
+          save
         end
       rescue
       end
