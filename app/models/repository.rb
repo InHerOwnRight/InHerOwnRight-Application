@@ -4,7 +4,7 @@ class Repository < ActiveRecord::Base
   has_many :pacscl_collections
 
   def islandora?
-    islandora_repos = ["Bryn Mawr College", "Haverford College"]
+    islandora_repos = ["Bryn Mawr College", "Haverford College", "Swarthmore - Friends", "Swarthmore - Peace"]
     islandora_repos.include?(short_name)
   end
 end
