@@ -7,7 +7,30 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :bryn_mawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchs, :unitedlutheran]
+  def add_images_to_records(images_folder, image_relevance_test: nil )
+    raise "Please pass a proc to image_relevance_test with record and image_path as arguments" unless image_relevance_test.is_a?(Proc)
+    s3_base = "images/#{images_folder}"
+    all_repo_paths = bucket.objects(prefix: s3_base).collect(&:key)
+    archive_paths = bucket.objects(prefix: "#{s3_base}/Archive").collect(&:key)
+    failed_paths = bucket.objects(prefix: "#{s3_base}/Failed\ Inbox").collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    harvest.records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if image_relevance_test.call(record, image_path, dc_identifier)
+            if /_thumb.png\Z/.match(image_path)
+              record.thumbnail = "/#{image_path}"
+            elsif /_lg.png\Z/.match(image_path)
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :bryn_mawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchc, :unitedlutheran, :princeton]
   task all: [:all_repos, :clean_up_collection_imgs]
 
   desc "Import images from Bates"
@@ -440,28 +463,12 @@ namespace :import_images do
     end
   end
 
-  desc "Import images from CCHS"
-  task :cchs, [:harvest_id] => :environment do |t, args|
+  desc "Import images from CCHC (formerly CCHS)"
+  task :cchc, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/CCHS').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/CCHS/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/CCHS/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('CCHS', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from United Lutheran"
@@ -486,6 +493,14 @@ namespace :import_images do
         end
       end
     end
+  end
+
+  desc "Import images from Princeton"
+  task :princeton, [:harvest_id] => :environment do |t, args|
+    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest.update(status: 2)
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('Princeton', image_relevance_test: image_relevance_test)
   end
 
   desc "Clean up rogue collection images"
