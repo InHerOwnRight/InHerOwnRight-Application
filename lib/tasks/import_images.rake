@@ -37,24 +37,8 @@ namespace :import_images do
   task :bates, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/Bates').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/Bates/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/Bates/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('Bates', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Drexel"
@@ -172,48 +156,16 @@ namespace :import_images do
   task :swarthmore, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/Swarthmore').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/Swarthmore/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/Swarthmore/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('Swarthmore', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Temple"
   task :temple, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/Temple').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/Temple/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/Temple/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('Temple', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from NARA"
@@ -244,48 +196,16 @@ namespace :import_images do
   task :udel, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/UDel').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/UDel/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/UDel/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('UDel', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from German Society"
   task :german, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/GermanSociety').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/GermanSociety/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/GermanSociety/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('GermanSociety', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Bryn Mawr"
@@ -323,144 +243,48 @@ namespace :import_images do
   task :chrc, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/CHRC').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/CHRC/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/CHRC/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('CHRC', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from College of Physicians"
   task :physicians, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/CollegeOfPhysicians/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('CollegeOfPhysicians', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Presbyterian"
   task :phs, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/PHS').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/PHS/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/PHS/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('PHS', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Union League"
   task :union, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/UnionLeague').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/UnionLeague/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/UnionLeague/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('UnionLeague', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Alice Paul"
   task :alicepaul, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/AlicePaul').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/AlicePaul/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/AlicePaul/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('AlicePaul', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Athenaeum"
   task :athenaeum, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/Athenaeum').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/Athenaeum/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/Athenaeum/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('Athenaeum', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from CCHC (formerly CCHS)"
@@ -475,24 +299,8 @@ namespace :import_images do
   task :unitedlutheran, [:harvest_id] => :environment do |t, args|
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
-    all_repo_paths = bucket.objects(prefix: 'images/UnitedLutheran').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/UnitedLutheran/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/UnitedLutheran/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
+    image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
+    add_images_to_records('UnitedLutheran', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Princeton"
