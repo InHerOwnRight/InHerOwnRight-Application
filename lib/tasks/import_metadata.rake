@@ -74,7 +74,7 @@ namespace :import_metadata do
     puts nil_metadata_identifiers
   end
 
-  def import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, harvest_id)
+  def import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, harvest_id, repository_id=nil)
     client = OAI::Client.new  repo_path, :headers => { "From" => "http://inherownright.org" }
     nil_metadata_identifiers = []
     identifiers_relations_hash.each do |identifier, relations_nodes|
@@ -112,18 +112,16 @@ namespace :import_metadata do
 
       friends = Repository.find_by_short_name("Swarthmore - Friends")
       peace = Repository.find_by_short_name("Swarthmore - Peace")
-      haverford = Repository.find_by_short_name("Haverford College")
 
       # raw_record.repository_id = repository.id # there's no default.
-      if !raw_record.xml_metadata.nil?
-        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
-        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
-        raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
+      if !raw_record.xml_metadata.nil? && repository_id.nil?
+        repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
+        repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
       end
+      raw_record.repository_id = repository_id
 
       if raw_record.repository_id.nil?
-        puts "Skipping #{raw_record.oai_identifier}: no repository_id found based on xml_metadata string matching."
-        next # identifiers_relations_hash.each
+        puts "OAI Identifier #{raw_record.oai_identifier}: no repository_id found based on xml_metadata string matching."
       end
 
       raw_record.harvest_id = harvest_id
@@ -269,7 +267,7 @@ namespace :import_metadata do
         puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
         base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
         metadata_prefix = "oai_qdc"
-        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
         next
       else
         raise e
@@ -278,7 +276,7 @@ namespace :import_metadata do
 
     base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_qdc"
-    import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
   end
 
 ### CSV IMPORTS ########################################################################################
