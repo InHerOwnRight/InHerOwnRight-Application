@@ -179,6 +179,7 @@ module CsvHarvestHelper
         @repository = Repository.find_by_name(row[2])
       end
     end
+    # TODO consider moving the S3 folder name into a field on Repository
     if @repository
       case @repository.short_name
       when "Barbara Bates Center"
@@ -219,6 +220,22 @@ module CsvHarvestHelper
         import_from_cchs(harvest, region, s3, bucket)
       when "United Lutheran Seminary"
         import_from_unitedlutheran(harvest, region, s3, bucket)
+      when "Chester County Archives and Record Services"
+        add_images_to_records('CCA')
+      when "Princeton University"
+        add_images_to_records('Princeton')
+      when "Port Washington Public Library"
+        add_images_to_records('PWPL')
+      when "Howard University"
+        add_images_to_records('Howard')
+      when "Germantown Historical Society"
+        add_images_to_records('GHS')
+      when "African American Museum in Philadelphia"
+        add_images_to_records('AAMP')
+      when "LaSalle University"
+        add_images_to_records('LaSalle')
+      when "In Her Own Right"
+        add_images_to_records('InHOR')
       end
     end
   end
@@ -623,6 +640,32 @@ module CsvHarvestHelper
             if image_path[-9..-1] == "thumb.png"
               record.thumbnail = "/#{image_path}"
             elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
+            end
+            record.save
+          end
+        end
+      end
+    end
+  end
+
+  
+
+  def add_images_to_records(images_folder, 
+                            image_relevance_test: Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) } )
+    raise "Please pass a proc to image_relevance_test with record and image_path as arguments" unless image_relevance_test.is_a?(Proc)
+    s3_base = "images/#{images_folder}"
+    all_repo_paths = bucket.objects(prefix: s3_base).collect(&:key)
+    archive_paths = bucket.objects(prefix: "#{s3_base}/Archive").collect(&:key)
+    failed_paths = bucket.objects(prefix: "#{s3_base}/Failed\ Inbox").collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
+    harvest.records.each do |record|
+      record.dc_identifiers.each do |dc_identifier|
+        image_paths.each do |image_path|
+          if image_relevance_test.call(record, image_path, dc_identifier)
+            if /_thumb.png\Z/.match(image_path)
+              record.thumbnail = "/#{image_path}"
+            elsif /_lg.png\Z/.match(image_path)
               record.file_name = "/#{image_path}"
             end
             record.save
