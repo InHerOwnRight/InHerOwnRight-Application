@@ -7,7 +7,7 @@ namespace :import_images do
   s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
   bucket = s3.bucket('pacscl-production')
 
-  def add_images_to_records(images_folder, image_relevance_test: nil )
+  def add_images_to_records(harvest, images_folder, image_relevance_test: nil )
     raise "Please pass a proc to image_relevance_test with record and image_path as arguments" unless image_relevance_test.is_a?(Proc)
     s3_base = "images/#{images_folder}"
     all_repo_paths = bucket.objects(prefix: s3_base).collect(&:key)
@@ -38,7 +38,7 @@ namespace :import_images do
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('Bates', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'Bates', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Drexel"
@@ -157,7 +157,7 @@ namespace :import_images do
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('Swarthmore', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'Swarthmore', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Temple"
@@ -165,12 +165,12 @@ namespace :import_images do
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('Temple', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'Temple', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from NARA"
   task :nara, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     all_repo_paths = bucket.objects(prefix: 'images/NARA').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/NARA/Archive').collect(&:key)
@@ -194,18 +194,18 @@ namespace :import_images do
 
   desc "Import images from UDel"
   task :udel, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('UDel', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'UDel', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from German Society"
   task :german, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('GermanSociety', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'GermanSociety', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Bryn Mawr"
@@ -241,42 +241,42 @@ namespace :import_images do
 
   desc "Import images from Catholic"
   task :chrc, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('CHRC', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'CHRC', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from College of Physicians"
   task :physicians, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('CollegeOfPhysicians', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'CollegeOfPhysicians', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Presbyterian"
   task :phs, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('PHS', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'PHS', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Union League"
   task :union, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('UnionLeague', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'UnionLeague', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Alice Paul"
   task :alicepaul, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('AlicePaul', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'AlicePaul', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Athenaeum"
@@ -284,15 +284,15 @@ namespace :import_images do
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('Athenaeum', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'Athenaeum', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from CCHC (formerly CCHS)"
   task :cchc, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('CCHS', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'CCHS', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from United Lutheran"
@@ -300,23 +300,23 @@ namespace :import_images do
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('UnitedLutheran', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'UnitedLutheran', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from CCA"
   task :cca, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('CCA', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'CCA', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Princeton"
   task :princeton, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('Princeton', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'Princeton', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from State Library of PA"
@@ -324,55 +324,55 @@ namespace :import_images do
     harvest = OAIHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('StateLibraryPA', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'StateLibraryPA', image_relevance_test: image_relevance_test)
   end
   
   desc "Import images from Port Washington Public Library"
   task :pwpl, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? &&       image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('PWPL', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'PWPL', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Howard"
   task :howard, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('Howard', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'Howard', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from Germantown Historical Society"
   task :ghs, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('GHS', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'GHS', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from African American Museum in Philadelphia"
   task :aamp, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('AAMP', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'AAMP', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from LaSalle University"
   task :lasalle, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('LaSalle', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'LaSalle', image_relevance_test: image_relevance_test)
   end
 
   desc "Import images from In Her Own Right"
   task :inhor, [:harvest_id] => :environment do |t, args|
-    harvest = OAIHarvest.find(args[:harvest_id])
+    harvest = CsvHarvest.find(args[:harvest_id])
     harvest.update(status: 2)
     image_relevance_test = Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) }
-    add_images_to_records('InHOR', image_relevance_test: image_relevance_test)
+    add_images_to_records(harvest, 'InHOR', image_relevance_test: image_relevance_test)
   end
 
   desc "Clean up rogue collection images"

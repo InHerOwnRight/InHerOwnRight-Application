@@ -221,21 +221,23 @@ module CsvHarvestHelper
       when "United Lutheran Seminary"
         import_from_unitedlutheran(harvest, region, s3, bucket)
       when "Chester County Archives and Record Services"
-        add_images_to_records('CCA')
+        add_images_to_records(harvest, 'CCA')
       when "Princeton University"
-        add_images_to_records('Princeton')
+        add_images_to_records(harvest, 'Princeton')
+      when "PA State Archives"
+        add_images_to_records(harvest, 'StateLibraryPA')
       when "Port Washington Public Library"
-        add_images_to_records('PWPL')
+        add_images_to_records(harvest, 'PWPL')
       when "Howard University"
-        add_images_to_records('Howard')
+        add_images_to_records(harvest, 'Howard')
       when "Germantown Historical Society"
-        add_images_to_records('GHS')
+        add_images_to_records(harvest, 'GHS')
       when "African American Museum in Philadelphia"
-        add_images_to_records('AAMP')
+        add_images_to_records(harvest, 'AAMP')
       when "LaSalle University"
-        add_images_to_records('LaSalle')
+        add_images_to_records(harvest, 'LaSalle')
       when "In Her Own Right"
-        add_images_to_records('InHOR')
+        add_images_to_records(harvest, 'InHOR')
       end
     end
   end
@@ -651,7 +653,7 @@ module CsvHarvestHelper
 
   
 
-  def add_images_to_records(images_folder, 
+  def add_images_to_records(harvest, images_folder, 
                             image_relevance_test: Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) } )
     raise "Please pass a proc to image_relevance_test with record and image_path as arguments" unless image_relevance_test.is_a?(Proc)
     s3_base = "images/#{images_folder}"
