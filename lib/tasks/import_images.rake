@@ -3,12 +3,12 @@ require 'aws-sdk-s3'
 namespace :import_images do
   desc "Import images for records"
 
-  region = 'us-east-2'
-  s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
-  bucket = s3.bucket('pacscl-production')
-
   def add_images_to_records(harvest, images_folder, image_relevance_test: nil )
     raise "Please pass a proc to image_relevance_test with record and image_path as arguments" unless image_relevance_test.is_a?(Proc)
+    region = 'us-east-2'
+    s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+    bucket = s3.bucket('pacscl-production')
+
     s3_base = "images/#{images_folder}"
     all_repo_paths = bucket.objects(prefix: s3_base).collect(&:key)
     archive_paths = bucket.objects(prefix: "#{s3_base}/Archive").collect(&:key)
