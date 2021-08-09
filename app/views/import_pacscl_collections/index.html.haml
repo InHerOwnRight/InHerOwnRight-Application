@@ -12,24 +12,16 @@
   %table
     %thead
       %tr
-        %th
-          Institution
-        %th
-          OAI or CSV?
-        %th
-          Collection name (detailed)
-        %th
-          Collection name (clean)
+        %th Institution
+        %th OAI or CSV?
+        %th Collection name (detailed)
+        %th Collection name (clean)
     %thead
       %tbody
         - @pacscl_collections.each do |pacscl_collection|
           %tr
-            %td
-              = pacscl_collection.repository.try(:name)
-            %td
-              = pacscl_collection.import_source
-            %td
-              = pacscl_collection.detailed_name
-            %td
-              = pacscl_collection.clean_name
+            %td= pacscl_collection.repository.try(:name)
+            %td= pacscl_collection.import_source
+            %td= pacscl_collection.detailed_name
+            %td= pacscl_collection.clean_name
 %br
