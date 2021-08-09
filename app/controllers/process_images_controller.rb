@@ -9,10 +9,14 @@ class ProcessImagesController < ApplicationController
     @schools = @failed_inbox_images.pluck(:school).uniq
     records_missing_file_names = Record.where(file_name: nil)
     records_missing_thumbnails = Record.where(thumbnail: nil)
-    @records_with_missing_imgs = records_missing_file_names.merge(records_missing_thumbnails).uniq
+    records_with_missing_images = records_missing_file_names.merge(records_missing_thumbnails).uniq
+    csv_output = ['id', 'oai_identifier', 'slug']
+    csv_output += records_with_missing_images.map do |record|
+      [record.id, record.oai_identifier, record.slug]
+    end
     respond_to do |format|
       format.html
-      format.csv { send_data @records_with_missing_imgs.to_csv, filename: "missing-images-#{Date.today}.csv" }
+      format.csv { send_data csv_output.to_csv, filename: "missing-images-#{Date.today}.csv" }
     end
   end
 
