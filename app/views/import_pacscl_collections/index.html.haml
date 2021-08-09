@@ -25,7 +25,7 @@
         - @pacscl_collections.each do |pacscl_collection|
           %tr
             %td
-              = pacscl_collection.repository.name
+              = pacscl_collection.repository.try(:name)
             %td
               = pacscl_collection.import_source
             %td
