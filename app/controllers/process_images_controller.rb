@@ -10,13 +10,15 @@ class ProcessImagesController < ApplicationController
     records_missing_file_names = Record.where(file_name: nil)
     records_missing_thumbnails = Record.where(thumbnail: nil)
     records_with_missing_images = records_missing_file_names.merge(records_missing_thumbnails).uniq
-    csv_output = ['id', 'oai_identifier', 'slug']
-    csv_output += records_with_missing_images.map do |record|
-      [record.id, record.oai_identifier, record.slug]
+    csv_output = CSV.generate do |csv|
+      csv << ['id', 'oai_identifier', 'slug']
+      records_with_missing_images.each do |record|
+        csv << [record.id, record.oai_identifier, record.slug]
+      end
     end
     respond_to do |format|
       format.html
-      format.csv { send_data csv_output.to_csv, filename: "missing-images-#{Date.today}.csv" }
+      format.csv { send_data csv_output, filename: "missing-images-#{Date.today}.csv" }
     end
   end
 
