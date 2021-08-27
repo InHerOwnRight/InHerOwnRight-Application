@@ -1,5 +1,5 @@
 version: v1.0
-name: Test MyApp
+name: Test PACSCL
 agent:
   machine:
     type: e1-standard-2
@@ -22,17 +22,12 @@ blocks:
             - mkdir -p tmp/cache
             - cp .env.example .env
             - cp config/secrets.example.yml config/secrets.yml
+            - gem install bundler -v 2.1.4
+            - bundle install --jobs 4 --deployment --path vendor/bundle
             - 'curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter'
             - chmod +x ./cc-test-reporter
-            - gem install bundler -v 2.1.4
-            - bundle install --deployment --path vendor/bundle
             - cache store
             - 'bundle exec rake db:setup'
             - 'bundle exec rake db:test:prepare'
             - ./cc-test-reporter before-build
-        - name: 'Job #2'
-          commands:
             - bundle exec rake test
-        - name: 'Job #3'
-          commands:
-            - 'if [ "$SEMAPHORE_THREAD_RESULT" == "passed" ]; then ./cc-test-reporter after-build; fi'
