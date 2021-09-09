@@ -23,12 +23,14 @@
           Records
     %tbody
       - @oai_harvests.each do |harvest|
+        -# a nil repository ID means all 3 Tricollege repos were potentially included
         - if harvest.repository.nil?
-          - repos = ["Haverford College", "Swarthmore - Peace", "Swarthmore - Friends"]
+          - repo_short_names = ["Haverford College", "Swarthmore - Peace", "Swarthmore - Friends"]
+          - repos = Repository.where(short_name: repo_short_names)
           - repos.each do |repo|
             %tr
               %td
-                = repo
+                = repo.short_name
               %td
                 = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
               %td
@@ -36,7 +38,7 @@
               %td
                 = harvest.error
               %td
-                - if harvest.records.all.map(&:raw_record).map(&:repository_id).include?(Repository.find_by_short_name(repo).id) && harvest.status == "complete"
+                - if RawRecord.where(id: harvest.records.pluck(:raw_record_id)).select("DISTINCT repository_id").pluck(:repository_id).uniq.include?(repo.id)
                   = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
         - else
           %tr
