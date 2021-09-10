@@ -173,15 +173,27 @@ module CsvHarvestHelper
     end
   end
 
-  def self.import_repo_images(harvest, region, s3, bucket)
+  def self.import_repo_images(harvest, region=nil, s3=nil, bucket=nil)
+    region ||= 'us-east-2'
+    s3 ||= Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+    bucket ||= s3.bucket('pacscl-production')
     CSV.parse(harvest.csv_file.download, headers: true) do |row|
       unless row[0].nil?
         @repository = Repository.find_by_name(row[2])
       end
     end
+    import_images_from_harvest(harvest, region, s3, bucket)
+  end
+
+  def self.import_images_from_harvest(harvest, region=nil, s3=nil, bucket=nil)
+    region ||= 'us-east-2'
+    s3 ||= Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+    bucket ||= s3.bucket('pacscl-production')
+    repository = @repository
+    repository ||= Repository.find(harvest.repository_id) if harvest.repository_id
     # TODO consider moving the S3 folder name into a field on Repository
-    if @repository
-      case @repository.short_name
+    if repository
+      case repository.short_name
       when "Barbara Bates Center"
         import_from_bates(harvest, region, s3, bucket)
       when "Drexel University"
@@ -206,38 +218,29 @@ module CsvHarvestHelper
         import_from_physicians(harvest, region, s3, bucket)
       when "Catholic Historical Research Center"
         import_from_chrc(harvest, region, s3, bucket)
-      when "Presbyterian Historical Society"
-        import_from_phs(harvest, region, s3, bucket)
-      when "Historical Society of PA"
-        import_from_hsp(harvest, region, s3, bucket)
       when "Legacy Foundation"
         import_from_union(harvest, region, s3, bucket)
       when "Alice Paul Institute"
         import_from_alicepaul(harvest, region, s3, bucket)
-      when "Athenaeum"
-        import_from_athenaeum(harvest, region, s3, bucket)
       when "Chester County History Center"
         import_from_cchs(harvest, region, s3, bucket)
       when "United Lutheran Seminary"
         import_from_unitedlutheran(harvest, region, s3, bucket)
-      when "Chester County Archives and Record Services"
-        add_images_to_records(harvest, 'CCA')
-      when "Princeton University"
-        add_images_to_records(harvest, 'Princeton')
+      when "Presbyterian Historical Society"
+        add_images_to_records(harvest.records, 'PHS',
+                            image_relevance_test: Proc.new do |record,image_path,dc_identifier|
+                              !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) || \
+                              !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier.gsub(/ /, ''))
+                            end)
+      when "Historical Society of PA"
+        add_images_to_records(harvest.records, 'HSP')
       when "PA State Archives"
-        add_images_to_records(harvest, 'StateLibraryPA')
+        add_images_to_records(harvest.records, 'StateLibraryPA')
       when "Port Washington Public Library"
-        add_images_to_records(harvest, 'PWPL')
-      when "Howard University"
-        add_images_to_records(harvest, 'Howard')
-      when "Germantown Historical Society"
-        add_images_to_records(harvest, 'GHS')
-      when "African American Museum in Philadelphia"
-        add_images_to_records(harvest, 'AAMP')
-      when "LaSalle University"
-        add_images_to_records(harvest, 'LaSalle')
-      when "In Her Own Right"
-        add_images_to_records(harvest, 'InHOR')
+        add_images_to_records(harvest.records, 'PWPL')
+      when "Athenaeum", "Chester County Archives and Record Services", "Princeton University", "Howard University", "Germantown Historical Society", "African American Museum in Philadelphia", "LaSalle University", "In Her Own Right"
+        # TODO we should import the S3 folder name as a separate attribute in rake create_repositories:all
+        add_images_to_records(harvest, repository.abbreviation)
       end
     end
   end
@@ -312,25 +315,6 @@ module CsvHarvestHelper
             end
             record.save
           end
-        end
-      end
-    end
-  end
-
-  def self.import_from_hsp(harvest, region, s3, bucket)
-    all_repo_paths = bucket.objects(prefix: 'images/HSP').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/HSP/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/HSP/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      image_paths.each do |image_path|
-        if !record.oai_identifier.blank? && image_path.include?(record.oai_identifier)
-          if image_path[-9..-1] == "thumb.png"
-            record.thumbnail = "/#{image_path}"
-          elsif image_path[-6..-1] == "lg.png"
-            record.file_name = "/#{image_path}"
-          end
-          record.save
         end
       end
     end
@@ -588,27 +572,6 @@ module CsvHarvestHelper
     end
   end
 
-  def self.import_from_athenaeum(harvest, region, s3, bucket)
-    all_repo_paths = bucket.objects(prefix: 'images/Athenaeum').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/Athenaeum/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/Athenaeum/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
-        end
-      end
-    end
-  end
-
   def self.import_from_cchs(harvest, region, s3, bucket)
     all_repo_paths = bucket.objects(prefix: 'images/CCHS').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/CCHS/Archive').collect(&:key)
@@ -653,7 +616,7 @@ module CsvHarvestHelper
 
   
 
-  def add_images_to_records(harvest, images_folder, 
+  def self.add_images_to_records(records, images_folder, 
                             image_relevance_test: Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) } )
     raise "Please pass a proc to image_relevance_test with record and image_path as arguments" unless image_relevance_test.is_a?(Proc)
     region = 'us-east-2'
@@ -665,7 +628,7 @@ module CsvHarvestHelper
     archive_paths = bucket.objects(prefix: "#{s3_base}/Archive").collect(&:key)
     failed_paths = bucket.objects(prefix: "#{s3_base}/Failed\ Inbox").collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
+    records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
         image_paths.each do |image_path|
           if image_relevance_test.call(record, image_path, dc_identifier)
