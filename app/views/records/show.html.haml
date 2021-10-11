@@ -1,5 +1,5 @@
 %h3
-  = @record.dc_titles.first.title
+  = @record.dc_titles.first.try(:title) || "(No title found)"
 %table.table
   %thead
     %tr
