@@ -70,7 +70,7 @@ namespace :import_metadata do
       else
         puts "Something went wrong."
       end
-    end
+    end # identifier_relations_hash
     puts nil_metadata_identifiers
   end
 
@@ -151,11 +151,16 @@ namespace :import_metadata do
         response = client.list_records(resumption_token: response.resumption_token)
         response.each { |r| metadata_records << r }
       end
+      # Not all of the records we receive are meant to be included. Instead of using a set, or other filter,
+      # We're using a dc:relation that contains "In Her Own Right" to identify the records we want to import
       metadata_records.each do |record|
         xml_metadata = Nokogiri::XML.parse(record.metadata.to_s)
         xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/").each do |relation_node|
           if relation_node.text.include?("In Her Own Right")
-            identifiers_relations_hash[record.header.identifier] = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+            dc_relations = xml_metadata.xpath("//dc:relation", "dc" => "http://purl.org/dc/elements/1.1/")
+            # Now that this relation has done its job, hide it so we don't trip over it later.
+            dc_relations = dc_relations.reject{|node| node.text.include?("In Her Own Right") }
+            identifiers_relations_hash[record.header.identifier] = dc_relations
           end
         end
       end
@@ -164,6 +169,8 @@ namespace :import_metadata do
     base_response_record_path = 'http://digital.library.temple.edu/cdm/ref/collection/'
     metadata_prefix = "oai_qdc"
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    
+    # Delete offending isPartOf here
   end
 
   task :drexel, [:harvest_id] => [:environment] do |t, args|
