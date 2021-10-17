@@ -20,6 +20,7 @@ namespace :create_repositories do
       repository.url = row['URL']
       repository.oai_task = row['OAI Import Task Name']
       repository.image_task = row['Image Import Task Name']
+      repository.s3_images_folder = row['AWS S3 folder name']
 
       repository.save
     end

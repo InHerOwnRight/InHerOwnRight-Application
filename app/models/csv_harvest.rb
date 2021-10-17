@@ -6,6 +6,9 @@ class CsvHarvest < ActiveRecord::Base
 
   enum status: [:importing_metadata, :creating_records, :importing_images, :reindexing, :complete, :error]
 
+  delegate :s3_images_folder, to: :repository
+  delegate :image_relevance_test, to: :repository
+
   def humanized_status
     if status == 'importing_metadata'
       "Importing metadata"

@@ -39,6 +39,9 @@ class Record < ActiveRecord::Base
   scope :for_repository, -> (repository) { joins(:raw_record).where(raw_records: {repository_id: repository.id} )}
   scope :for_same_creator, -> (creator_id) { joins(:dc_creators).where('dc_creators.id = ?', creator_id) }
 
+  delegate :s3_images_folder, to: :repository
+  delegate :image_relevance_test, to: :repository
+
   def is_collection?
     raw_record.record_type == "collection" if raw_record
   end

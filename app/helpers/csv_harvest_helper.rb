@@ -195,52 +195,68 @@ module CsvHarvestHelper
     if repository
       case repository.short_name
       when "Barbara Bates Center"
-        import_from_bates(harvest, region, s3, bucket)
+        # import_from_bates(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Drexel University"
-        import_from_drexel(harvest, region, s3, bucket)
-      when "Haverford College"
-        import_from_haverford(harvest, region, s3, bucket)
+        # import_from_drexel(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Library Company"
-        import_from_libraryco(harvest, region, s3, bucket)
-      when "Swarthmore - Friends" || "Swarthmore - Peace"
-        import_from_swarthmore(harvest, region, s3, bucket)
+        # import_from_libraryco(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Temple University"
-        import_from_temple(harvest, region, s3, bucket)
+        # import_from_temple(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "National Archives"
-        import_from_nara(harvest, region, s3, bucket)
+        # import_from_nara(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "University of Delaware"
-        import_from_udel(harvest, region, s3, bucket)
+        # import_from_udel(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "The German Society"
-        import_from_german(harvest, region, s3, bucket)
+        # import_from_german(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Bryn Mawr College"
-        import_from_brynmawr(harvest, region, s3, bucket)
+        # import_from_brynmawr(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "College of Physicians"
-        import_from_physicians(harvest, region, s3, bucket)
+        # import_from_physicians(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Catholic Historical Research Center"
-        import_from_chrc(harvest, region, s3, bucket)
+        # import_from_chrc(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Legacy Foundation"
-        import_from_union(harvest, region, s3, bucket)
+        # import_from_union(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Alice Paul Institute"
-        import_from_alicepaul(harvest, region, s3, bucket)
+        # import_from_alicepaul(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Chester County History Center"
-        import_from_cchs(harvest, region, s3, bucket)
+        # import_from_cchs(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "United Lutheran Seminary"
-        import_from_unitedlutheran(harvest, region, s3, bucket)
+        # import_from_unitedlutheran(harvest, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
+      when "Swarthmore - Friends" || "Swarthmore - Peace"
+        add_images_to_records(harvest.records, harvest.s3_images_folder)
+      when "Haverford College"
+        # add_images_to_records(harvest.records, 'Haverford',
+        #                     image_relevance_test: Proc.new do |record,image_path,dc_identifier|
+        #                       !record.oai_identifier.blank? && \
+        #                         record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/" && \
+        #                         image_path.include?(record.oai_identifier[40..-1])
+        #                     end)
+        # import_from_haverford(harvest.records, region, s3, bucket)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Presbyterian Historical Society"
-        add_images_to_records(harvest.records, 'PHS',
-                            image_relevance_test: Proc.new do |record,image_path,dc_identifier|
-                              !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) || \
-                              !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier.gsub(/ /, ''))
-                            end)
+        add_images_to_records(harvest.records, harvest.s3_images_folder, image_relevance_test: harvest.image_relevance_test)
       when "Historical Society of PA"
-        add_images_to_records(harvest.records, 'HSP')
+        add_images_to_records(harvest.records, harvest.s3_images_folder)
       when "PA State Archives"
-        add_images_to_records(harvest.records, 'StateLibraryPA')
+        add_images_to_records(harvest.records, harvest.s3_images_folder)
       when "Port Washington Public Library"
-        add_images_to_records(harvest.records, 'PWPL')
+        add_images_to_records(harvest.records, harvest.s3_images_folder)
       when "Athenaeum", "Chester County Archives and Record Services", "Princeton University", "Howard University", "Germantown Historical Society", "African American Museum in Philadelphia", "LaSalle University", "In Her Own Right"
-        # TODO we should import the S3 folder name as a separate attribute in rake create_repositories:all
-        add_images_to_records(harvest, repository.abbreviation)
+        add_images_to_records(harvest.records, harvest.s3_images_folder)
       end
     end
   end
@@ -289,12 +305,16 @@ module CsvHarvestHelper
     end
   end
 
-  def self.import_from_haverford(harvest, region, s3, bucket)
+  def self.import_from_haverford(records, region=nil, s3=nil, bucket=nil)
+    region = 'us-east-2'
+    s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+    bucket = s3.bucket('pacscl-production')
+
     all_repo_paths = bucket.objects(prefix: 'images/Haverford').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/Haverford/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/Haverford/Failed\ Inbox').collect(&:key)
     image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
+    records.each do |record|
       image_paths.each do |image_path|
         if !record.oai_identifier.blank? && record.oai_identifier[0..39] == "oai:tricontentdm.brynmawr.edu:HC_DigReq/"
           if !record.oai_identifier.blank? && image_path.include?(record.oai_identifier[40..-1])
@@ -308,6 +328,7 @@ module CsvHarvestHelper
         end
         record.dc_identifiers.each do |dc_identifier|
           if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            puts "got one! #{dc_identifier.identifier}"
             if image_path[-9..-1] == "thumb.png"
               record.thumbnail = "/#{image_path}"
             elsif image_path[-6..-1] == "lg.png"
@@ -334,27 +355,6 @@ module CsvHarvestHelper
             record.file_name = "/#{image_path}"
           end
           record.save
-        end
-      end
-    end
-  end
-
-  def self.import_from_swarthmore(harvest, region, s3, bucket)
-    all_repo_paths = bucket.objects(prefix: 'images/Swarthmore').collect(&:key)
-    archive_paths = bucket.objects(prefix: 'images/Swarthmore/Archive').collect(&:key)
-    failed_paths = bucket.objects(prefix: 'images/Swarthmore/Failed\ Inbox').collect(&:key)
-    image_paths = all_repo_paths - archive_paths - failed_paths
-    harvest.records.each do |record|
-      record.dc_identifiers.each do |dc_identifier|
-        image_paths.each do |image_path|
-          if image_path.include?(dc_identifier.identifier) && !dc_identifier.identifier.blank?
-            if image_path[-9..-1] == "thumb.png"
-              record.thumbnail = "/#{image_path}"
-            elsif image_path[-6..-1] == "lg.png"
-              record.file_name = "/#{image_path}"
-            end
-            record.save
-          end
         end
       end
     end
@@ -447,6 +447,10 @@ module CsvHarvestHelper
   end
 
   def self.import_from_brynmawr(harvest, region, s3, bucket)
+    image_relevance_test = Proc.new do |record,image_path,dc_identifier|
+      !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+    end
+
     all_repo_paths = bucket.objects(prefix: 'images/BrynMawr').collect(&:key)
     archive_paths = bucket.objects(prefix: 'images/BrynMawr/Archive').collect(&:key)
     failed_paths = bucket.objects(prefix: 'images/BrynMawr/Failed\ Inbox').collect(&:key)
@@ -613,8 +617,6 @@ module CsvHarvestHelper
       end
     end
   end
-
-  
 
   def self.add_images_to_records(records, images_folder, 
                             image_relevance_test: Proc.new { |record,image_path,dc_identifier| !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier) } )

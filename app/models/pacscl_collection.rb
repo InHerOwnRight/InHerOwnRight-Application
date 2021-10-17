@@ -46,6 +46,7 @@ class PacsclCollection < ActiveRecord::Base
       dc_relation.save
     end
 
+    # If this fails, run rake clear:orphans
     Sunspot.index!(combined_record_collection)
   end
 
