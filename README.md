@@ -77,3 +77,19 @@ THEN
     su app
     cd /home/app/rails
     RAILS_ENV=staging rake sunspot:reindex
+
+## Transferring state
+
+To capture a snapshot of the production database:
+    docker-compose exec db bash
+    su postgres -c 'pg_dump --no-acl --no-owner --clean pacscl_production' | gzip > /var/lib/postgresql/data/pacscl-production-`date +%F`.sql.gz
+    exit
+    sudo mv data/postgres/pacscl-production-`date +%F`.sql.gz ~/ && sudo chown ubuntu:ubuntu ~/pacscl-production-`date +%F`.sql.gz
+
+To load it locally:
+    scp pacscl-production:pacscl-production-`date +%F`.sql.gz db/snapshots/
+    bin/rake db:drop db:create
+    gunzip -c db/snapshots/pacscl-production-`date +%F`.sql.gz | psql -U postgres -h db pacscl_development
+
+Then reindex Solr:
+    bin/rake sunspot:reindex

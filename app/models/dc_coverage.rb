@@ -7,8 +7,6 @@ class DcCoverage < ActiveRecord::Base
   def update_map_locations
     changed = false
     coverage_map_locations.update_all(verified: nil)
-    delimiters = [';', '|']
-    placenames = coverage.split(Regexp.union(delimiters)).map(&:strip)
     placenames.each do |placename|
       coverage_map_location = coverage_map_locations.find_by(placename: placename)
       if coverage_map_location
@@ -26,11 +24,14 @@ class DcCoverage < ActiveRecord::Base
     reindex_record if changed
   end
 
+  def placenames
+    delimiters = [';', '|']
+    coverage.split(Regexp.union(delimiters)).map(&:strip)
+  end
+
   def force_update_map_locations
     changed = false
     coverage_map_locations.update_all(verified: nil)
-    delimiters = [';', '|']
-    placenames = coverage.split(Regexp.union(delimiters)).map(&:strip)
     placenames.each do |placename|
       coverage_map_location = coverage_map_locations.find_by(placename: placename)
       if coverage_map_location

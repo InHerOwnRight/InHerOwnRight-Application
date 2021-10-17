@@ -40,7 +40,9 @@ namespace :import_images do
     end
   end
 
-  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german, :bryn_mawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchc, :unitedlutheran, :cca, :princeton, :statelibrarypa, :pwpl, :howard, :ghs, :aamp, :lasalle, :inhor]
+  task all_repos: [:bates, :drexel, :haverford, :hsp, :libraryco, :swarthmore, :temple, :nara, :udel, :german,
+                   :bryn_mawr, :chrc, :physicians, :phs, :union, :alicepaul, :athenaeum, :cchc, :unitedlutheran,
+                   :cca, :princeton, :statelibrarypa, :pwpl, :howard, :ghs, :aamp, :lasalle, :inhor]
   task all: [:all_repos, :clean_up_collection_imgs]
 
   desc "Import images from Bates"

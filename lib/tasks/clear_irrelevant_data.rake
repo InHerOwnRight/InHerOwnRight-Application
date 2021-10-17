@@ -10,4 +10,16 @@ namespace :clear do
     args.with_defaults(days_old: 7)
     Search.delete_old_searches(args[:days_old].to_i)
   end
+
+  desc 'Orphaned records'
+  task :orphans => [:environment] do 
+    classes_to_search = [DcType, DcTitle, DcTermsSpacial, DcTermsIsPartOf, DcTermsExtent, DcSubject,
+      DcSource, DcRight, DcResearchInterest, DcRelation, DcPublisher, DcLanguage, DcFormat,
+      DcIdentifier, DcDescription, DcDate, DcCreator, DcCoverage, DcContributor,
+      DcAdditionalDescription, DcAbstract]
+    classes_to_search.each do |klass|
+      puts "Clearing orphans in the #{klass.name} table..."
+      klass.all.select{|item| item.record.nil? }.each(&:delete)
+    end
+  end
 end

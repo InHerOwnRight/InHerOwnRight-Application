@@ -19,20 +19,7 @@ namespace :create_records do
   task records: :environment do
     raw_records = RawRecord.where(record_type: nil)
     raw_records.each do |raw_record|
-      if !raw_record.xml_metadata.blank?
-        record = Record.find_or_initialize_by(oai_identifier: raw_record.oai_identifier)
-        record.raw_record_id = raw_record.id
-        xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
-        xml_doc.remove_namespaces!
-        if record.save
-          node_names = ["title", "mods/titleInfo", "date", "dateCreated", "creator", "name", "subject", "format", "type", "typeOfResource", "genre", "language", "language/languageTerm", "rights", "accessCondition",  "relation", "created", "licence", "identifier", "description", "abstract", "contributor", "publisher", "extent", "source", "spatial", "geographic", "text", "isPartOf", "relatedItem/titleInfo", "coverage", "spacial", "identifier.url"]
-          node_names.each do | node_name |
-            record.create_dc_part(node_name, xml_doc, record)
-          end
-
-          record.reload
-        end
-      end
+      Record.create_from_raw_record(raw_record)
     end
   end
 

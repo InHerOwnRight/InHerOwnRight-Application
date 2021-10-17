@@ -43,19 +43,23 @@ class Record < ActiveRecord::Base
     raw_record.record_type == "collection" if raw_record
   end
 
+  def pacscl_collection
+   @pacscl_collection ||=  PacsclCollection.where("LOWER(detailed_name) = LOWER(?)", dc_titles.first.title).first
+  end
+
   def pacscl_collection_exists?
-    !!PacsclCollection.find_by_detailed_name(dc_titles.first.title)
+    !!pacscl_collection
   end
 
   def list_pacscl_collection
     if is_collection? && pacscl_collection_exists?
-      PacsclCollection.find_by_detailed_name(dc_titles.first.title)
+      pacscl_collection
     end
   end
 
   def list_records_for_collection
     if is_collection? && pacscl_collection_exists?
-      PacsclCollection.find_by_detailed_name(dc_titles.first.title).associated_records
+      pacscl_collection.associated_records
     end
   end
 
@@ -418,7 +422,7 @@ class Record < ActiveRecord::Base
       node.text.split(';').reject do |collection|
         collection.blank? || collection =~ /in her own right/i
       end.each do |collection|
-        dc_terms_ipo = DcTermsIsPartOf.find_or_create_by(record_id: record.id, is_part_of: collection)
+        dc_terms_ipo = DcTermsIsPartOf.find_or_create_by(record_id: record.id, is_part_of: sanitize(collection))
       end
     end
   end
@@ -447,20 +451,13 @@ class Record < ActiveRecord::Base
     end
   end
 
-  def actual_model_name(node_name)
-    if node_name == "rights"
-      @part_model_name = "dc_right"
-    elsif node_name == "created"
-      @part_model_name = "dc_date"
-    elsif node_name == "licence"
-      @part_model_name = "dc_right"
-    else
-      @part_model_name = "dc_#{node_name}"
+  def create_dc_part(node_name, xml_doc, filters = {})
+    if filter = filters[node_name]
+      xpath
     end
-  end
-
-  def create_dc_part(node_name, xml_doc, record)
+    record = self
     xml_doc.xpath("//#{node_name}").map do |node|
+      puts "!!! matching #{node_name}: #{node.inspect}"
       if node_name == "creator"
         create_dc_creator(node, record)
       end
@@ -509,30 +506,46 @@ class Record < ActiveRecord::Base
         create_dc_description(node, record)
       end
 
-      if node_name == "licence" || node_name == "accessCondition"
-        node_name = "rights"
-      end
+      node_name_dictionary = {"licence" => "rights", "accessCondition" => "rights", "mods/titleInfo" => "title",
+        "relatedItem/titleInfo" => "isPartOf", "language/languageTerm" => "language"}
 
-      if node_name == "mods/titleInfo"
-        node_name = "title"
-      end
+      node_name = node_name_dictionary[node_name] || node_name
 
-      if node_name == "relatedItem/titleInfo"
-        node_name = "isPartOf"
-      end
-
-      if node_name == "language/languageTerm"
-        node_name = "language"
-      end
-
-      actual_model_name(node_name)
+      part_model_name_dictionary = {"rights" => "dc_right", "created" => "dc_date", "licence" => "dc_right"}
+      part_model_name = part_model_name_dictionary[node_name] || "dc_#{node_name}"
 
       modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_identifier.url', 'dc_subject', 'dc_spacial', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic']
-      if !modular_creators.include?(@part_model_name)
-        dc_model = "#{@part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
-        dc_model[node_name] = node.text
+      if !modular_creators.include?(part_model_name)
+        puts "handling #{part_model_name} = #{sanitize(node.text)}"
+        dc_model = "#{part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
+        dc_model[node_name] = sanitize(node.text)
         dc_model.save
       end
+    end
+  end
+
+  def sanitize(text)
+    text.strip
+  end
+
+  def self.create_from_raw_record(raw_record, filters = { })
+    return if raw_record.xml_metadata.blank?
+    record = find_or_initialize_by(oai_identifier: raw_record.oai_identifier)
+    record.raw_record_id = raw_record.id
+    xml_doc = Nokogiri::XML.parse(raw_record.xml_metadata)
+    xml_doc.remove_namespaces!
+
+    if record.save
+      node_names = ["title", "mods/titleInfo", "date", "dateCreated", "creator", "name", "subject", "format", "type",
+                      "typeOfResource", "genre", "language", "language/languageTerm", "rights", "accessCondition",
+                      "relation", "created", "licence", "identifier", "description", "abstract", "contributor",
+                      "publisher", "extent", "source", "spatial", "geographic", "text", "isPartOf",
+                      "relatedItem/titleInfo", "coverage", "spacial", "identifier.url"]
+
+      node_names.each do | node_name |
+        record.create_dc_part(node_name, xml_doc, filters)
+      end
+      record.reload
     end
   end
 
@@ -587,5 +600,35 @@ class Record < ActiveRecord::Base
 
   def to_oai_dc
     OaiDcConverter.new(self).to_xml
+  end
+######################## End Oai API Endpoint ###############################
+
+  def rescan_images!
+    self.dc_identifiers.each do |dc_identifier|
+      all_s3_image_paths.each do |image_path|
+        if image_relevance_test.call(self, image_path, dc_identifier)
+          if /_thumb.png\Z/.match(image_path)
+            self.thumbnail = "/#{image_path}"
+          elsif /_lg.png\Z/.match(image_path)
+            self.file_name = "/#{image_path}"
+          end
+          self.save!
+        end
+      end # all_potential_image_paths.each
+    end # self.dc_identifiers.each
+  end
+
+  protected
+
+  def all_s3_image_paths
+    region = 'us-east-2'
+    s3 = Aws::S3::Resource.new(region: region, access_key_id: ENV["AWS_ACCESS_KEY_ID"], secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"])
+    bucket = s3.bucket('pacscl-production')
+
+    s3_base = "images/#{s3_images_folder}"
+    all_repo_paths = bucket.objects(prefix: s3_base).collect(&:key)
+    archive_paths = bucket.objects(prefix: "#{s3_base}/Archive").collect(&:key)
+    failed_paths = bucket.objects(prefix: "#{s3_base}/Failed\ Inbox").collect(&:key)
+    image_paths = all_repo_paths - archive_paths - failed_paths
   end
 end

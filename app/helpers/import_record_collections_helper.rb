@@ -22,10 +22,13 @@ module ImportRecordCollectionsHelper
 
     # create new raw record collections or update existing
     CSV.foreach("#{Rails.root}/uploads/record_collections/record_collections.csv", headers: true) do |row|
+      next if row[0].nil?
       institution_name = row[0].gsub('"', '')
       repository = Repository.find_by_name(institution_name)
       if repository
-        raw_record = RawRecord.find_or_initialize_by(oai_identifier: row[7].gsub('"', ''))
+        oai_identifier = row["Identifier/Collection Number"].gsub('"', '')
+        raise "No Identifier/Collection Number for row: #{row.inspect}" if oai_identifier.nil?
+        raw_record = RawRecord.find_or_initialize_by(oai_identifier: oai_identifier)
 
         raw_record.record_type = "collection"
         raw_record.repository_id = repository.id

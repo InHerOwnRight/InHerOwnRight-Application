@@ -14,8 +14,8 @@ module ImportPacsclCollectionsHelper
       institution_name = row[0].gsub('"', '')
       repository = Repository.find_by_name(institution_name)
       if repository
-        import_source = row[1].gsub('"', '')
-        detailed_name = row[2].gsub('"', '')
+        import_source = row[1].to_s.gsub('"', '')
+        detailed_name = row[2].to_s.gsub('"', '')
         if row[3].nil?
           clean_name  = nil
         else
