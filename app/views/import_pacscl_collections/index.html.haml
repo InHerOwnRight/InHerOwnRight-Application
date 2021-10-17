@@ -22,6 +22,9 @@
           %tr
             %td= pacscl_collection.repository.try(:name)
             %td= pacscl_collection.import_source
-            %td= pacscl_collection.detailed_name
+            - if collection_record = pacscl_collection.collection_record
+              %td= link_to(pacscl_collection.detailed_name, record_path(collection_record.slug))
+            - else
+              %td= pacscl_collection.detailed_name
             %td= pacscl_collection.clean_name
 %br

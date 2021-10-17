@@ -3,7 +3,7 @@ class ImportRecordCollectionsController < ApplicationController
   before_action :authorize_current_user
 
   def index
-    @record_collections = RawRecord.where(record_type: "collection").map { |rr| rr.record }
+    @record_collections = RawRecord.where(record_type: "collection").map { |rr| rr.record }.compact
   end
 
   def create
