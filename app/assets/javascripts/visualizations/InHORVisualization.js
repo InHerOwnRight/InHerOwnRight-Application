@@ -1,401 +1,441 @@
 var labelType, useGradients, nativeTextSupport, animate;
 
-(function() {
-  var ua = navigator.userAgent,
-      iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
-      typeOfCanvas = typeof HTMLCanvasElement,
-      nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
-      textSupport = nativeCanvasSupport
-        && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
-  //I'm setting this based on the fact that ExCanvas provides text support for IE
-  //and that as of today iPhone/iPad current text support is lame
-  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
-  nativeTextSupport = labelType == 'Native';
-  useGradients = nativeCanvasSupport;
-  animate = !(iStuff || !nativeCanvasSupport);
+(function () {
+    var ua = navigator.userAgent,
+    iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
+    typeOfCanvas = typeof HTMLCanvasElement,
+    nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
+    textSupport = nativeCanvasSupport && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
+    //I'm setting this based on the fact that ExCanvas provides text support for IE
+    //and that as of today iPhone/iPad current text support is lame
+    labelType = (! nativeCanvasSupport || (textSupport && ! iStuff)) ? 'Native': 'HTML';
+    nativeTextSupport = labelType == 'Native';
+    useGradients = nativeCanvasSupport;
+    animate = !(iStuff || ! nativeCanvasSupport);
 })();
 
 var Log = {
-  elem: false,
-  write: function(text){
-    if (!this.elem)
-      this.elem = document.getElementById('log');
-    this.elem.innerHTML = text;
-    this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
-  }
+    elem: false,
+    write: function (text) {
+        if (! this.elem)
+        this.elem = document.getElementById('log');
+        this.elem.innerHTML = text;
+        this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
+    }
 };
 
 
-function init(){
+function init() {
     //init data
     var json = {
         id: "InHOR",
         name: "In Her Own Right",
-        children: [{
+        children:[ {
             id: "War_and_War_Relief",
             name: "War and <br>War Relief",
             data: {
                 relation: "<h1>War and War Relief</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85007241",
                 name: "Armed service",
                 data: {
                     relation: "<h1>Armed Service and War Work</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Military+Service+and+War+Work&search_field=all_fields' target='new'>Military Service and War Work</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=soldiers'>Soldiers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+soldiers&search_field=all_fields' target='new'>African American soldiers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Military+hospitals&search_field=all_fields' target='new'>Military hospitals</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+work&search_field=all_fields' target='new'>War work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+relief&search_field=all_fields' target='new'>War relief</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War--Relief+of+sick+and+wounded&search_field=all_fields' target='new'>War--Relief of sick and wounded</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States+Sanitary+Commission&search_field=all_fields' target='new'>United States Sanitary Commission</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85145114",
                 name: "War",
                 data: {
                     relation: "<h1>War</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War&search_field=all_fields' target='new'>War</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+diaries&search_field=all_fields' target='new'>War diaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Pacifists&search_field=all_fields' target='new'>Pacifists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War,+Cost+of&search_field=all_fields' target='new'>War, Cost of</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War--Religious+aspects--Society+of+Friends&search_field=all_fields' target='new'>War--Religious aspects--Society of Friends</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War--Moral+and+ethical+aspects&search_field=all_fields' target='new'>War--Moral and ethical aspects</a></h2><br><h1>Women and War<h1><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+and+war&search_field=all_fields' target='new'>Women and war</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+war&search_field=all_fields' target='new'>Women in war</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Peace+Party&search_field=all_fields' target='new'>Woman's Peace Party</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+and+the+military&search_field=all_fields' target='new'>Women and the military</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "Wars in history",
                 name: "Wars in history",
                 data: {
                     relation: "<h1>Wars in History</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Civil+War,+1861-1865&search_field=all_fields' target='new'>American Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States--History--Civil+War,+1861-1865&search_field=all_fields' target='new'>United States--History--Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Reconstruction+(United+States+:+1865-1877)&search_field=all_fields' target='new'>Reconstruction (United States : 1865-1877)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Spanish-American+War+(1898)&search_field=all_fields' target='new'>Spanish-American War (1898)</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=World+War%2C+1914-1918'>World War, 1914-1918</a></h2>"
-                },children: []
-                    }, ]
+                },
+                children:[]
+            },]
         }, {
             id: "Slavery_and_Abolition",
             name: "Slavery and <br>Abolition",
             data: {
                 relation: "<h1>Slavery and Abolition</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85000188",
                 name: "Abolitionists",
                 data: {
                     relation: "<h1>Abolitionists</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Abolitionists&search_field=all_fields' target='new'>Abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+abolitionists&search_field=all_fields' target='new'>Women abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quaker+abolitionists&search_field=all_fields' target='new'>Quaker abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Antislavery+movements&search_field=all_fields' target='new'>Antislavery movements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Philadelphia+Female+Anti-slavery+Society&search_field=all_fields' target='new'>Philadelphia Female Anti-slavery Society</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "http://id.loc.gov/authorities/subjects/sh85123314",
                 name: "Slavery",
                 data: {
                     relation: "<h1>Slavery</h1><b>Note:</b> Many of the subjects in In Her Own Right are dependent on terminology provided by the Library of Congress. Therefore, for clarity, the term 'slaves' is used below in place of the term 'enslaved people'. See the Harmful Language Statement at the bottom of our <a href='http://inherownright.org/spotlight/teachers-and-students/feature/search-tips'>Search Tips page</a> for more details.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Slavery+and+the+church'>Slavery and the church</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slaves&search_field=all_fields' target='new'>Slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Civil+War,+1861-1865&search_field=all_fields' target='new'>American Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States--History--Civil+War,+1861-1865&search_field=all_fields' target='new'>United States--History--Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Underground+Railroad&search_field=all_fields' target='new'>Underground Railroad</a></h2><br><h1>Freedmen</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen&search_field=all_fields' target='new'>Freedmen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Charities&search_field=all_fields' target='new'>Freedmen--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Education&search_field=all_fields' target='new'>Freedmen--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Freedman's+Union+Commission&search_field=all_fields' target='new'>American Freedman's Union Commission</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Pennsylvania+Freedmen's+Relief+Association&search_field=all_fields' target='new'>Pennsylvania Freedmen's Relief Association</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Bureau+of+Refugees,+Freedmen,+and+Abandoned+Lands&search_field=all_fields' target='new'>United States. Bureau of Refugees, Freedmen, and Abandoned Lands</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Temperance Movement",
             name: "Temperance <br>Movement",
             data: {
                 relation: "<h1>Temperance</h1>"
             },
-            children: [{
+            children:[ {
                 id: "http://id.loc.gov/authorities/subjects/sh85003268",
                 name: "Alcohol",
                 data: {
                     relation: "<h1>Alcohol</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Alcohol&search_field=all_fields' target='new'>Alcohol</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Alcoholics&search_field=all_fields' target='new'>Alcoholics</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Bars+(Drinking+establishments)&search_field=all_fields' target='new'>Bars (Drinking establishments)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Drinking+of+alcoholic+beverages&search_field=all_fields' target='new'>Drinking of alcoholic beverages</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Drunkenness+(Crime)&search_field=all_fields' target='new'>Drunkenness (Crime)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Alcohol+use&search_field=all_fields' target='new'>Quakers--Alcohol use</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Liquor+laws&search_field=all_fields' target='new'>Liquor laws</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "http://id.loc.gov/authorities/subjects/sh85133698",
                 name: "Temperance",
                 data: {
                     relation: "<h1>Temperance</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Temperance&search_field=all_fields' target='new'>Temperance</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Temperance--Societies,+etc.&search_field=all_fields' target='new'>Temperance--Societies, etc.</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prohibition&search_field=all_fields' target='new'>Prohibition</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prohibition+Party+(U.S.)&search_field=all_fields' target='new'>Prohibition Party (U.S.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Christian+Temperance+Union&search_field=all_fields' target='new'>Woman's Christian Temperance Union</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Christian+Temperance+Union.+State+of+New+York&search_field=all_fields' target='new'>Woman's Christian Temperance Union. State of New York</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Young+Woman's+Christian+Temperance+Union&search_field=all_fields' target='new'>Young Woman's Christian Temperance Union</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Friends'+Association+for+the+Abolition+of+State+Regulation+of+Vice&search_field=all_fields' target='new'>Friends' Association for the Abolition of State Regulation of Vice</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Arts_and_Culture",
             name: "Arts and <br>Culture",
             data: {
                 relation: "<h1>Arts and Culture</h1>"
             },
-            children: [{
+            children:[ {
                 id: "Reading_and_writing",
                 name: "Reading and <br>writing",
                 data: {
                     relation: "<h1>Reading and Writing</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Books+and+reading&search_field=all_fields' target='new'>Books and reading</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+women+authors&search_field=all_fields' target='new'>African American women authors</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+poetry--Quaker+authors&search_field=all_fields' target='new'>American poetry--Quaker authors</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Authors,+American&search_field=all_fields' target='new'>Authors, American</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Biography&search_field=all_fields' target='new'>Biography</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children's+literature&search_field=all_fields' target='new'>Children's literature</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Literature&search_field=all_fields' target='new'>Literature</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Medical+libraries&search_field=all_fields' target='new'>Medical libraries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Peace+in+literature&search_field=all_fields' target='new'>Peace in literature</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poetry&search_field=all_fields' target='new'>Poetry</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=School+libraries&search_field=all_fields' target='new'>School libraries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+authors&search_field=all_fields' target='new'>Women authors</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+literature&search_field=all_fields' target='new'>Women in literature</a></h2><br><h1><Diaries></h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Diaries&search_field=all_fields' target='new'>Diaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Presbyterian+women--Diaries&search_field=all_fields' target='new'>Presbyterian women--Diaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Teachers--Diaries&search_field=all_fields' target='new'>Teachers--Diaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+diaries&search_field=all_fields' target='new'>War diaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+missionaries--Iran--Diaries&search_field=all_fields' target='new'>Women missionaries--Iran--Diaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Diaries&search_field=all_fields' target='new'>Women--Diaries</a></h2>"
-                },children: []
-                    },{
+                },
+                children:[]
+            }, {
                 id: "http://id.loc.gov/authorities/subjects/sh85007461",
                 name: "Art",
                 data: {
                     relation: "<h1>Art</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Art&search_field=all_fields' target='new'>Art</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+artists--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>African American artists--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+women+artists--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>African American women artists--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Artists&search_field=all_fields' target='new'>Artists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Autographs&search_field=all_fields' target='new'>Autographs</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Botanical+illustration&search_field=all_fields' target='new'>Botanical illustration</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Buttons+(information+artifacts)&search_field=all_fields' target='new'>Buttons (information artifacts)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Calligraphy&search_field=all_fields' target='new'>Calligraphy</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Flowers+in+art&search_field=all_fields' target='new'>Flowers in art</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Music&search_field=all_fields' target='new'>Music</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=photograph'>Photographs</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Portraits&search_field=all_fields' target='new'>Portraits</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Postcards&search_field=all_fields' target='new'>Postcards</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=scrapbook&search_field=all_fields' target='new'>Scrapbooks</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Scientific+illustration&search_field=all_fields' target='new'>Scientific illustration</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+artists&search_field=all_fields' target='new'>Women artists</a></h2><br><h1>Sewing</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sewing&search_field=all_fields' target='new'>Sewing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clothing+and+dress&search_field=all_fields' target='new'>Clothing and dress</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Dressmaking&search_field=all_fields' target='new'>Dressmaking</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sewing+schools&search_field=all_fields' target='new'>Sewing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sewing--Study+and+teaching&search_field=all_fields' target='new'>Sewing--Study and teaching</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Textile+fabrics'>Textile fabrics</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85034755",
                 name: "Culture",
                 data: {
                     relation: "<h1>Culture</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Parties&search_field=all_fields' target='new'>Parties</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Social+life+and+customs&search_field=all_fields' target='new'>African Americans--Social life and customs</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Indians+of+North+America--Social+life+and+customs&search_field=all_fields' target='new'>Indians of North America--Social life and customs</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Social+life+and+customs&search_field=all_fields' target='new'>Quakers--Social life and customs</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+college+students--Social+life+and+customs&search_field=all_fields' target='new'>Women college students--Social life and customs</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+medical+students--Social+life+and+customs&search_field=all_fields' target='new'>Women medical students--Social life and customs</a></h2>"
-                },children: []
-                    },  ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Relationships_and_Family",
             name: "Relationships <br>and Family",
             data: {
                 relation: "<h1>Relationships and Family</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85023418",
                 name: "Children",
                 data: {
                     relation: "<h1>Children</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children&search_field=all_fields' target='new'>Children</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+children&search_field=all_fields' target='new'>African American children</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Association+for+the+Care+of+Coloured+Orphans+(Cheyney,+Pa.)&search_field=all_fields' target='new'>Association for the Care of Coloured Orphans (Cheyney, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Child+abuse&search_field=all_fields' target='new'>Child abuse</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Child+welfare&search_field=all_fields' target='new'>Child welfare</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children--Death&search_field=all_fields' target='new'>Children--Death</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children--Legal+status,+laws,+etc.--United+States&search_field=all_fields' target='new'>Children--Legal status, laws, etc.--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Foster+children&search_field=all_fields' target='new'>Foster children</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Illegitimate+children&search_field=all_fields' target='new'>Illegitimate children</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Infants&search_field=all_fields' target='new'>Infants</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Orphanages&search_field=all_fields' target='new'>Orphanages</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Pennsylvania+Society+to+Protect+Children+from+Cruelty&search_field=all_fields' target='new'>Pennsylvania Society to Protect Children from Cruelty</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sick+children&search_field=all_fields' target='new'>Sick children</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85047009",
                 name: "Families",
                 data: {
-                relation: "<h1>Families</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Families&search_field=all_fields' target='new'>Families</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Family&search_field=all_fields' target='new'>Family</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Family+social+work&search_field=all_fields' target='new'>Family social work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Genealogy&search_field=all_fields' target='new'>Genealogy</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Biography&search_field=all_fields' target='new'>Biography</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Birthdays&search_field=all_fields' target='new'>Birthdays</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Thank-you+notes&search_field=all_fields' target='new'>Thank-you notes</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Personal+correspondence&search_field=all_fields' target='new'>Personal correspondence</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Divorce&search_field=all_fields' target='new'>Divorce</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Parental+grief&search_field=all_fields' target='new'>Parental grief</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Household+employees&search_field=all_fields' target='new'>Household employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+household+employees&search_field=all_fields' target='new'>Women household employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fathers+and+daughters&search_field=all_fields' target='new'>Fathers and daughters</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Aunts&search_field=all_fields' target='new'>Aunts</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Brothers+and+sisters--Family+relationships&search_field=all_fields' target='new'>Brothers and sisters--Family relationships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nieces&search_field=all_fields' target='new'>Nieces</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sisters--Family+relationships&search_field=all_fields' target='new'>Sisters--Family relationships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Uncles&search_field=all_fields' target='new'>Uncles</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Older+people--Institutional+care&search_field=all_fields' target='new'>Older people--Institutional care</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Family+relationships&search_field=all_fields' target='new'>Quakers--Family relationships</a></h2><br><h1>Motherhood</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Motherhood&search_field=all_fields' target='new'>Motherhood</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mothers+and+daughters&search_field=all_fields' target='new'>Mothers and daughters</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Childbirth&search_field=all_fields' target='new'>Childbirth</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Obstetrics&search_field=all_fields' target='new'>Obstetrics</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Unwanted+pregnancy--Decision+making&search_field=all_fields' target='new'>Unwanted pregnancy--Decision making</a></h2>"
-                },children: []
-                    }, {
+                    relation: "<h1>Families</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Families&search_field=all_fields' target='new'>Families</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Family&search_field=all_fields' target='new'>Family</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Family+social+work&search_field=all_fields' target='new'>Family social work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Genealogy&search_field=all_fields' target='new'>Genealogy</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Biography&search_field=all_fields' target='new'>Biography</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Birthdays&search_field=all_fields' target='new'>Birthdays</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Thank-you+notes&search_field=all_fields' target='new'>Thank-you notes</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Personal+correspondence&search_field=all_fields' target='new'>Personal correspondence</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Divorce&search_field=all_fields' target='new'>Divorce</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Parental+grief&search_field=all_fields' target='new'>Parental grief</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Household+employees&search_field=all_fields' target='new'>Household employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+household+employees&search_field=all_fields' target='new'>Women household employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fathers+and+daughters&search_field=all_fields' target='new'>Fathers and daughters</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Aunts&search_field=all_fields' target='new'>Aunts</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Brothers+and+sisters--Family+relationships&search_field=all_fields' target='new'>Brothers and sisters--Family relationships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nieces&search_field=all_fields' target='new'>Nieces</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sisters--Family+relationships&search_field=all_fields' target='new'>Sisters--Family relationships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Uncles&search_field=all_fields' target='new'>Uncles</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Older+people--Institutional+care&search_field=all_fields' target='new'>Older people--Institutional care</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Family+relationships&search_field=all_fields' target='new'>Quakers--Family relationships</a></h2><br><h1>Motherhood</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Motherhood&search_field=all_fields' target='new'>Motherhood</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mothers+and+daughters&search_field=all_fields' target='new'>Mothers and daughters</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Childbirth&search_field=all_fields' target='new'>Childbirth</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Obstetrics&search_field=all_fields' target='new'>Obstetrics</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Unwanted+pregnancy--Decision+making&search_field=all_fields' target='new'>Unwanted pregnancy--Decision making</a></h2>"
+                },
+                children:[]
+            }, {
                 id: "Love and friendship",
                 name: "Love and <br>friendship",
                 data: {
                     relation: "<h1>Love and Friendship</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Love&search_field=all_fields' target='new'>Love</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Homosexuality&search_field=all_fields' target='new'>Homosexuality</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+friendship&search_field=all_fields' target='new'>Female friendship</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Friendship&search_field=all_fields' target='new'>Friendship</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Student+Life&search_field=all_fields' target='new'>Student Life</a></h2><br><h1>Marriage</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Courtship&search_field=all_fields' target='new'>Courtship</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Betrothal&search_field=all_fields' target='new'>Betrothal</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Newlyweds&search_field=all_fields' target='new'>Newlyweds</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Weddings&search_field=all_fields' target='new'>Weddings</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Marriage&search_field=all_fields' target='new'>Marriage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Interfaith+marriage&search_field=all_fields' target='new'>Interfaith marriage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Intercountry+marriage&search_field=all_fields' target='new'>Intercountry marriage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Interracial+marriage&search_field=all_fields' target='new'>Interracial marriage</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85036085",
                 name: "Death",
                 data: {
                     relation: "<h1>Death</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Death&search_field=all_fields' target='new'>Death</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Death--Religious+aspects&search_field=all_fields' target='new'>Death--Religious aspects</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=obituaries'>Obituaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Funeral+rites+and+ceremonies&search_field=all_fields' target='new'>Funeral rites and ceremonies</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Condolence+notes&search_field=all_fields' target='new'>Condolence notes</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Bereavement&search_field=all_fields' target='new'>Bereavement</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Burial+records&search_field=all_fields' target='new'>Burial records</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Wills&search_field=all_fields' target='new'>Wills</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Estate&search_field=all_fields' target='new'>Estate</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Philanthropy",
             name: "Philanthropy",
             data: {
                 relation: "<h1>Philanthropy</h1><br><h3>Learn more about the historical context of women's philanthropic work by visiting our exhibit, <a href='http://inherownright.org/spotlight/featured-exhibits/feature/philanthropy-or-self-determination'>Philanthropy or Self-Determination</a></h3>"
             },
-            children: [{
+            children:[ {
                 id: "http://id.loc.gov/authorities/subjects/sh85022665",
                 name: "Charity work",
                 data: {
                     relation: "<h1>Charity Work</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charities&search_field=all_fields' target='new'>Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charities--Finance&search_field=all_fields' target='new'>Charities--Finance</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charities--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Charities--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charity+organization&search_field=all_fields' target='new'>Charity organization</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charitable+bequests&search_field=all_fields' target='new'>Charitable bequests</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Charities&search_field=all_fields' target='new'>Quakers--Charities</a></h2><br><h1>Fundraising</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fund+raising&search_field=all_fields' target='new'>Fund raising</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Educational+fund+raising&search_field=all_fields' target='new'>Educational fund raising</a></h2><br><h1>War relief></h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+relief&search_field=all_fields' target='new'>War relief</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War--Relief+of+sick+and+wounded&search_field=all_fields' target='new'>War--Relief of sick and wounded</a></h2><br><h1>Education and Charity</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Education--Societies,+etc.&search_field=all_fields' target='new'>Education--Societies, etc</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Scholarships&search_field=all_fields' target='new'>Scholarships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charity-schools&search_field=all_fields' target='new'>Charity-schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Aimwell+School+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Aimwell School (Philadelphia, Pa.)</a></h2><br><h1>Missionaries</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionaries&search_field=all_fields' target='new'>Missionaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionary+Work+and+Public+Health&search_field=all_fields' target='new'>Missionary Work and Public Health</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=women+in+missionary+work' target='new'>Women in missionary work</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Women+missionaries'>Women missionaries</a></h2><br><h1>Women Social Reformers</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers&search_field=all_fields' target='new'>Women social reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers--Pennsylvania--Philadelphia--History--20th+century&search_field=all_fields' target='new'>Women social reformers--Pennsylvania--Philadelphia--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+charitable+work&search_field=all_fields' target='new'>Women in charitable work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Charities&search_field=all_fields' target='new'>Women--Charities</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85104848.html",
                 name: "Services for <br>the poor",
                 data: {
                     relation: "<h1>Services for the Poor</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor--Services+for&search_field=all_fields' target='new'>Poor--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor+women&search_field=all_fields' target='new'>Poor women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor+women--Services+for&search_field=all_fields' target='new'>Poor women--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+service&search_field=all_fields' target='new'>Social service</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+settlements&search_field=all_fields' target='new'>Social settlements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Octavia+Hill+Association&search_field=all_fields' target='new'>Octavia Hill Association</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=House+of+Refuge+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>House of Refuge (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=House+of+the+Good+Shepherd+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>House of the Good Shepherd (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Magdalen+Society+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Magdalen Society (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Rosine+Association+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Rosine Association (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Association+of+Philadelphia+for+the+Relief+of+the+Sick+and+Infirm+Poor+with+Clothing&search_field=all_fields' target='new'>Female Association of Philadelphia for the Relief of the Sick and Infirm Poor with Clothing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Association+of+Philadelphia+for+the+Relief+of+Women+and+Children+in+Reduced+Circumstances&search_field=all_fields' target='new'>Female Association of Philadelphia for the Relief of Women and Children in Reduced Circumstances</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Society+of+Philadelphia+for+the+Relief+and+Employment+of+the+Poor&search_field=all_fields' target='new'>Female Society of Philadelphia for the Relief and Employment of the Poor</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Indigent+Widows'+and+Single+Women's+Society+of+Philadelphia+(Pa.)&search_field=all_fields' target='new'>Indigent Widows' and Single Women's Society of Philadelphia (Pa.)</a></h2><br><h1>Services for African Americans and/or People of Color</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Services+for&search_field=all_fields' target='new'>African Americans--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Charities&search_field=all_fields' target='new'>African Americans--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Association+for+the+Care+of+Coloured+Orphans+(Cheyney,+Pa.)&search_field=all_fields' target='new'>Association for the Care of Coloured Orphans (Cheyney, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Association+of+Friends+for+the+Free+Instruction+of+Adult+Colored+Persons&search_field=all_fields' target='new'>Association of Friends for the Free Instruction of Adult Colored Persons</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Charities&search_field=all_fields' target='new'>Freedmen--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Home+for+Aged+and+Infirm+Colored+Persons+(Philadelphia,+Pa.).+Board+of+Managers&search_field=all_fields' target='new'>Home for Aged and Infirm Colored Persons (Philadelphia, Pa.). Board of Managers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=National+Association+for+the+Relief+of+Destitute+Colored+Women+and+Children+(Washington,+D.C.)&search_field=all_fields' target='new'>National Association for the Relief of Destitute Colored Women and Children (Washington, D.C.)</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Peace_Activism",
             name: "Peace Activism",
             data: {
                 relation: "<h1>Peace Activism</h1>"
             },
-            children: [{
+            children:[ {
                 id: "http://id.loc.gov/authorities/subjects/sh85098940",
                 name: "Peace",
                 data: {
                     relation: "<h1>Peace</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Peace&search_field=all_fields' target='new'>Peace</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Conscientious+objection&search_field=all_fields' target='new'>Conscientious objection</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Conscientious+objectors&search_field=all_fields' target='new'>Conscientious objectors</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Peace+in+literature&search_field=all_fields' target='new'>Peace in literature</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Peace+movements&search_field=all_fields' target='new'>Peace movements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Peace-building&search_field=all_fields' target='new'>Peace-building</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+and+peace&search_field=all_fields' target='new'>Women and peace</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "http://id.loc.gov/authorities/subjects/sh85098945",
                 name: "Peace societies",
                 data: {
                     relation: "<h1>Peace Societies</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Peace--Societies,+etc.&search_field=all_fields' target='new'>Peace--Societies, etc.</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Central+American+Peace+Conference&search_field=all_fields' target='new'>Central American Peace Conference</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=International+Peace+Bureau&search_field=all_fields' target='new'>International Peace Bureau</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Pennsylvania+Peace+Society+(1866-1928)&search_field=all_fields' target='new'>Pennsylvania Peace Society (1866-1928)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Rhode+Island+Peace+Society&search_field=all_fields' target='new'>Rhode Island Peace Society</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Universal+Peace+Union&search_field=all_fields' target='new'>Universal Peace Union</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Peace+Party&search_field=all_fields' target='new'>Woman's Peace Party</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+International+League+for+Peace+and+Freedom&search_field=all_fields' target='new'>Women's International League for Peace and Freedom</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Religious_Activism",
             name: "Religious Activism",
             data: {
                 relation: "<h1>Religious Activism</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85112549",
                 name: "Religion",
                 data: {
                     relation: "<h1>Religion</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=religion'>Religion</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Faith&search_field=all_fields' target='new'>Faith</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=God&search_field=all_fields' target='new'>God</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+and+religion&search_field=all_fields' target='new'>Women and religion</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+clergy&search_field=all_fields' target='new'>Women clergy</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Jewish+women&search_field=all_fields' target='new'>Jewish women</a></h2><br><h1>Christianity</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Christianity&search_field=all_fields' target='new'>Christianity</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Christian+life&search_field=all_fields' target='new'>Christian life</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Christian+women&search_field=all_fields' target='new'>Christian women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=God+(Christianity)&search_field=all_fields' target='new'>God (Christianity)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+churches&search_field=all_fields' target='new'>African American churches</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Baptists&search_field=all_fields' target='new'>Baptists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Catholics&search_field=all_fields' target='new'>Catholics</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Catholic+women&search_field=all_fields' target='new'>Catholic women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Catholics--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Catholics--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Evangelicalism&search_field=all_fields' target='new'>Evangelicalism</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Methodists&search_field=all_fields' target='new'>Methodists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Unitarianism&search_field=all_fields' target='new'>Unitarianism</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Unitarians&search_field=all_fields' target='new'>Unitarians</a></h2><br><h1>Quakers</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers&search_field=all_fields' target='new'>Quakers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Society+of+Friends&search_field=all_fields' target='new'>Society of Friends</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quaker+women&search_field=all_fields' target='new'>Quaker women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quaker+girls&search_field=all_fields' target='new'>Quaker girls</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quaker+abolitionists&search_field=all_fields' target='new'>Quaker abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Charities&search_field=all_fields' target='new'>Quakers--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quakers--Religious+life&search_field=all_fields' target='new'>Quakers--Religious life</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War--Religious+aspects--Society+of+Friends&search_field=all_fields' target='new'>War--Religious aspects--Society of Friends</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85025847",
                 name: "Church work",
                 data: {
                     relation: "<h1>Church work</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+church+work--Presbyterian+Church--Pennsylvania&search_field=all_fields' target='new'>Women in church work--Presbyterian Church--Pennsylvania</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Church+work+with+prisoners&search_field=all_fields' target='new'>Church work with prisoners</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Church+work+with+prostitutes&search_field=all_fields' target='new'>Church work with prostitutes</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Church+work+with+the+poor&search_field=all_fields' target='new'>Church work with the poor</a></h2><h1>Church work with youth</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Church+work+with+youth&search_field=all_fields' target='new'>Church work with youth</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Young+Women's+Christian+Association&search_field=all_fields' target='new'>Young Women's Christian Association</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Young+Women's+Christian+associations&search_field=all_fields' target='new'>Young Women's Christian associations</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Jewish+children--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Jewish children--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Jewish+community+centers--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Jewish community centers--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sunday+schools&search_field=all_fields' target='new'>Sunday schools</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85086017",
                 name: "Missionaries",
                 data: {
                     relation: "<h1>Missionaries</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionaries&search_field=all_fields' target='new'>Missionaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionary+Work+and+Public+Health&search_field=all_fields' target='new'>Missionary Work and Public Health</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionaries,+Medical&search_field=all_fields' target='new'>Missionaries, Medical</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Women+missionaries'>Women missionaries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+missionary+work&search_field=all_fields' target='new'>Women in missionary work</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Presbyterian+Church--Missions'>Presbyterian Church--Missions</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Foreign+Missionary+Society+of+the+Presbyterian+Church+(Presbyterian+Church+in+the+U.S.A.)&search_field=all_fields' target='new'>Woman's Foreign Missionary Society of the Presbyterian Church (Presbyterian Church in the U.S.A.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+missionaries--Iran--Diaries&search_field=all_fields' target='new'>Women missionaries--Iran--Diaries</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Race_and_Class",
             name: "Race and Class",
             data: {
                 relation: "<h1>Race and Class</h1><br><h3>Learn more about how women's activism intersected with issues of race and class by visiting our exhibit <a href='http://inherownright.org/spotlight/featured-exhibits/feature/work-friendship-across-racial-lines'>Work & Friendship Across Racial Lines,</a> or reading a contextual essay, <a href='http://inherownright.org/spotlight/introducing-women-s-activism/feature/breaking-ground-on-race-and-class'>Breaking Ground on Race and Class</a></h3>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85124049",
                 name: "Social service",
                 data: {
                     relation: "<h1>Social Service</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+service&search_field=all_fields' target='new'>Social service</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+settlements&search_field=all_fields' target='new'>Social settlements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers&search_field=all_fields' target='new'>Women social reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers--Pennsylvania--Philadelphia--History--20th+century&search_field=all_fields' target='new'>Women social reformers--Pennsylvania--Philadelphia--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+charitable+work&search_field=all_fields' target='new'>Women in charitable work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Charities&search_field=all_fields' target='new'>Women--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Employment&search_field=all_fields' target='new'>Women--Employment</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Services+for&search_field=all_fields' target='new'>Women--Services for</a></h2><br><h1>Services for the poor</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor--Services+for&search_field=all_fields' target='new'>Poor--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor+women&search_field=all_fields' target='new'>Poor women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor+women--Services+for&search_field=all_fields' target='new'>Poor women--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Working+class--Dwellings&search_field=all_fields' target='new'>Working class--Dwellings</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Immigrants&search_field=all_fields' target='new'>Immigrants</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Refugees&search_field=all_fields' target='new'>Refugees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Indigent+Widows'+and+Single+Women's+Society+of+Philadelphia+(Pa.)&search_field=all_fields' target='new'>Indigent Widows' and Single Women's Society of Philadelphia (Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Association+of+Philadelphia+for+the+Relief+of+the+Sick+and+Infirm+Poor+with+Clothing&search_field=all_fields' target='new'>Female Association of Philadelphia for the Relief of the Sick and Infirm Poor with Clothing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Association+of+Philadelphia+for+the+Relief+of+Women+and+Children+in+Reduced+Circumstances&search_field=all_fields' target='new'>Female Association of Philadelphia for the Relief of Women and Children in Reduced Circumstances</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Society+of+Philadelphia+for+the+Relief+and+Employment+of+the+Poor&search_field=all_fields' target='new'>Female Society of Philadelphia for the Relief and Employment of the Poor</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85110249",
                 name: "Race relations",
                 data: {
-                    relation: "<h1>Race Relations</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Race+relations&search_field=all_fields' target='new'>Race relations</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Racial+and+Ethnic+Diversity&search_field=all_fields' target='new'>Racial and Ethnic Diversity</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Racism&search_field=all_fields' target='new'>Racism</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Social+conditions&search_field=all_fields' target='new'>African Americans--Social conditions</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Indians+of+North+America' target='new'>Indians of North America</a></h2><br><h1>Services for African Americans and/or People of Color</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Charities&search_field=all_fields' target='new'>African Americans--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Services+for&search_field=all_fields' target='new'>African Americans--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Housing&search_field=all_fields' target='new'>African Americans--Housing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Home+for+Aged+and+Infirm+Colored+Persons+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Home for Aged and Infirm Colored Persons (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=National+Association+for+the+Relief+of+Destitute+Colored+Women+and+Children+(Washington,+D.C.)&search_field=all_fields' target='new'>National Association for the Relief of Destitute Colored Women and Children (Washington, D.C.)</a></h2><br><h1><Education for African Americans</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Education&search_field=all_fields' target='new'>African Americans--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+schools&search_field=all_fields' target='new'>African American schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nursing+schools&search_field=all_fields' target='new'>African American nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nurses&search_field=all_fields' target='new'>African American nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses,+Black&search_field=all_fields' target='new'>Nurses, Black</a></h2><br><h1><Slavery and Abolition</h1>See the 'Slavery and Abolition' main topic for more.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Antislavery+movements&search_field=all_fields' target='new'>Antislavery movements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+abolitionists&search_field=all_fields' target='new'>Women abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen&search_field=all_fields' target='new'>Freedmen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Charities&search_field=all_fields' target='new'>Freedmen--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Education&search_field=all_fields' target='new'>Freedmen--Education</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                    relation: "<h1>Race Relations</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Race+relations&search_field=all_fields' target='new'>Race relations</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Racial+and+Ethnic+Diversity&search_field=all_fields' target='new'>Racial and Ethnic Diversity</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Racism&search_field=all_fields' target='new'>Racism</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Social+conditions&search_field=all_fields' target='new'>African Americans--Social conditions</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Indians+of+North+America' target='new'>Indians of North America</a></h2><br><h1>Services for African Americans and/or People of Color</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Charities&search_field=all_fields' target='new'>African Americans--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Services+for&search_field=all_fields' target='new'>African Americans--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Housing&search_field=all_fields' target='new'>African Americans--Housing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Home+for+Aged+and+Infirm+Colored+Persons+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Home for Aged and Infirm Colored Persons (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=National+Association+for+the+Relief+of+Destitute+Colored+Women+and+Children+(Washington,+D.C.)&search_field=all_fields' target='new'>National Association for the Relief of Destitute Colored Women and Children (Washington, D.C.)</a></h2><br><h1>Education for African Americans</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Education&search_field=all_fields' target='new'>African Americans--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+schools&search_field=all_fields' target='new'>African American schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nursing+schools&search_field=all_fields' target='new'>African American nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nurses&search_field=all_fields' target='new'>African American nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses,+Black&search_field=all_fields' target='new'>Nurses, Black</a></h2><br><h1>Slavery and Abolition</h1>See the <b>Slavery and Abolition</b> main topic for more.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Antislavery+movements&search_field=all_fields' target='new'>Antislavery movements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+abolitionists&search_field=all_fields' target='new'>Women abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen&search_field=all_fields' target='new'>Freedmen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Charities&search_field=all_fields' target='new'>Freedmen--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Education&search_field=all_fields' target='new'>Freedmen--Education</a></h2>"
+                },
+                children:[]
+            },]
+        }, {
             id: "Suffrage Movement",
             name: "Suffrage <br>Movement",
             data: {
                 relation: "<h1>Suffrage Movement</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2>Did you know?</h2>During the late 19th and early 20th century, women's right to vote was referred to as <b>'woman suffrage'</b> rather than <b>'women's suffrage'</b>! In the book <i>The Grounding of Modern Feminism,</i> historian Nancy Cott explains 'Nineteenth-century women's consistent usage of the singular <i>woman</i> symbolized, in a word, the unity of the female sex. It proposed that all women have one cause, one movement.'"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85147711",
                 name: "Women social <br>reformers",
                 data: {
                     relation: "<h1>Women Social Reformers</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers&search_field=all_fields' target='new'>Women social reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers--Pennsylvania--Philadelphia--History--20th+century&search_field=all_fields' target='new'>Women social reformers--Pennsylvania--Philadelphia--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+rights&search_field=all_fields' target='new'>Women's rights</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+rights--United+States--History--20th+century&search_field=all_fields' target='new'>Women's rights--United States--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+political+activists&search_field=all_fields' target='new'>Women political activists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+political+candidates&search_field=all_fields' target='new'>Women political candidates</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Political+activity&search_field=all_fields' target='new'>Women--Political activity</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sex+discrimination+against+women&search_field=all_fields' target='new'>Sex discrimination against women</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85129645",
                 name: "Suffrage",
                 data: {
                     relation: "<h1>Suffrage</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffrage&search_field=all_fields' target='new'>Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Civil+rights&search_field=all_fields' target='new'>African Americans--Civil rights</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Suffrage&search_field=all_fields' target='new'>African Americans--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Voter+intimidation&search_field=all_fields' target='new'>Voter intimidation</a></h2><br><h1>Woman Suffrage</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage&search_field=all_fields' target='new'>Women--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffragists&search_field=all_fields' target='new'>Suffragists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Constitution.+19th+Amendment&search_field=all_fields' target='new'>United States. Constitution. 19th Amendment</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--History--19th+century&search_field=all_fields' target='new'>Women--History--19th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--History--20th+century&search_field=all_fields' target='new'>Women--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States--History--19th+century&search_field=all_fields' target='new'>Women--Suffrage--United States--History--19th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States--History--20th+century&search_field=all_fields' target='new'>Women--Suffrage--United States--History--20th century</a></h2><br><h1>Woman Suffrage Societies</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--Societies,+etc.&search_field=all_fields' target='new'>Women--Suffrage--Societies, etc</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+rights--Societies,+etc.&search_field=all_fields' target='new'>Women's rights--Societies, etc</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=National+Woman+Suffrage+Association+(U.S.)&search_field=all_fields' target='new'>National Woman Suffrage Association (U.S.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=National+Woman's+Party&search_field=all_fields' target='new'>National Woman's Party</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=New+York+State+Woman+Suffrage+Association&search_field=all_fields' target='new'>New York State Woman Suffrage Association</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Labor",
             name: "Labor",
             data: {
                 relation: "<h1>Labor</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh99005236",
                 name: "Labor and Employment",
                 data: {
                     relation: "<h1>Labor and Employment</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Employment&search_field=all_fields' target='new'>Employment</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Employment+references&search_field=all_fields' target='new'>Employment references</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Employees&search_field=all_fields' target='new'>Employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Household+employees&search_field=all_fields' target='new'>Household employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Factories&search_field=all_fields' target='new'>Factories</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor+unions&search_field=all_fields' target='new'>Labor unions</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor+movement&search_field=all_fields' target='new'>Labor movement</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor+movement--Dwellings&search_field=all_fields' target='new'>Labor movement--Dwellings</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Strikes+and+lockouts&search_field=all_fields' target='new'>Strikes and lockouts</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Industrial+welfare&search_field=all_fields' target='new'>Industrial welfare</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Child+labor--United+States&search_field=all_fields' target='new'>Child labor--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Soldiers&search_field=all_fields' target='new'>Soldiers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Teachers&search_field=all_fields' target='new'>Teachers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+work&search_field=all_fields' target='new'>War work</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85147294",
                 name: "Employment <br>of Women",
                 data: {
                     relation: "<h1>Employment of Women</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Employment&search_field=all_fields' target='new'>Women--Employment</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+employees&search_field=all_fields' target='new'>Women employees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+disaster+relief&search_field=all_fields' target='new'>Women in disaster relief</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+literature&search_field=all_fields' target='new'>Women in literature</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+the+civil+service&search_field=all_fields' target='new'>Women in the civil service</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+war&search_field=all_fields' target='new'>Women in war</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Policewomen&search_field=all_fields' target='new'>Policewomen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prostitution&search_field=all_fields' target='new'>Prostitution</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+artists&search_field=all_fields' target='new'>Women artists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+authors&search_field=all_fields' target='new'>Women authors</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+lawyers&search_field=all_fields' target='new'>Women lawyers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+orators&search_field=all_fields' target='new'>Women orators</a></h2><br><h1>Women in medicine</h1>See the ‘Medical women’ main topic for more.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+medicine&search_field=all_fields' target='new'>Women in medicine</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+physicians&search_field=all_fields' target='new'>Women physicians</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses&search_field=all_fields' target='new'>Nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing&search_field=all_fields' target='new'>Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+nurses&search_field=all_fields' target='new'>Women nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nurses&search_field=all_fields' target='new'>African American nurses</a></h2><br><h1>Women social reformers</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers&search_field=all_fields' target='new'>Women social reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+abolitionists&search_field=all_fields' target='new'>Women abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+political+activists&search_field=all_fields' target='new'>Women political activists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+charitable+work&search_field=all_fields' target='new'>Women in charitable work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+community+organization&search_field=all_fields' target='new'>Women in community organization</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+missionary+work&search_field=all_fields' target='new'>Women in missionary work</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Immigrants_and_Immigration",
             name: "Immigrants and <br>Immigration",
             data: {
                 relation: "<h1>Immigrants and Immigration</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85064517",
                 name: "Immigrants",
                 data: {
                     relation: "<h1>Immigrants</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Immigrants&search_field=all_fields' target='new'>Immigrants</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Immigrants--Education&search_field=all_fields' target='new'>Immigrants--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Immigrants--Housing&search_field=all_fields' target='new'>Immigrants--Housing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Immigrants--Housing--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Immigrants--Housing--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=German+Americans&search_field=all_fields' target='new'>German Americans</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=German+American+women&search_field=all_fields' target='new'>German American women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Irish+Americans&search_field=all_fields' target='new'>Irish Americans</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Medical+students,+Foreign&search_field=all_fields' target='new'>Medical students, Foreign</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses,+Foreign&search_field=all_fields' target='new'>Nurses, Foreign</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Refugees&search_field=all_fields' target='new'>Refugees</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Bureau+of+Refugees,+Freedmen,+and+Abandoned+Lands&search_field=all_fields' target='new'>United States. Bureau of Refugees, Freedmen, and Abandoned Lands</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=International+relations&search_field=all_fields' target='new'>International relations</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=War+relief&search_field=all_fields' target='new'>War relief</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Genealogy&search_field=all_fields' target='new'>Genealogy</a></h2><br><h1>Social Settlements</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+settlements&search_field=all_fields' target='new'>Social settlements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+settlements--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Social settlements--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Family+social+work&search_field=all_fields' target='new'>Family social work</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Tenement+houses--Pennsylvania--Philadelphia&search_field=all_fields' target='new'>Tenement houses--Pennsylvania--Philadelphia</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Octavia+Hill+Association&search_field=all_fields' target='new'>Octavia Hill Association</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh89000876",
                 name: "Labor movement",
                 data: {
                     relation: "<h1>Labor Movement</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor+movement&search_field=all_fields' target='new'>Labor movement</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor+unions&search_field=all_fields' target='new'>Labor unions</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor+movement--Dwellings&search_field=all_fields' target='new'>Labor movement--Dwellings</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Labor--Dwellings&search_field=all_fields' target='new'>Labor--Dwellings</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Foreign+workers&search_field=all_fields' target='new'>Foreign workers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Factories&search_field=all_fields' target='new'>Factories</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Strikes+and+lockouts&search_field=all_fields' target='new'>Strikes and lockouts</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Medical_Women",
             name: "Medical Women",
             data: {
                 relation: "<h1>Medical Women</h1><br><h3>Learn more about the challenges women in medicine faced by visiting our exhibit, <a href='http://inherownright.org/spotlight/featured-exhibits/feature/medical-women-confront-race-professionalism-and-respectability'>Medical Women Confront Race, Professionalism, and Respectability</a></h3>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85082916",
                 name: "Medical education",
                 data: {
                     relation: "<h1>Medical Education</h1><br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Medical+education&search_field=all_fields' target='new'>Medical education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sex+discrimination+in+medical+education&search_field=all_fields' target='new'>Sex discrimination in medical education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses--Training+of&search_field=all_fields' target='new'>Nurses--Training of</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing+schools&search_field=all_fields' target='new'>Nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nursing+schools&search_field=all_fields' target='new'>African American nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mercy-Douglass+Hospital+(Philadelphia,+Pa.).+School+of+Nursing&search_field=all_fields' target='new'>Mercy-Douglass Hospital (Philadelphia, Pa.). School of Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+medical+students&search_field=all_fields' target='new'>Women medical students</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Interns+(Medicine)&search_field=all_fields' target='new'>Interns (Medicine)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clinical+medicine--Study+and+teaching&search_field=all_fields' target='new'>Clinical medicine--Study and teaching</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Medical+College+of+Pennsylvania&search_field=all_fields' target='new'>Woman's Medical College of Pennsylvania</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Medical+College+of+Pennsylvania&search_field=all_fields' target='new'>Female Medical College of Pennsylvania</a></h2>"
-                },children: []
-                },{
+                },
+                children:[]
+            }, {
                 id: "http://id.loc.gov/authorities/subjects/sh85147591",
                 name: "Women in medicine",
                 data: {
                     relation: "<h1>Women in Medicine</h1><br>Explore digitized materials related to <a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+medicine&search_field=all_fields' target='new'>Women in medicine</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+physicians&search_field=all_fields' target='new'>Women physicians</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses&search_field=all_fields' target='new'>Nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+nurses&search_field=all_fields' target='new'>Women nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nurses&search_field=all_fields' target='new'>African American nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses,+Black&search_field=all_fields' target='new'>Nurses, Black</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing&search_field=all_fields' target='new'>Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionaries,+Medical&search_field=all_fields' target='new'>Missionaries, Medical</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clinical+medicine--Hospital+reports&search_field=all_fields' target='new'>Clinical medicine--Hospital reports</a></h2><h2><a  href='' target='new'>Obstetrics</a></h2><h2><a  href='' target='new'>Traditional medicine</a></h2>"
-                },children: []
-                }, ],
+                },
+                children:[]
+            },],
         }, {
             id: "Education",
             name: "Education",
             data: {
                 relation: "<h1>Education</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85040989.html",
                 name: "Education",
                 data: {
                     relation: "<h1>Education</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Education&search_field=all_fields' target='new'>Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Education&search_field=all_fields' target='new'>African Americans--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Education&search_field=all_fields' target='new'>Freedmen--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Education--Finance&search_field=all_fields' target='new'>Education--Finance</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Educational+fund+raising&search_field=all_fields' target='new'>Educational fund raising</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Scholarships&search_field=all_fields' target='new'>Scholarships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=School+management+and+organization&search_field=all_fields' target='new'>School management and organization</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=School+boards&search_field=all_fields' target='new'>School boards</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=School+buildings&search_field=all_fields' target='new'>School buildings</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=School+libraries&search_field=all_fields' target='new'>School libraries</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Schools&search_field=all_fields' target='new'>Schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Charity-schools&search_field=all_fields' target='new'>Charity-schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sewing+schools&search_field=all_fields' target='new'>Sewing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Aimwell+School+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Aimwell School (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Schofield+Normal+and+Industrial+School+(Aiken,+S.C.)&search_field=all_fields' target='new'>Schofield Normal and Industrial School (Aiken, S.C.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Swarthmore+College&search_field=all_fields' target='new'>Swarthmore College</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Westtown+Boarding+School&search_field=all_fields' target='new'>Westtown Boarding School</a></h2><br><h1>Students and Teachers</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+students&search_field=all_fields' target='new'>African American students</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Student+Life&search_field=all_fields' target='new'>Student Life</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Student+activities&search_field=all_fields' target='new'>Student activities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Teacher-student+relationships&search_field=all_fields' target='new'>Teacher-student relationships</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Teachers&search_field=all_fields' target='new'>Teachers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Teachers--Salaries,+etc.&search_field=all_fields' target='new'>Teachers--Salaries, etc</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85147573.html",
                 name: "Women in <br>education",
                 data: {
                     relation: "<h1>Women in Education</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+education&search_field=all_fields' target='new'>Women in education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Education&search_field=all_fields' target='new'>Women--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+teachers&search_field=all_fields' target='new'>Women teachers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+medical+students&search_field=all_fields' target='new'>Women medical students</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Girls'+schools&search_field=all_fields' target='new'>Girls' schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Bryn+Mawr+College&search_field=all_fields' target='new'>Bryn Mawr College</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Bryn+Mawr+School&search_field=all_fields' target='new'>Bryn Mawr School</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Incarceration_and_Institutionalization",
             name: "Incarceration and <br>Institutionalization",
             data: {
                 relation: "<h1>Incarceration and Institutionalization</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85106996.html",
                 name: "Prisons",
                 data: {
                     relation: "<h1>Prisons</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prisons&search_field=all_fields' target='new'>Prisons</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prison+reformers&search_field=all_fields' target='new'>Prison reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prison+Association+of+New+York&search_field=all_fields' target='new'>Prison Association of New York</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+Prison+Association+of+New+York&search_field=all_fields' target='new'>Women's Prison Association of New York</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Reformatories+for+women&search_field=all_fields' target='new'>Reformatories for women</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+prisoners&search_field=all_fields' target='new'>Women prisoners</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+ex-convicts&search_field=all_fields' target='new'>Women ex-convicts</a></h2><br><h1>Police and Crime</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Police+administration&search_field=all_fields' target='new'>Police administration</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Police+stations&search_field=all_fields' target='new'>Police stations</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Policewomen&search_field=all_fields' target='new'>Policewomen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+lawyers&search_field=all_fields' target='new'>Women lawyers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prostitution--Law+and+legislation&search_field=all_fields' target='new'>Prostitution--Law and legislation</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Murder&search_field=all_fields' target='new'>Murder</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Murder+victims&search_field=all_fields' target='new'>Murder victims</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Capital+punishment&search_field=all_fields' target='new'>Capital punishment</a></h2>"
-                },children: []
-                }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85108352.html",
                 name: "Psychiatric hospital <br>patients",
                 data: {
                     relation: "<h1>Psychiatric Hospital Patients</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Psychiatric+hospital+patients&search_field=all_fields' target='new'>Psychiatric hospital patients</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mental+illness&search_field=all_fields' target='new'>Mental illness</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mental+health&search_field=all_fields' target='new'>Mental health</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Psychiatric+hospitals&search_field=all_fields' target='new'>Psychiatric hospitals</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Battle+Creek+Sanitarium+(Battle+Creek,+Mich.)&search_field=all_fields' target='new'>Battle Creek Sanitarium (Battle Creek, Mich.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Friends'+Asylum+for+the+Insane&search_field=all_fields' target='new'>Friends' Asylum for the Insane</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Maine+Insane+Hospital&search_field=all_fields' target='new'>Maine Insane Hospital</a></h2>"
-                },children: []
-                    },{
+                },
+                children:[]
+            }, {
                 id: "Fallen_women",
                 name: "'Fallen' women",
                 data: {
                     relation: "<h1>'Fallen' Women</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Poor+women--Services+for&search_field=all_fields' target='new'>Poor women--Services for</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prostitution&search_field=all_fields' target='new'>Prostitution</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=House+of+Refuge+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>House of Refuge (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=House+of+the+Good+Shepherd+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>House of the Good Shepherd (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Magdalen+Society+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Magdalen Society (Philadelphia, Pa.)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Rosine+Association+(Philadelphia,+Pa.)&search_field=all_fields' target='new'>Rosine Association (Philadelphia, Pa.)</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85023396.html",
                 name: "Child welfare",
                 data: {
                     relation: "<h1>Child Welfare</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Child+welfare&search_field=all_fields' target='new'>Child welfare</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Child+abuse&search_field=all_fields' target='new'>Child abuse</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Child+labor--United+States&search_field=all_fields' target='new'>Child labor--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children--Institutional+care&search_field=all_fields' target='new'>Children--Institutional care</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children--Legal+status,+laws,+etc.--United+States&search_field=all_fields' target='new'>Children--Legal status, laws, etc.--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Juvenile+courts&search_field=all_fields' target='new'>Juvenile courts</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Juvenile+delinquency&search_field=all_fields' target='new'>Juvenile delinquency</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Family+social+work&search_field=all_fields' target='new'>Family social work</a></h2>"
-                },children: []
-                    }, ]
-        },{
+                },
+                children:[]
+            },]
+        }, {
             id: "Government_and_Legislative_Work",
             name: "Government and <br>Legislative Work",
             data: {
                 relation: "<h1>Government and Legislative Work</h1>"
             },
-            children: [{
+            children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh2002011436.html",
                 name: "Politics and <br>government",
                 data: {
                     relation: "<h1>Politics and Government</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Politics+and+government&search_field=all_fields' target='new'>Politics and government</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Crimes+against&search_field=all_fields' target='new'>African Americans--Crimes against</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Arbitration+(International+law)&search_field=all_fields' target='new'>Arbitration (International law)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Children--Legal+status,+laws,+etc.--United+States&search_field=all_fields' target='new'>Children--Legal status, laws, etc.--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Elections&search_field=all_fields' target='new'>Elections</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Indians+of+North+America'>Indians of North America</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=International+relations&search_field=all_fields' target='new'>International relations</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Juvenile+courts&search_field=all_fields' target='new'>Juvenile courts</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Liquor+laws&search_field=all_fields' target='new'>Liquor laws</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Minorities--Violence+against&search_field=all_fields' target='new'>Minorities--Violence against</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Newspaper+court+reporting&search_field=all_fields' target='new'>Newspaper court reporting</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Postmasters--Selection+and+appointment&search_field=all_fields' target='new'>Postmasters--Selection and appointment</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Presidents--Assassination&search_field=all_fields' target='new'>Presidents--Assassination</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Presidents--Election&search_field=all_fields' target='new'>Presidents--Election</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prostitution&search_field=all_fields' target='new'>Prostitution</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Trials,+litigation,+etc.&search_field=all_fields' target='new'>Trials, litigation, etc</a></h2><br><h1>Legal Documents</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Legal+documents&search_field=all_fields' target='new'>Legal documents</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Bills,+Legislative&search_field=all_fields' target='new'>Bills, Legislative</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Constitutions&search_field=all_fields' target='new'>Constitutions</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Deeds&search_field=all_fields' target='new'>Deeds</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Treaties&search_field=all_fields' target='new'>Treaties</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Warrants+(Law)&search_field=all_fields' target='new'>Warrants (Law)</a></h2><br><h1>Draft</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Draft&search_field=all_fields' target='new'>Draft</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Draft+Riot+(New+York,+New+York+:+1863)&search_field=all_fields' target='new'>Draft Riot (New York, New York : 1863)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Conscientious+objectors&search_field=all_fields' target='new'>Conscientious objectors</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Conscientious+objection&search_field=all_fields' target='new'>Conscientious objection</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85123997",
                 name: "Social reformers",
                 data: {
                     relation: "<h1>Social Reformers</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Social+reformers&search_field=all_fields' target='new'>Social reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Prison+reformers&search_field=all_fields' target='new'>Prison reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers&search_field=all_fields' target='new'>Women social reformers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+social+reformers--Pennsylvania--Philadelphia--History--20th+century&search_field=all_fields' target='new'>Women social reformers--Pennsylvania--Philadelphia--History--20th century</a></h2><br><h1>Women Political Activists</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+political+activists&search_field=all_fields' target='new'>Women political activists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+political+candidates&search_field=all_fields' target='new'>Women political candidates</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Political+activity&search_field=all_fields' target='new'>Women--Political activity</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+rights&search_field=all_fields' target='new'>Women's rights</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women's+rights--United+States--History--20th+century&search_field=all_fields' target='new'>Women's rights--United States--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+lawyers&search_field=all_fields' target='new'>Women lawyers</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+and+peace&search_field=all_fields' target='new'>Women and peace</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+the+civil+service&search_field=all_fields' target='new'>Women in the civil service</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=School+boards&search_field=all_fields' target='new'>School boards</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "https://id.loc.gov/authorities/subjects/sh85123315.html",
                 name: "Antislavery <br>movements",
                 data: {
                     relation: "<h1>Antislavery Movements</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Antislavery+movements&search_field=all_fields' target='new'>Antislavery movements</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Abolitionists&search_field=all_fields' target='new'>Abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Quaker+abolitionists&search_field=all_fields' target='new'>Quaker abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+abolitionists&search_field=all_fields' target='new'>Women abolitionists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Civil+War,+1861-1865&search_field=all_fields' target='new'>American Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States--History--Civil+War,+1861-1865&search_field=all_fields' target='new'>United States--History--Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Reconstruction+(United+States+:+1865-1877)&search_field=all_fields' target='new'>Reconstruction (United States : 1865-1877)</a></h2>"
-                },children: []
-                    }, {
+                },
+                children:[]
+            }, {
                 id: "Suffrage_gvmt",
                 name: "Suffrage",
                 data: {
                     relation: "<h1>Suffrage</h1>See the 'Suffrage' main topic for more.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffrage&search_field=all_fields' target='new'>Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffragists&search_field=all_fields' target='new'>Suffragists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Voter+intimidation&search_field=all_fields' target='new'>Voter intimidation</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Suffrage&search_field=all_fields' target='new'>African Americans--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage&search_field=all_fields' target='new'>Women--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States&search_field=all_fields' target='new'>Women--Suffrage--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States--History--20th+century&search_field=all_fields' target='new'>Women--Suffrage--United States--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Constitution.+19th+Amendment&search_field=all_fields' target='new'>United States. Constitution. 19th Amendment</a></h2>"
-                },children: []
-                    }, ]
-        },  ],
+                },
+                children:[]
+            },]
+        },],
         data: {
             relation: "<h1>In Her Own Right</h1><br><h3>Visit our <a href='http://inherownright.org/spotlight/about'>About</a> page to learn more about the project.</h3>"
         }
     };
     //end
-
+    
     //init RGraph
     var rgraph = new $jit.RGraph({
         //Where to append the visualization
@@ -403,42 +443,42 @@ function init(){
         //Optional: create a background canvas that plots
         //concentric circles.
         background: {
-          CanvasStyles: {
-            strokeStyle: '#616161'
-          }
+            CanvasStyles: {
+                strokeStyle: '#616161'
+            }
         },
         //Add navigation capabilities:
         //zooming by scrolling and panning.
         Navigation: {
-          enable: true,
-          panning: true,
-          zooming: 10
+            enable: true,
+            panning: true,
+            zooming: 10
         },
         //Set Node and Edge styles.
         Node: {
             color: '#e0d485'
         },
-
+        
         Edge: {
-          color: '#C17878',
-          lineWidth:1.5
+            color: '#C17878',
+            lineWidth: 1.5
         },
-
-        onBeforeCompute: function(node){
+        
+        onBeforeCompute: function (node) {
             Log.write("centering " + node.name + "...");
             //Add the relation list in the right column.
             //This list is taken from the data property of each JSON node.
             $jit.id('inner-details').innerHTML = node.data.relation;
         },
-
+        
         //Add the name of the node in the correponding label
         //and a click handler to move the graph.
         //This method is called once, on label creation.
-        onCreateLabel: function(domElement, node){
+        onCreateLabel: function (domElement, node) {
             domElement.innerHTML = node.name;
-            domElement.onclick = function(){
+            domElement.onclick = function () {
                 rgraph.onClick(node.id, {
-                    onComplete: function() {
+                    onComplete: function () {
                         Log.write("done");
                     }
                 });
@@ -446,23 +486,21 @@ function init(){
         },
         //Change some label dom properties.
         //This method is called each time a label is plotted.
-        onPlaceLabel: function(domElement, node){
+        onPlaceLabel: function (domElement, node) {
             var style = domElement.style;
             style.display = '';
             style.cursor = 'pointer';
-
+            
             if (node._depth <= 1) {
                 style.fontSize = "1em";
                 style.color = "#ccc";
-
-            } else if(node._depth == 2){
+            } else if (node._depth == 2) {
                 style.fontSize = "0.9em";
                 style.color = "#ccc";
-
             } else {
                 style.display = 'none';
             }
-
+            
             var left = parseInt(style.left);
             var w = domElement.offsetWidth;
             style.left = (left - w / 2) + 'px';
@@ -471,14 +509,14 @@ function init(){
     //load JSON data
     rgraph.loadJSON(json);
     //trigger small animation
-    rgraph.graph.eachNode(function(n) {
-      var pos = n.getPos();
-      pos.setc(-200, -200);
+    rgraph.graph.eachNode(function (n) {
+        var pos = n.getPos();
+        pos.setc(-200, -200);
     });
     rgraph.compute('end');
     rgraph.fx.animate({
-      modes:['polar'],
-      duration: 2000
+        modes:[ 'polar'],
+        duration: 2000
     });
     //end
     //append information about the root relations in the right column
@@ -486,5 +524,5 @@ function init(){
 }
 
 $( document ).on('turbolinks:load', function() {
-    init();
+  init();
 })
