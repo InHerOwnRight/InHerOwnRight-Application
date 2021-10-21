@@ -3,7 +3,7 @@ class Geocoder
   CACHE_FILE = "#{Rails.root}/tmp/geocoder_cache.yaml"
 
   def self.convert(placename)
-    if Rails.env.development? || env['USE_AGGRESSIVE_GEOCODE_CACHEING']
+    if Rails.env.development? || ENV['USE_AGGRESSIVE_GEOCODE_CACHEING']
       convert_with_aggressive_cacheing(placename)
     else
       convert_with_success_cacheing(placename)
