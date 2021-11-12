@@ -5,16 +5,16 @@
 <title>RGraph - Tree Animation</title>
 
 <!-- CSS Files -->
-<link type="text/css" href="../css/baseforInHOR.css" rel="stylesheet" />
-<link type="text/css" href="../css/RGraph.css" rel="stylesheet" />
+<%= stylesheet_link_tag("visualization/baseforInHOR") %>
+<%= stylesheet_link_tag("visualization/RGraph.css") %>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 
 <!-- JIT Library File -->
-<script language="javascript" type="text/javascript" src="../../jit.js"></script>
+<%= javascript_include_tag("visualization/jit") %>
 
 <!-- Example File -->
-<script language="javascript" type="text/javascript" src="InHORVisualization.js"></script>
+<%= javascript_include_tag("visualization/InHORVisualization") %>
 </head>
 
 <body onload="init();">
