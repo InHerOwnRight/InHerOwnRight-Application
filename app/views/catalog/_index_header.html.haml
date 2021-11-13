@@ -12,7 +12,7 @@
             = image_tag "/static_images/collection.png"
 
         - elsif instance.thumbnail
-          %a{ href: "#{record_path(instance.id)}", style: 'float:left;'}
+          %a{ href: "#{record_path(instance)}", style: 'float:left;'}
             = image_tag(instance.thumbnail)
 
         .record-item
