@@ -75,7 +75,7 @@ function init() {
                 id: "http://id.loc.gov/authorities/subjects/sh85123314",
                 name: "Slavery",
                 data: {
-                    relation: "<h1>Slavery</h1><b>Note:</b> Many of the subjects in In Her Own Right are dependent on terminology provided by the Library of Congress. Therefore, for clarity, the term 'slaves' is used below in place of the term 'enslaved people'. See the Harmful Language Statement at the bottom of our <a href='http://inherownright.org/spotlight/teachers-and-students/feature/search-tips'>Search Tips page</a> for more details.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Slavery+and+the+church'>Slavery and the church</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slaves&search_field=all_fields' target='new'>Slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Civil+War,+1861-1865&search_field=all_fields' target='new'>American Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States--History--Civil+War,+1861-1865&search_field=all_fields' target='new'>United States--History--Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Underground+Railroad&search_field=all_fields' target='new'>Underground Railroad</a></h2><br><h1>Freedmen</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen&search_field=all_fields' target='new'>Freedmen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Charities&search_field=all_fields' target='new'>Freedmen--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Education&search_field=all_fields' target='new'>Freedmen--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Freedman's+Union+Commission&search_field=all_fields' target='new'>American Freedman's Union Commission</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Pennsylvania+Freedmen's+Relief+Association&search_field=all_fields' target='new'>Pennsylvania Freedmen's Relief Association</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Bureau+of+Refugees,+Freedmen,+and+Abandoned+Lands&search_field=all_fields' target='new'>United States. Bureau of Refugees, Freedmen, and Abandoned Lands</a></h2>"
+                    relation: "<h1>Slavery</h1><b>Note:</b> Many of the subjects in In Her Own Right are dependent on terminology provided by the Library of Congress. Therefore, for clarity, the term 'slaves' is used below in place of the term 'enslaved people'. See the Note on Harmful Language at the bottom of our <a href='http://inherownright.org/spotlight/search-tips'>Search Tips page</a> for more details.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slavery&search_field=all_fields' target='new'>Slavery</a></h2><h2><a  href='http://inherownright.org/catalog?utf8=%E2%9C%93&search_field=subject&q=Slavery+and+the+church'>Slavery and the church</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Slaves&search_field=all_fields' target='new'>Slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Fugitive+slaves&search_field=all_fields' target='new'>Fugitive slaves</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Civil+War,+1861-1865&search_field=all_fields' target='new'>American Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States--History--Civil+War,+1861-1865&search_field=all_fields' target='new'>United States--History--Civil War, 1861-1865</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Underground+Railroad&search_field=all_fields' target='new'>Underground Railroad</a></h2><br><h1>Freedmen</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen&search_field=all_fields' target='new'>Freedmen</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Charities&search_field=all_fields' target='new'>Freedmen--Charities</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Freedmen--Education&search_field=all_fields' target='new'>Freedmen--Education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=American+Freedman's+Union+Commission&search_field=all_fields' target='new'>American Freedman's Union Commission</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Pennsylvania+Freedmen's+Relief+Association&search_field=all_fields' target='new'>Pennsylvania Freedmen's Relief Association</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Bureau+of+Refugees,+Freedmen,+and+Abandoned+Lands&search_field=all_fields' target='new'>United States. Bureau of Refugees, Freedmen, and Abandoned Lands</a></h2>"
                 },
                 children:[]
             },]
@@ -167,7 +167,7 @@ function init() {
             id: "Philanthropy",
             name: "Philanthropy",
             data: {
-                relation: "<h1>Philanthropy</h1><br><h3>Learn more about the historical context of women's philanthropic work by visiting our exhibit, <a href='http://inherownright.org/spotlight/featured-exhibits/feature/philanthropy-or-self-determination'>Philanthropy or Self-Determination</a></h3>"
+                relation: "<h1>Philanthropy</h1><h3>Learn more about the historical context of women's philanthropic work by visiting our exhibit, <a href='http://inherownright.org/spotlight/featured-exhibits/feature/philanthropy-or-self-determination'>Philanthropy or Self-Determination</a></h3>"
             },
             children:[ {
                 id: "http://id.loc.gov/authorities/subjects/sh85022665",
@@ -237,7 +237,7 @@ function init() {
             id: "Race_and_Class",
             name: "Race and Class",
             data: {
-                relation: "<h1>Race and Class</h1><br><h3>Learn more about how women's activism intersected with issues of race and class by visiting our exhibit <a href='http://inherownright.org/spotlight/featured-exhibits/feature/work-friendship-across-racial-lines'>Work & Friendship Across Racial Lines,</a> or reading a contextual essay, <a href='http://inherownright.org/spotlight/introducing-women-s-activism/feature/breaking-ground-on-race-and-class'>Breaking Ground on Race and Class</a></h3>"
+                relation: "<h1>Race and Class</h1><h3>Learn more about how women's activism intersected with issues of race and class by visiting our exhibit <a href='http://inherownright.org/spotlight/featured-exhibits/feature/work-friendship-across-racial-lines'>Work & Friendship Across Racial Lines,</a> or reading a contextual essay, <a href='http://inherownright.org/spotlight/introducing-women-s-activism/feature/breaking-ground-on-race-and-class'>Breaking Ground on Race and Class</a></h3>"
             },
             children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85124049",
@@ -258,7 +258,7 @@ function init() {
             id: "Suffrage Movement",
             name: "Suffrage <br>Movement",
             data: {
-                relation: "<h1>Suffrage Movement</h1>Explore digitized materials related to the following subjects by clicking on the links below.<h2>Did you know?</h2>During the late 19th and early 20th century, women's right to vote was referred to as <b>'woman suffrage'</b> rather than <b>'women's suffrage'</b>! In the book <i>The Grounding of Modern Feminism,</i> historian Nancy Cott explains 'Nineteenth-century women's consistent usage of the singular <i>woman</i> symbolized, in a word, the unity of the female sex. It proposed that all women have one cause, one movement.'"
+                relation: "<h1>Suffrage Movement</h1><h2>Did you know?</h2>During the late 19th and early 20th century, women's right to vote was referred to as <b>'woman suffrage'</b> rather than <b>'women's suffrage'</b>! In the book <i>The Grounding of Modern Feminism,</i> historian Nancy Cott explains 'Nineteenth-century women's consistent usage of the singular <i>woman</i> symbolized, in a word, the unity of the female sex. It proposed that all women have one cause, one movement.'"
             },
             children:[ {
                 id: "https://id.loc.gov/authorities/subjects/sh85147711",
@@ -327,14 +327,14 @@ function init() {
                 id: "https://id.loc.gov/authorities/subjects/sh85082916",
                 name: "Medical education",
                 data: {
-                    relation: "<h1>Medical Education</h1><br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Medical+education&search_field=all_fields' target='new'>Medical education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sex+discrimination+in+medical+education&search_field=all_fields' target='new'>Sex discrimination in medical education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses--Training+of&search_field=all_fields' target='new'>Nurses--Training of</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing+schools&search_field=all_fields' target='new'>Nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nursing+schools&search_field=all_fields' target='new'>African American nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mercy-Douglass+Hospital+(Philadelphia,+Pa.).+School+of+Nursing&search_field=all_fields' target='new'>Mercy-Douglass Hospital (Philadelphia, Pa.). School of Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+medical+students&search_field=all_fields' target='new'>Women medical students</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Interns+(Medicine)&search_field=all_fields' target='new'>Interns (Medicine)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clinical+medicine--Study+and+teaching&search_field=all_fields' target='new'>Clinical medicine--Study and teaching</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Medical+College+of+Pennsylvania&search_field=all_fields' target='new'>Woman's Medical College of Pennsylvania</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Medical+College+of+Pennsylvania&search_field=all_fields' target='new'>Female Medical College of Pennsylvania</a></h2>"
+                    relation: "<h1>Medical Education</h1>Explore digitized materials related to <h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Medical+education&search_field=all_fields' target='new'>Medical education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Sex+discrimination+in+medical+education&search_field=all_fields' target='new'>Sex discrimination in medical education</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses--Training+of&search_field=all_fields' target='new'>Nurses--Training of</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing+schools&search_field=all_fields' target='new'>Nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nursing+schools&search_field=all_fields' target='new'>African American nursing schools</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Mercy-Douglass+Hospital+(Philadelphia,+Pa.).+School+of+Nursing&search_field=all_fields' target='new'>Mercy-Douglass Hospital (Philadelphia, Pa.). School of Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+medical+students&search_field=all_fields' target='new'>Women medical students</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Interns+(Medicine)&search_field=all_fields' target='new'>Interns (Medicine)</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clinical+medicine--Study+and+teaching&search_field=all_fields' target='new'>Clinical medicine--Study and teaching</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Woman's+Medical+College+of+Pennsylvania&search_field=all_fields' target='new'>Woman's Medical College of Pennsylvania</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Female+Medical+College+of+Pennsylvania&search_field=all_fields' target='new'>Female Medical College of Pennsylvania</a></h2>"
                 },
                 children:[]
             }, {
                 id: "http://id.loc.gov/authorities/subjects/sh85147591",
                 name: "Women in medicine",
                 data: {
-                    relation: "<h1>Women in Medicine</h1><br>Explore digitized materials related to <a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+medicine&search_field=all_fields' target='new'>Women in medicine</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+physicians&search_field=all_fields' target='new'>Women physicians</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses&search_field=all_fields' target='new'>Nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+nurses&search_field=all_fields' target='new'>Women nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nurses&search_field=all_fields' target='new'>African American nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses,+Black&search_field=all_fields' target='new'>Nurses, Black</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing&search_field=all_fields' target='new'>Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionaries,+Medical&search_field=all_fields' target='new'>Missionaries, Medical</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clinical+medicine--Hospital+reports&search_field=all_fields' target='new'>Clinical medicine--Hospital reports</a></h2><h2><a  href='' target='new'>Obstetrics</a></h2><h2><a  href='' target='new'>Traditional medicine</a></h2>"
+                    relation: "<h1>Women in Medicine</h1>Explore digitized materials related to <a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+in+medicine&search_field=all_fields' target='new'>Women in medicine</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+physicians&search_field=all_fields' target='new'>Women physicians</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses&search_field=all_fields' target='new'>Nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women+nurses&search_field=all_fields' target='new'>Women nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+American+nurses&search_field=all_fields' target='new'>African American nurses</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nurses,+Black&search_field=all_fields' target='new'>Nurses, Black</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Nursing&search_field=all_fields' target='new'>Nursing</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Missionaries,+Medical&search_field=all_fields' target='new'>Missionaries, Medical</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Clinical+medicine--Hospital+reports&search_field=all_fields' target='new'>Clinical medicine--Hospital reports</a></h2><h2><a  href='' target='new'>Obstetrics</a></h2><h2><a  href='' target='new'>Traditional medicine</a></h2>"
                 },
                 children:[]
             },],
@@ -425,17 +425,17 @@ function init() {
                 id: "Suffrage_gvmt",
                 name: "Suffrage",
                 data: {
-                    relation: "<h1>Suffrage</h1>See the 'Suffrage' main topic for more.<br><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffrage&search_field=all_fields' target='new'>Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffragists&search_field=all_fields' target='new'>Suffragists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Voter+intimidation&search_field=all_fields' target='new'>Voter intimidation</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Suffrage&search_field=all_fields' target='new'>African Americans--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage&search_field=all_fields' target='new'>Women--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States&search_field=all_fields' target='new'>Women--Suffrage--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States--History--20th+century&search_field=all_fields' target='new'>Women--Suffrage--United States--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Constitution.+19th+Amendment&search_field=all_fields' target='new'>United States. Constitution. 19th Amendment</a></h2>"
+                    relation: "<h1>Suffrage</h1>See the 'Suffrage' main topic for more.<h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffrage&search_field=all_fields' target='new'>Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Suffragists&search_field=all_fields' target='new'>Suffragists</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Voter+intimidation&search_field=all_fields' target='new'>Voter intimidation</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=African+Americans--Suffrage&search_field=all_fields' target='new'>African Americans--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage&search_field=all_fields' target='new'>Women--Suffrage</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States&search_field=all_fields' target='new'>Women--Suffrage--United States</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=Women--Suffrage--United+States--History--20th+century&search_field=all_fields' target='new'>Women--Suffrage--United States--History--20th century</a></h2><h2><a  href='http://inherownright.org/catalog?f%5Bsubject_sm%5D%5B%5D=United+States.+Constitution.+19th+Amendment&search_field=all_fields' target='new'>United States. Constitution. 19th Amendment</a></h2>"
                 },
                 children:[]
             },]
         },],
         data: {
-            relation: "<h1>In Her Own Right</h1><br><h3>Visit our <a href='http://inherownright.org/spotlight/about'>About</a> page to learn more about the project.</h3>"
+            relation: "<h1>In Her Own Right</h1><h2>Visit our <a href='http://inherownright.org/spotlight/about'>About</a> page to learn more about the project.</h2>"
         }
     };
     //end
-    
+
     //init RGraph
     var rgraph = new $jit.RGraph({
         //Where to append the visualization
@@ -458,19 +458,19 @@ function init() {
         Node: {
             color: '#e0d485'
         },
-        
+
         Edge: {
             color: '#C17878',
             lineWidth: 1.5
         },
-        
+
         onBeforeCompute: function (node) {
             Log.write("centering " + node.name + "...");
             //Add the relation list in the right column.
             //This list is taken from the data property of each JSON node.
             $jit.id('inner-details').innerHTML = node.data.relation;
         },
-        
+
         //Add the name of the node in the correponding label
         //and a click handler to move the graph.
         //This method is called once, on label creation.
@@ -490,7 +490,7 @@ function init() {
             var style = domElement.style;
             style.display = '';
             style.cursor = 'pointer';
-            
+
             if (node._depth <= 1) {
                 style.fontSize = "1em";
                 style.color = "#ccc";
@@ -500,7 +500,7 @@ function init() {
             } else {
                 style.display = 'none';
             }
-            
+
             var left = parseInt(style.left);
             var w = domElement.offsetWidth;
             style.left = (left - w / 2) + 'px';
