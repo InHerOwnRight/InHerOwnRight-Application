@@ -8,8 +8,8 @@ namespace :import_metadata do
   EmptyImportErrors = [ "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.",
                         "The combination of the given values results in an empty list."]
 
-  desc "Import metadata raw_records from repositories"
 
+  desc "Import metadata raw_records from repositories"
   task all_oai: [:bryn_mawr, :temple, :drexel, :haverford, :tri_colleges]
   task all_csv: [:from_bates, :from_library_co, :from_hsp, :from_german_society, :from_udel,
                  :from_nara, :from_catholic, :from_college_of_physicians, :from_presbyterian,
@@ -367,6 +367,12 @@ namespace :import_metadata do
 
   task collections: :environment do
     ImportRecordCollectionsHelper.create_raw_records
+  end
+
+  task reimport_all: [:environment] do
+    Record.all.each do |record|
+      Record.create_from_raw_record(record.raw_record)
+    end
   end
 end
 
