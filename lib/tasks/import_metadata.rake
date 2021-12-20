@@ -125,7 +125,7 @@ namespace :import_metadata do
       end
 
       raw_record.harvest_id = harvest_id
-
+      
       if raw_record.save
         puts "Successfully imported #{raw_record.oai_identifier}"
       else
@@ -135,6 +135,7 @@ namespace :import_metadata do
     puts nil_metadata_identifiers
   end
 
+  desc 'Temple OAI import'
   task :temple, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14', 'p15037coll15']
@@ -173,6 +174,7 @@ namespace :import_metadata do
     # Delete offending isPartOf here
   end
 
+  desc 'Drexel OAI import'
   task :drexel, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://idea.library.drexel.edu/oai/request"
@@ -195,6 +197,7 @@ namespace :import_metadata do
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
+  desc 'Tri Colleges OAI import'
   task :tri_colleges, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
@@ -225,7 +228,7 @@ namespace :import_metadata do
     metadata_prefix = "oai_qdc"
     import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
-
+  desc 'Bryn Mawr OAI import'
   task :bryn_mawr, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
@@ -255,7 +258,7 @@ namespace :import_metadata do
     metadata_prefix = "oai_qdc"
     import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
-
+  desc 'Haverford OAI import'
   task :haverford, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
@@ -369,6 +372,7 @@ namespace :import_metadata do
     ImportRecordCollectionsHelper.create_raw_records
   end
 
+  desc "Find-or-create all records again from their metadata"
   task reimport_all: [:environment] do
     Record.all.each do |record|
       Record.create_from_raw_record(record.raw_record)
