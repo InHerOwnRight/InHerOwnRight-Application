@@ -47,11 +47,17 @@ NOTE about database.yml: You'll need to copy the database and username parameter
 
     docker build -t neomindlabs/pacscl-rails:staging --build-arg RAILS_ENV=staging --no-cache .
 
-### Pushing the Docker image to DockerHub
+Or
+
+    docker build -t neomindlabs/pacscl-rails:production-`date +%F` --build-arg RAILS_ENV=production --no-cache .
+
+## Pushing the Docker image to DockerHub
 
     docker push neomindlabs/pacscl-rails:staging
 OR
 
+    docker push neomindlabs/pacscl-rails:production-`date +%F`
+    docker image tag neomindlabs/pacscl-rails:production-`date +%F` neomindlabs/pacscl-rails:production
     docker push neomindlabs/pacscl-rails:production
 
 ### Deploying
@@ -62,7 +68,7 @@ OR
     ssh pacscl-production # ssh config information in 1Password
 THEN
 
-    docker pull neomindlabs/pacscl-rails:staging / :production
+    docker pull neomindlabs/pacscl-rails:staging # (or :production)
     docker-compose down
     docker-compose up
 
