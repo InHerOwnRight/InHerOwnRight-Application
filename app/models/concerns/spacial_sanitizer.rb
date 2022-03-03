@@ -377,9 +377,17 @@ class SpacialSanitizer
     'zimbabwe'
   ]
 
+  def self.remove_location_hints(spacial)
+    # some spacials have a hint about what kind of location we're dealing with.
+    # e.g "East Bradford (Pa. : Township)"
+    # build this method up to remove them, and add tests to test/units/spacial_sanitizer_test.rb
+    spacial.gsub(/\((.*) : Township\)/i, '(\1)')
+  end
+
   def self.execute(spacial)
     sanitizing_spacial = spacial
     sanitizing_spacial = sanitizing_spacial.downcase
+    sanitizing_spacial = remove_location_hints(sanitizing_spacial)
     sanitizing_spacial = remove_special_characters(sanitizing_spacial)
     sanitizing_spacial = identify_and_remove_abbreviations(sanitizing_spacial)
     sanitizing_spacial = identify_and_remove_country(sanitizing_spacial)
