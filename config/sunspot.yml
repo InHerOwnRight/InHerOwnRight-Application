@@ -25,6 +25,7 @@ development:
     pid_dir: '/var/run'
 
 test:
+  disabled: true
   solr:
     hostname: localhost
     port: 8983

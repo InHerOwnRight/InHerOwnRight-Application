@@ -1,8 +1,8 @@
-FROM phusion/passenger-ruby25:1.0.11
+FROM phusion/passenger-ruby26:2.1.0
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     vim \
-    nodejs-dev \
+    nodejs \
     tzdata \
     s3cmd \
     imagemagick
@@ -32,6 +32,8 @@ RUN bash -c 'echo -e "#!/bin/bash\nexport HOME=/home/app\nsu -c \"cd /var/www/ra
 USER app
 
 RUN gem install bundler:2.1.4
+
+RUN which ruby && ruby --version
 
 RUN bundle install --deployment --without development test
 
