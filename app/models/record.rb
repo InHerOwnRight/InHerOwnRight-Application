@@ -415,9 +415,20 @@ class Record < ActiveRecord::Base
     dc_terms_extent = DcTermsExtent.find_or_create_by(record_id: record.id, extent: node.text)
   end
 
+  def is_unwanted_spacial_term?(node_text)
+    /\A\s*(North and Central America|Europe|Asia|Africa)--/.match(node_text)
+  end
+
   def create_dc_terms_spacial(node, record)
     # hit map APIs here to get coordinates from spacial attribute
+    return nil if is_unwanted_spacial_term?(node.text)
     dc_terms_spacial = DcTermsSpacial.find_or_create_by(record_id: record.id, spacial: node.text)
+  end
+
+  def create_dc_coverage(node, record)
+    return nil if is_unwanted_spacial_term?(node.text)
+    dc_coverage = DcCoverage.find_or_initialize_by(record_id: record.id, coverage: node.text)
+    dc_coverage.save!
   end
 
   def create_dc_terms_is_part_of(node, record)
@@ -460,7 +471,6 @@ class Record < ActiveRecord::Base
     end
     record = self
     xml_doc.xpath("//#{node_name}").map do |node|
-      puts "!!! matching #{node_name}: #{node.inspect}"
       if node_name == "creator"
         create_dc_creator(node, record)
       end
@@ -509,6 +519,10 @@ class Record < ActiveRecord::Base
         create_dc_description(node, record)
       end
 
+      if node_name == "coverage"
+        create_dc_coverage(node, record)
+      end
+
       node_name_dictionary = {"licence" => "rights", "accessCondition" => "rights", "mods/titleInfo" => "title",
         "relatedItem/titleInfo" => "isPartOf", "language/languageTerm" => "language"}
 
@@ -517,9 +531,8 @@ class Record < ActiveRecord::Base
       part_model_name_dictionary = {"rights" => "dc_right", "created" => "dc_date", "licence" => "dc_right"}
       part_model_name = part_model_name_dictionary[node_name] || "dc_#{node_name}"
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_identifier.url', 'dc_subject', 'dc_spacial', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_identifier.url', 'dc_subject', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic', 'dc_coverage']
       if !modular_creators.include?(part_model_name)
-        puts "handling #{part_model_name} = #{sanitize(node.text)}"
         dc_model = "#{part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
         dc_model[node_name] = sanitize(node.text)
         dc_model.save
