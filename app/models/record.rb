@@ -531,7 +531,7 @@ class Record < ActiveRecord::Base
       part_model_name_dictionary = {"rights" => "dc_right", "created" => "dc_date", "licence" => "dc_right"}
       part_model_name = part_model_name_dictionary[node_name] || "dc_#{node_name}"
 
-      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_identifier.url', 'dc_subject', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic', 'dc_coverage']
+      modular_creators = ['dc_creator', 'dc_date', 'dc_type', 'dc_extent', 'dc_spatial', 'dc_spacial', 'dc_text', 'dc_isPartOf', 'dc_identifier', 'dc_identifier.url', 'dc_subject', 'dc_description', 'dc_typeOfResource', 'dc_genre','dc_dateCreated', 'dc_name', 'dc_language', 'dc_geographic', 'dc_coverage']
       if !modular_creators.include?(part_model_name)
         dc_model = "#{part_model_name.camelize}".constantize.find_or_initialize_by(record_id: record.id)
         dc_model[node_name] = sanitize(node.text)
