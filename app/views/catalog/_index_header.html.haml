@@ -48,7 +48,7 @@
             -#   - if Record.for_same_creator(instance.dc_creators.first.id).count > 1
             -#     %h5.col-sm-12
             -#       = link_to "View digitized items from this collection", search_catalog_path( search_field: "creator", q: instance.dc_creators.first.creator )
-            - if instance.list_records_for_collection && instance.list_records_for_collection.count > 1
+            - if instance.list_records_for_collection && instance.list_records_for_collection.count > 0 
               %h6.collections_subhead
                 = link_to "View digitized items from this collection", "/catalog?utf8=%E2%9C%93&search_field=collection&q=#{instance.dc_titles.first.title}"
 
