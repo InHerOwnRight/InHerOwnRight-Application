@@ -31,3 +31,13 @@ blocks:
             - 'bundle exec rake db:test:prepare'
             - ./cc-test-reporter before-build
             - bundle exec rake test
+  - name: ' Build and Push to Docker Hub'
+    task:
+      secrets:
+        - name: docker-hub
+      jobs:
+        - name: Build and push
+          commands:
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker build -t "$DOCKER_USERNAME"/inhor-rails:production .'
+            - 'docker push "$DOCKER_USERNAME"/inhor-rails:production'
