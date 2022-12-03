@@ -38,6 +38,7 @@ blocks:
       jobs:
         - name: Build and push
           commands:
+            - checkout
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker build -t inhor-rails:production .'
             - 'docker tag inhor-rails:production "$DOCKER_USERNAME"/inhor-rails:production'
