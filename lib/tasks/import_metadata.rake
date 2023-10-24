@@ -200,12 +200,12 @@ namespace :import_metadata do
   desc 'Tri Colleges OAI import'
   task :tri_colleges, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
-    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
+    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai/request"
     repository = nil # no default. Swarthmore repositories are identified by the metadata
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
     begin
-      response = client.list_records(metadata_prefix: 'oai_dc', set: 'sc_ihor')
+      response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:sc_inhor')
       response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
 
       until response.resumption_token.nil?
@@ -231,12 +231,12 @@ namespace :import_metadata do
   desc 'Bryn Mawr OAI import'
   task :bryn_mawr, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
-    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
+    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai/request"
     repository = Repository.find_by_short_name("Bryn Mawr College")
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
     begin
-      response = client.list_records(metadata_prefix: 'oai_dc', set: 'bmc_in-her-own-right')
+      response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:bmc_inhor')
       response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       until response.resumption_token.nil?
         response = client.list_records(resumption_token: response.resumption_token)
@@ -261,12 +261,12 @@ namespace :import_metadata do
   desc 'Haverford OAI import'
   task :haverford, [:harvest_id] => [:environment] do |t, args|
     identifiers_relations_hash = {}
-    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai2"
+    repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai/request"
     repository = Repository.find_by_short_name("Haverford College")
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
     begin
-      response = client.list_records(metadata_prefix: 'oai_dc', set: 'hc_in-her-own-right')
+      response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:hc_inhor')
       response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
       until response.resumption_token.nil?
         response = client.list_records(resumption_token: response.resumption_token)
