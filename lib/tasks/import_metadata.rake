@@ -256,7 +256,7 @@ namespace :import_metadata do
 
     base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
     metadata_prefix = "oai_dc"
-    import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+    import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
   end
   desc 'Haverford OAI import'
   task :haverford, [:harvest_id] => [:environment] do |t, args|
