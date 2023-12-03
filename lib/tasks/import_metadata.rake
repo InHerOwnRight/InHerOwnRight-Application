@@ -77,6 +77,10 @@ namespace :import_metadata do
   def import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, harvest_id, repository_id=nil)
     client = OAI::Client.new  repo_path, :headers => { "From" => "http://inherownright.org" }
     nil_metadata_identifiers = []
+
+    friends = Repository.find_by_short_name("Swarthmore - Friends")
+    peace = Repository.find_by_short_name("Swarthmore - Peace")
+
     identifiers_relations_hash.each do |identifier, relations_nodes|
       response = client.get_record({identifier: identifier, metadata_prefix: metadata_prefix})
       response_record = response.record
@@ -110,15 +114,13 @@ namespace :import_metadata do
         nil_metadata_identifiers << response_record.header.identifier
       end
 
-      friends = Repository.find_by_short_name("Swarthmore - Friends")
-      peace = Repository.find_by_short_name("Swarthmore - Peace")
-
       # raw_record.repository_id = repository.id # there's no default.
       if !raw_record.xml_metadata.nil? && repository_id.nil?
-        repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
-        repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
+        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
+        raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
+      else
+        raw_record.repository_id = repository_id
       end
-      raw_record.repository_id = repository_id
 
       if raw_record.repository_id.nil?
         puts "OAI Identifier #{raw_record.oai_identifier}: no repository_id found based on xml_metadata string matching."
