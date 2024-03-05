@@ -40,6 +40,6 @@ blocks:
           commands:
             - checkout
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - 'docker build -t inhor-rails:staging .'
-            - 'docker tag inhor-rails:staging "$DOCKER_USERNAME"/inhor-rails:staging'
-            - 'docker push "$DOCKER_USERNAME"/inhor-rails:staging'
+            - 'docker build --build-arg RAILS_ENV=production -t inhor-rails:production .'
+            - 'docker tag inhor-rails:production "$DOCKER_USERNAME"/inhor-rails:production'
+            - 'docker push "$DOCKER_USERNAME"/inhor-rails:production'
