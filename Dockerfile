@@ -5,7 +5,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     nodejs \
     tzdata \
     s3cmd \
-    imagemagick
+    imagemagick \
+    wget
 
 # enable nginx in the passenger image
 RUN rm -f /etc/service/nginx/down
@@ -51,6 +52,26 @@ ENV AWS_BUCKET_REGION=SECRET
 RUN RAILS_ENV=production bundle exec rake assets:precompile
 RUN bundle exec whenever --update-crontab
 
+COPY --chown=root:root provisioning/docker-entrypoint.sh /
+#COPY --chown=root:root provisioning/nginx/nginx.conf /etc/nginx/
+#COPY --chown=root:root provisioning/nginx/sites-available/* /etc/nginx/sites-available/
+COPY --chown=root:root provisioning/nginx/ /etc/nginx/
+
 USER root
+RUN ln -s /etc/nginx/sites-available/rails.conf /etc/nginx/sites-enabled/rails.conf
+
+# Install bad bot blocker
+RUN wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker \
+ && chmod +x /usr/local/sbin/install-ngxblocker \
+ && cd /usr/local/sbin \
+ && ./install-ngxblocker -x \
+ && chmod +x /usr/local/sbin/setup-ngxblocker \
+ && chmod +x /usr/local/sbin/update-ngxblocker \
+ && ./setup-ngxblocker -x -e conf
+
+COPY provisioning/var/ /var/
 
 EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/sbin/my_init"]
