@@ -1,0 +1,17 @@
+version: v1.0
+name: Availability Check
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: Check Site and Notify
+    task:
+      jobs:
+        - name: Request Site
+          commands:
+            - >-
+              curl --silent --show-error --fail ${{parameters.SITE_URL}}
+              if [[ $? -ne 0 ]]; then
+                echo "SEND EMAIL HERE"
+              fi
