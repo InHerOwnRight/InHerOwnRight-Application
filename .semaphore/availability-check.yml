@@ -10,7 +10,7 @@ blocks:
       jobs:
         - name: Request Site
           commands:
-            - curl --silent --show-error --fail --connect-timeout 10 ${{parameters.SITE_URL}}
+            - curl --silent --show-error --fail --connect-timeout 10 $SITE_URL
             - if [[ $? -ne 0 ]]; then
                 echo "SEND EMAIL HERE"
               fi
