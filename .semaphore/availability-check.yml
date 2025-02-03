@@ -13,5 +13,16 @@ blocks:
             - |
               curl --silent --show-error --fail --connect-timeout 10 $SITE_URL
               if [[ $? -ne 0 ]]; then
-                echo "SEND EMAIL HERE"
+                curl "https://api.postmark.com/email" \
+                  -X POST \
+                  -H "Accept: application/json" \
+                  -H "Content-Type: application/json" \
+                  -H "X-Postmark-Server-Token: $POSTMARK_API_KEY" \
+                  -d '{
+                  "From": "admin@inherownright.org",
+                  "To": "$RECIPIENT_EMAILS",
+                  "Subject": "($ENVIRONMENT) In Her Own Right: Site Unavailable",
+                  "TextBody": "($ENVIRONMENT) In Her Own Right at $SITE_URL is unavailable. Please check server logs for additional details.",
+                  "MessageStream": "outbound"
+                }'
               fi
