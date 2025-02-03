@@ -20,9 +20,9 @@ blocks:
                   -H "X-Postmark-Server-Token: $POSTMARK_API_KEY" \
                   -d '{
                   "From": "admin@inherownright.org",
-                  "To": "$RECIPIENT_EMAILS",
-                  "Subject": "($ENVIRONMENT) In Her Own Right: Site Unavailable",
-                  "TextBody": "($ENVIRONMENT) In Her Own Right at $SITE_URL is unavailable. Please check server logs for additional details.",
+                  "To": "'$RECIPIENT_EMAILS'",
+                  "Subject": "('$ENVIRONMENT') In Her Own Right: Site Unavailable",
+                  "TextBody": "('$ENVIRONMENT') In Her Own Right at '$SITE_URL' is unavailable. Please check server logs for additional details.",
                   "MessageStream": "outbound"
                 }'
               fi
