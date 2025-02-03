@@ -1,17 +1,17 @@
 version: v1.0
-name: Availability Check
+name: Send Test Email
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: Check Site and Notify
+  - name: Send Test Email
     task:
       jobs:
-        - name: Request Site
+        - name: Send Email
           commands:
             - |
-              curl "https://api.postmark.com/email" \
+              curl "https://api.postmarkapp.com/email" \
                 -X POST \
                 -H "Accept: application/json" \
                 -H "Content-Type: application/json" \

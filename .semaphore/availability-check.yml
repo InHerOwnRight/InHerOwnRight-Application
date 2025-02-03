@@ -13,7 +13,7 @@ blocks:
             - |
               curl --silent --show-error --fail --connect-timeout 10 $SITE_URL
               if [[ $? -ne 0 ]]; then
-                curl "https://api.postmark.com/email" \
+                curl "https://api.postmarkapp.com/email" \
                   -X POST \
                   -H "Accept: application/json" \
                   -H "Content-Type: application/json" \
