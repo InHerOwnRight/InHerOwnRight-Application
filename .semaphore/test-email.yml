@@ -16,10 +16,10 @@ blocks:
                 -H "Accept: application/json" \
                 -H "Content-Type: application/json" \
                 -H "X-Postmark-Server-Token: $POSTMARK_API_KEY" \
-                -d '{
-                "From": "admin@inherownright.org",
-                "To": "$RECIPIENT_EMAILS",
-                "Subject": "Test Email",
-                "TextBody": "Testing",
-                "MessageStream": "outbound"
-              }'
+                -d "{
+                'From': 'admin@inherownright.org',
+                'To': \"$RECIPIENT_EMAILS\",
+                'Subject': 'Test Email',
+                'TextBody': 'Testing',
+                'MessageStream': 'outbound'
+              }"
