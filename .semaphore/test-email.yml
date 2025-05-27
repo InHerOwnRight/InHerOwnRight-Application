@@ -11,15 +11,9 @@ blocks:
         - name: Send Email
           commands:
             - |
-              curl "https://api.postmarkapp.com/email" \
-                -X POST \
-                -H "Accept: application/json" \
-                -H "Content-Type: application/json" \
-                -H "X-Postmark-Server-Token: $POSTMARK_API_KEY" \
-                -d '{
-                "From": "admin@inherownright.org",
-                "To": "'$RECIPIENT_EMAILS'",
-                "Subject": "Test Email",
-                "TextBody": "Testing",
-                "MessageStream": "outbound"
+              curl --silent --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/mg.inherownright.org/messages" \
+                -F from='admin@inherownright.org' \
+                -F to="'$RECIPIENT_EMAILS'" \
+                -F subject="Test Email" \
+                -F text="Testing"
               }'
