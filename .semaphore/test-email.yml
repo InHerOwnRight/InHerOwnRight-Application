@@ -12,8 +12,7 @@ blocks:
           commands:
             - |
               curl --silent --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/mg.inherownright.org/messages" \
-                -F from='admin@inherownright.org' \
+                -F from='admin@mg.inherownright.org' \
                 -F to="'$RECIPIENT_EMAILS'" \
                 -F subject="Test Email" \
                 -F text="Testing"
-              }'

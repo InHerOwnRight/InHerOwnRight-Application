@@ -14,7 +14,7 @@ blocks:
               curl --silent --show-error --fail --connect-timeout 10 $SITE_URL
               if [[ $? -ne 0 ]]; then
                 curl --silent --user "api:$MAILGUN_API_KEY" "https://api.mailgun.net/v3/mg.inherownright.org/messages" \
-                  -F from='admin@inherownright.org' \
+                  -F from='admin@mg.inherownright.org' \
                   -F to="'$RECIPIENT_EMAILS'" \
                   -F subject="('$ENVIRONMENT') In Her Own Right: Site Unavailable" \
                   -F text="('$ENVIRONMENT') In Her Own Right at '$SITE_URL' is unavailable. Please check server logs for additional details."
