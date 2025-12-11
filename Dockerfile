@@ -3,6 +3,7 @@ FROM phusion/passenger-ruby26:2.1.0
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     vim \
     nodejs \
+    python3-certbot-nginx \
     tzdata \
     s3cmd \
     imagemagick \
@@ -59,6 +60,8 @@ COPY --chown=root:root provisioning/nginx/ /etc/nginx/
 
 USER root
 RUN ln -s /etc/nginx/sites-available/rails.conf /etc/nginx/sites-enabled/rails.conf
+  #&& ln -s /etc/nginx/sites-available/rails-tls.conf /etc/nginx/sites-enabled/rails-tls.conf
+
 
 # Install bad bot blocker
 RUN wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker \
@@ -67,7 +70,8 @@ RUN wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot
  && ./install-ngxblocker -x \
  && chmod +x /usr/local/sbin/setup-ngxblocker \
  && chmod +x /usr/local/sbin/update-ngxblocker \
- && ./setup-ngxblocker -x -e conf
+ && ./setup-ngxblocker -x -e conf \
+ && sed -i 's/server_names_hash_bucket_size/# &/' /etc/nginx/conf.d/botblocker-nginx-settings.conf
 
 COPY provisioning/var/ /var/
 
