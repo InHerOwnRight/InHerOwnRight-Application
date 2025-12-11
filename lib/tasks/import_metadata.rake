@@ -138,7 +138,8 @@ namespace :import_metadata do
   end
 
   desc 'Temple OAI import'
-  task :temple, [:harvest_id] => [:environment] do |t, args|
+  task :temple, [:harvest_id, :oai_record_id] => [:environment] do |t, args|
+    oai_record_id = args[:oai_record_id]
     identifiers_relations_hash = {}
     set_specs = ['p15037coll19', 'p15037coll14', 'p15037coll15']
     repository = Repository.find_by_short_name("Temple University")
@@ -147,13 +148,23 @@ namespace :import_metadata do
 
     set_specs.map do |set|
       client = OAI::Client.new "http://digital.library.temple.edu/oai/oai.php", :headers => { "From" => "oai@example.com" }
-      response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
       metadata_records = []
-      response.each { |r| metadata_records << r }
-      until response.resumption_token.nil?
-        response = client.list_records(resumption_token: response.resumption_token)
+
+      if oai_record_id.nil?
+        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
         response.each { |r| metadata_records << r }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |r| metadata_records << r }
+        end
+      else
+        begin
+          response = client.get_record(metadata_prefix: 'oai_dc', set: "#{set}", identifier: oai_record_id)
+          metadata_records << response.record
+        rescue OAI::Exception => e
+        end
       end
+
       # Not all of the records we receive are meant to be included. Instead of using a set, or other filter,
       # We're using a dc:relation that contains "In Her Own Right" to identify the records we want to import
       metadata_records.each do |record|
@@ -177,52 +188,70 @@ namespace :import_metadata do
   end
 
   desc 'Drexel OAI import'
-  task :drexel, [:harvest_id] => [:environment] do |t, args|
+  task :drexel, [:harvest_id, :oai_record_id] => [:environment] do |t, args|
+    oai_record_id = args[:oai_record_id]
     identifiers_relations_hash = {}
-    repo_path = "https://idea.library.drexel.edu/oai/request"
-    set_specs = ['lca_3']
+    repo_path = "https://drexel.alma.exlibrisgroup.com/view/oai/01DRXU_INST/request"
+    set_specs = ['legacycenter_inhor_dc']
     repository = Repository.find_by_short_name("Drexel University")
 
     set_specs.map do |set|
       client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
-      response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
-      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
-      until response.resumption_token.nil?
-        response = client.list_records(resumption_token: response.resumption_token)
+      if oai_record_id.nil?
+        response = client.list_records(metadata_prefix: 'oai_dc', set: "#{set}")
         response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        end
+      else
+        begin
+          response = client.get_record(metadata_prefix: 'oai_dc', set: "#{set}", identifier: oai_record_id)
+          identifiers_relations_hash[response.record.header.identifier] = ''
+        rescue OAI::Exception => e
+        end
       end
     end
 
     repository = Repository.find_by_short_name("Drexel University")
-    base_response_record_path = "http://hdl.handle.net/1860/"
+    base_response_record_path = "https://drexel.alma.exlibrisgroup.com/permalink/01DRXU_INST/ajqfok/alma"
     metadata_prefix = "oai_dc"
     import_from_oai_client(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
 
   desc 'Tri Colleges OAI import'
-  task :tri_colleges, [:harvest_id] => [:environment] do |t, args|
+  task :tri_colleges, [:harvest_id, :oai_record_id] => [:environment] do |t, args|
+    oai_record_id = args[:oai_record_id]
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai/request"
     repository = nil # no default. Swarthmore repositories are identified by the metadata
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
-    begin
-      response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:sc_inhor')
-      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
-
-      until response.resumption_token.nil?
-        response = client.list_records(resumption_token: response.resumption_token)
+    if oai_record_id.nil?
+      begin
+        response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:sc_inhor')
         response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+  
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        end
+      rescue OAI::Exception => e
+        if EmptyImportErrors.include?(e.message.strip)
+          Rails.logger.error "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+          base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+          metadata_prefix = "oai_dc"
+          import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
+          next
+        else
+          raise e
+        end
       end
-    rescue OAI::Exception => e
-      if EmptyImportErrors.include?(e.message.strip)
-        Rails.logger.error "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
-        base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
-        metadata_prefix = "oai_dc"
-        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
-        next
-      else
-        raise e
+    else
+      begin
+        response = client.get_record(metadata_prefix: 'oai_dc', set: 'oai_pmh:sc_inhor', identifier: oai_record_id)
+        identifiers_relations_hash[response.record.header.identifier] = ''
+      rescue OAI::Exception => e
       end
     end
 
@@ -231,28 +260,37 @@ namespace :import_metadata do
     import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id])
   end
   desc 'Bryn Mawr OAI import'
-  task :bryn_mawr, [:harvest_id] => [:environment] do |t, args|
+  task :bryn_mawr, [:harvest_id, :oai_record_id] => [:environment] do |t, args|
+    oai_record_id = args[:oai_record_id]
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai/request"
     repository = Repository.find_by_short_name("Bryn Mawr College")
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
-    begin
-      response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:bmc_inhor')
-      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
-      until response.resumption_token.nil?
-        response = client.list_records(resumption_token: response.resumption_token)
+    if oai_record_id.nil?
+      begin
+        response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:bmc_inhor')
         response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        end
+      rescue OAI::Exception => e
+        if EmptyImportErrors.include?(e.message.strip)
+          puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+          base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+          metadata_prefix = "oai_dc"
+          import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
+          next
+        else
+          raise e
+        end
       end
-    rescue OAI::Exception => e
-      if EmptyImportErrors.include?(e.message.strip)
-        puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
-        base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
-        metadata_prefix = "oai_dc"
-        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
-        next
-      else
-        raise e
+    else
+      begin
+        response = client.get_record(metadata_prefix: 'oai_dc', set: 'oai_pmh:bmc_inhor', identifier: oai_record_id)
+        identifiers_relations_hash[response.record.header.identifier] = ''
+      rescue OAI::Exception => e
       end
     end
 
@@ -261,28 +299,37 @@ namespace :import_metadata do
     import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
   end
   desc 'Haverford OAI import'
-  task :haverford, [:harvest_id] => [:environment] do |t, args|
+  task :haverford, [:harvest_id, :oai_record_id] => [:environment] do |t, args|
+    oai_record_id = args[:oai_record_id]
     identifiers_relations_hash = {}
     repo_path = "https://digitalcollections.tricolib.brynmawr.edu/oai/request"
     repository = Repository.find_by_short_name("Haverford College")
     client = OAI::Client.new repo_path, :headers => { "From" => "http://inherownright.org" }
 
-    begin
-      response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:hc_inhor')
-      response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
-      until response.resumption_token.nil?
-        response = client.list_records(resumption_token: response.resumption_token)
+    if oai_record_id.nil?
+      begin
+        response = client.list_records(metadata_prefix: 'oai_dc', set: 'oai_pmh:hc_inhor')
         response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        until response.resumption_token.nil?
+          response = client.list_records(resumption_token: response.resumption_token)
+          response.each { |record| identifiers_relations_hash[record.header.identifier] = '' }
+        end
+      rescue OAI::Exception => e
+        if EmptyImportErrors.include?(e.message.strip)
+          puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
+          base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
+          metadata_prefix = "oai_dc"
+          import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
+          next
+        else
+          raise e
+        end
       end
-    rescue OAI::Exception => e
-      if EmptyImportErrors.include?(e.message.strip)
-        puts "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
-        base_response_record_path = 'https://digitalcollections.tricolib.brynmawr.edu/object/'
-        metadata_prefix = "oai_dc"
-        import_islandora_metadata(repository, repo_path, base_response_record_path, identifiers_relations_hash, metadata_prefix, args[:harvest_id], repository.id)
-        next
-      else
-        raise e
+    else
+      begin
+        response = client.get_record(metadata_prefix: 'oai_dc', set: 'oai_pmh:hc_inhor', identifier: oai_record_id)
+        identifiers_relations_hash[response.record.header.identifier] = ''
+      rescue OAI::Exception => e
       end
     end
 
