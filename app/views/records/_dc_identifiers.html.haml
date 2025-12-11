@@ -3,7 +3,7 @@
     %th{ scope: "row" }
       View full item
     %td
-      = @record.dc_identifiers.select { |i| i.identifier_is_islandora_url? }.map do |dc_identifier|
+      = @record.dc_identifiers.select { |i| i.identifier_is_islandora_url? && i.identifier.include?('https://digitalcollections.tricolib.brynmawr.edu/object/') }.map do |dc_identifier|
         - link_to dc_identifier.identifier, dc_identifier.identifier, target: "_blank"
       - end.join(' | ').html_safe
 
