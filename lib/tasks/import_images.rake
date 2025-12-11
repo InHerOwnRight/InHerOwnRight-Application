@@ -106,11 +106,11 @@ namespace :import_images do
             else
               identifier = dc_identifier.identifier
             end
-            if image_path.include?(identifier)
+            if image_path.include?(identifier) || image_path.include?(CGI.escape(identifier))
               if image_path[-9..-1] == "thumb.png"
-                record.thumbnail = "/#{image_path}"
+                record.thumbnail = "/#{CGI.escape(image_path)}"
               elsif image_path[-6..-1] == "lg.png"
-                record.file_name = "/#{image_path}"
+                record.file_name = "/#{CGI.escape(image_path)}"
               end
               record.save
             end
