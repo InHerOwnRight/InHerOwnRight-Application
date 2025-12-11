@@ -58,7 +58,7 @@ namespace :import_metadata do
 
       raw_record.repository_id = repository.id
       if !raw_record.xml_metadata.nil?
-        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
+        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Swarthmore College Friends Historical Library") || raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
         raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
         raw_record.repository_id = haverford.id if raw_record.xml_metadata.include?("isPartOf>Haverford")
       end
@@ -116,7 +116,7 @@ namespace :import_metadata do
 
       # raw_record.repository_id = repository.id # there's no default.
       if !raw_record.xml_metadata.nil? && repository_id.nil?
-        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
+        raw_record.repository_id = friends.id if raw_record.xml_metadata.include?("Swarthmore College Friends Historical Library") || raw_record.xml_metadata.include?("Friends Historical Library of Swarthmore College")
         raw_record.repository_id = peace.id if raw_record.xml_metadata.include?("Swarthmore College Peace Collection")
       else
         raw_record.repository_id = repository_id
