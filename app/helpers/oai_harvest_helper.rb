@@ -3,7 +3,7 @@ Rails.application.load_tasks
 
 module OaiHarvestHelper
 
-  def self.initiate(harvest)
+  def self.initiate(harvest, oai_record_id=nil)
     # TODO consider making a special TriColleges repository class / object to clean this up
     repo = harvest.repository || "TriColleges"
     if repo == "TriColleges"
@@ -17,7 +17,7 @@ module OaiHarvestHelper
       # Even then, it seems like they rely on there being a single worker to happen in order.
       # e.g. it seems like it would be bad if we tried to create records before create_raw_records finished
       # (same for importing images etc)
-      self.create_raw_records(harvest, repo)
+      self.create_raw_records(harvest, repo, oai_record_id)
       self.delay(queue: "oai_#{task_name}").create_records(harvest)
       self.import_images(harvest, repo)
       self.delay(queue: "oai_#{task_name}").index_records(harvest)
@@ -26,11 +26,11 @@ module OaiHarvestHelper
     end
   end
 
-  def self.create_raw_records(harvest, repo)
+  def self.create_raw_records(harvest, repo, oai_record_id=nil)
     if repo == "TriColleges"
-      Delayed::Job.enqueue(DelayedRake.new("import_metadata:tri_colleges[#{harvest.id}]"), queue: "oai_tricolleges")
+      Delayed::Job.enqueue(DelayedRake.new("import_metadata:tri_colleges[#{harvest.id},#{oai_record_id}]"), queue: "oai_tricolleges")
     else
-      Delayed::Job.enqueue(DelayedRake.new("import_metadata:#{repo.oai_task}[#{harvest.id}]"), queue: "oai_#{repo.oai_task}")
+      Delayed::Job.enqueue(DelayedRake.new("import_metadata:#{repo.oai_task}[#{harvest.id},#{oai_record_id}]"), queue: "oai_#{repo.oai_task}")
     end
   end
 

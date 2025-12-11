@@ -2,57 +2,126 @@
 %h3
   Harvest OAI Data
 %br
-= form_for @oai_harvest do |f|
-  = f.select(:repository_id, @repositories.collect {|r| [r.short_name, r.id]} + ["TriColleges"], :prompt => 'Select Institution', require: true)
-  = f.submit 'Import OAI'
-%br
-%br
-.collections-import
-  %table
-    %thead
-      %tr
-        %th
-          Institution
-        %th
-          Date of Harvest
-        %th
-          Status
-        %th
-          Error Message
-        %th
-          Records
-    %tbody
-      - @oai_harvests.each do |harvest|
-        -# a nil repository ID means all 3 Tricollege repos were potentially included
-        - if harvest.repository.nil?
-          - repo_short_names = ["Haverford College", "Swarthmore - Peace", "Swarthmore - Friends"]
-          - repos = Repository.where(short_name: repo_short_names)
-          - repos.each do |repo|
-            %tr
-              %td
-                = repo.short_name
-              %td
-                = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
-              %td
-                = harvest.humanized_status
-              %td
-                = harvest.error
-              %td
-                - if RawRecord.where(id: harvest.records.pluck(:raw_record_id)).select("DISTINCT repository_id").pluck(:repository_id).uniq.include?(repo.id)
-                  = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
-        - else
-          %tr
-            %td
-              = harvest.repository.short_name
-            %td
-              = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
-            %td
-              = harvest.humanized_status
-            %td
-              = harvest.error
-            %td
-              - if harvest.records.any? && harvest.status == "complete"
-                = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
 
+%div{role: "tabpanel"}
+  %ul{class: "nav nav-tabs", role: "tablist"}
+    %li{class: "nav-item", role: "presentation"}
+      %a{href: "#harvest-by-collection", role: "tab", "data-toggle": "tab", class: "nav-link active"} By Collection
+    %li{class: "nav-item", role: "presentation"}
+      %a{href: "#harvest-by-id", role: "tab", "data-toggle": "tab", class: "nav-link"} By ID
+
+  .tab-content
+    %div{role: "tabpanel", class: "tab-pane active", id: "harvest-by-collection"}
+      = form_for @oai_harvest do |f|
+        = f.select(:repository_id, @repositories.collect {|r| [r.short_name, r.id]} + ["TriColleges"], :prompt => 'Select Institution', require: true)
+        = f.submit 'Import OAI'
+      %br
+      %br
+      .collections-import
+        %table
+          %thead
+            %tr
+              %th
+                Institution
+              %th
+                Date of Harvest
+              %th
+                Status
+              %th
+                Error Message
+              %th
+                Records
+          %tbody
+            - @oai_harvests.each do |harvest|
+              -# a nil repository ID means all 3 Tricollege repos were potentially included
+              - if harvest.repository.nil?
+                - repo_short_names = ["Haverford College", "Swarthmore - Peace", "Swarthmore - Friends"]
+                - repos = Repository.where(short_name: repo_short_names)
+                - repos.each do |repo|
+                  %tr
+                    %td
+                      = repo.short_name
+                    %td
+                      = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+                    %td
+                      = harvest.humanized_status
+                    %td
+                      = harvest.error
+                    %td
+                      - if RawRecord.where(id: harvest.records.pluck(:raw_record_id)).select("DISTINCT repository_id").pluck(:repository_id).uniq.include?(repo.id)
+                        = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
+              - else
+                %tr
+                  %td
+                    = harvest.repository.short_name
+                  %td
+                    = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+                  %td
+                    = harvest.humanized_status
+                  %td
+                    = harvest.error
+                  %td
+                    - if harvest.records.any? && harvest.status == "complete"
+                      = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
+
+    %div{role: "tabpanel", class: "tab-pane", id: "harvest-by-id"}
+      = form_with model: @oai_harvest, url: oai_harvests_path, method: :post do |f|
+        = f.select(:repository_id, @repositories.collect {|r| [r.short_name, r.id]} + ["TriColleges"], :prompt => 'Select Institution', require: true)
+        = f.text_field(:oai_record_id, :name => 'oai_record_id', :placeholder => 'OAI Record ID', require: true)
+        = f.submit 'Import OAI'
+      %br
+      %br
+      .collections-import
+        %table
+          %thead
+            %tr
+              %th
+                Institution
+              %th
+                ID
+              %th
+                Date of Harvest
+              %th
+                Status
+              %th
+                Error Message
+              %th
+                Records
+          %tbody
+            - @single_record_oai_harvests.each do |harvest|
+              -# a nil repository ID means all 3 Tricollege repos were potentially included
+              - if harvest.repository.nil?
+                - repo_short_names = ["Haverford College", "Swarthmore - Peace", "Swarthmore - Friends"]
+                - repos = Repository.where(short_name: repo_short_names)
+                - repos.each do |repo|
+                  %tr
+                    %td
+                      = repo.short_name
+                    %td.wrap-text
+                    = harvest.records&.first&.oai_identifier
+                    %td
+                      = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+                    %td
+                      = harvest.humanized_status
+                    %td
+                      = harvest.error
+                    %td
+                      - if RawRecord.where(id: harvest.records.pluck(:raw_record_id)).select("DISTINCT repository_id").pluck(:repository_id).uniq.include?(repo.id)
+                        = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
+              - else
+                %tr
+                  %td
+                    = harvest.repository.short_name
+                  %td.wrap-text
+                    = harvest.records&.first&.oai_identifier
+                  %td
+                    = harvest.created_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y at %I:%M%p EST")
+                  %td
+                    = harvest.humanized_status
+                  %td
+                    = harvest.error
+                  %td
+                    - if harvest.records.any? && harvest.status == "complete"
+                      = link_to "View Records", oai_harvest_records_path(harvest), target: :_blank
 
 %br
