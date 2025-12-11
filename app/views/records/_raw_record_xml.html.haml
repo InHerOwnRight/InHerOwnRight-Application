@@ -1,0 +1,6 @@
+- if current_user
+  %tr
+    %th{ scope: "row" }
+      Raw Record XML
+    %td
+      %pre{style: "white-space: pre-wrap; max-width: 800px; word-break: break-word;"}= @formatted_xml

@@ -2,6 +2,7 @@ class RecordsController < ApplicationController
 
   def show
     @record = Record.friendly.find(params[:oai_identifier])
+    @formatted_xml = Nokogiri::XML(@record.raw_record.xml_metadata).to_xml(indent: 2)
 
     @document = {}
     @document['geojson_ssim'] = @record.map_locations.pluck(:geojson_ssim)
