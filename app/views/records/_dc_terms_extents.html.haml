@@ -1,4 +1,4 @@
-- if @record.repository.islandora?
+- if @record.dc_formats.any?
   - @record.dc_formats.each do |dc_format|
     - if dc_format.format.count("0-9") > 0
       %tr
