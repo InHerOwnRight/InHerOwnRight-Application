@@ -63,16 +63,14 @@ namespace :import_images do
     image_paths = all_repo_paths - archive_paths - failed_paths
     harvest.records.each do |record|
       record.dc_identifiers.each do |dc_identifier|
-        if dc_identifier.identifier[0..5] == "local:"
-          image_paths.each do |image_path|
-            if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier[7..-1])
-              if image_path[-9..-1] == "thumb.png"
-                record.thumbnail = "/#{image_path}"
-              elsif image_path[-6..-1] == "lg.png"
-                record.file_name = "/#{image_path}"
-              end
-              record.save
+        image_paths.each do |image_path|
+          if !dc_identifier.identifier.blank? && image_path.include?(dc_identifier.identifier)
+            if image_path[-9..-1] == "thumb.png"
+              record.thumbnail = "/#{image_path}"
+            elsif image_path[-6..-1] == "lg.png"
+              record.file_name = "/#{image_path}"
             end
+            record.save
           end
         end
       end
