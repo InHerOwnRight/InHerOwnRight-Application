@@ -10,7 +10,7 @@ class DcRelation < ActiveRecord::Base
     if !self.relation.nil?
       begin
         relation = self.relation.split(",").first.strip if self.record.repository.islandora?
-        matching_pacscl_collection = PacsclCollection.all.find { |c| c.detailed_name.downcase.include?(relation.downcase) }
+        matching_pacscl_collection = PacsclCollection.all.find { |c| c.detailed_name.downcase.include?(relation.downcase) } unless relation.nil?
         if matching_pacscl_collection
           self.pacscl_collection_id = matching_pacscl_collection.id
           save
@@ -18,6 +18,12 @@ class DcRelation < ActiveRecord::Base
           sharpless_collection = PacsclCollection.find_by_clean_name("Sharpless Family papers")
           self.pacscl_collection_id = sharpless_collection.id
           save
+        elsif matching_pacscl_collection.nil? && record.repository == Repository.find_by_short_name("Drexel University")
+          matching_pacscl_collection = PacsclCollection.all.find { |c| c.detailed_name.downcase.include?(self.relation.downcase) }
+          if matching_pacscl_collection
+            self.pacscl_collection_id = matching_pacscl_collection.id
+            save
+          end
         end
       rescue
       end
