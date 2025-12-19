@@ -24,12 +24,9 @@ blocks:
             - cp config/secrets.example.yml config/secrets.yml
             - gem install bundler -v 2.1.4
             - bundle install --jobs 4 --deployment --path vendor/bundle
-            - 'curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter'
-            - chmod +x ./cc-test-reporter
             - cache store
             - 'bundle exec rake db:setup'
             - 'bundle exec rake db:test:prepare'
-            - ./cc-test-reporter before-build
             - bundle exec rake test
   - name: ' Build and Push to Docker Hub'
     task:
